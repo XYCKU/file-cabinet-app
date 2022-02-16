@@ -4,7 +4,7 @@ namespace FileCabinetApp
 {
     public class FileCabinetService
     {
-        private readonly List<FileCabinetRecord> _list = new List<FileCabinetRecord>();
+        private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth)
         {
@@ -20,8 +20,7 @@ namespace FileCabinetApp
 
         public int GetStat()
         {
-            // TODO: добавьте реализацию метода
-            return 0;
+            return this.list.Count;
         }
     }
 }
