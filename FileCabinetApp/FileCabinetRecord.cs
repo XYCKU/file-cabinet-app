@@ -11,5 +11,11 @@ namespace FileCabinetApp
         public string LastName { get; set; }
 
         public DateTime DateOfBirth { get; set; }
+
+        public short CarAmount { get; set; }
+
+        public decimal Money { get; set; }
+
+        public char FavoriteChar { get; set; }
     }
 }

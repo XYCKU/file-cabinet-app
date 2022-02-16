@@ -102,11 +102,19 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            string[] args = parameters.Split(' ', 3);
+            const int argsAmount = 6;
+
+            string[] args = parameters.Split(' ', argsAmount);
 
             if (args is null)
             {
                 Console.WriteLine("Arguments are null");
+                return;
+            }
+
+            if (args.Length != argsAmount)
+            {
+                Console.WriteLine("Wrong amount of arguments.");
                 return;
             }
 
@@ -128,29 +136,50 @@ namespace FileCabinetApp
                 return;
             }
 
+            if (string.IsNullOrEmpty(args[3]))
+            {
+                Console.WriteLine("CarAmount is null");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(args[4]))
+            {
+                Console.WriteLine("Money is null");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(args[5]))
+            {
+                Console.WriteLine("FavoriteChar is null");
+                return;
+            }
+
             DateTime dt;
+            short carAmount;
+            decimal money;
+            char favoriteChar;
 
             try
             {
                 dt = DateTime.ParseExact(args[2], "MM/dd/YYYY", CultureInfo.CurrentCulture);
+                carAmount = short.Parse(args[3], CultureInfo.InvariantCulture);
+                money = decimal.Parse(args[4], CultureInfo.InvariantCulture);
+                favoriteChar = char.Parse(args[5]);
             }
-            catch (FormatException e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
                 return;
             }
 
-            if (!DateTime.TryParse(args[2], out dt))
-            {
-                Console.WriteLine("DateOfBirth has invalid format");
-                return;
-            }
-
-            int recordId = fileCabinetService.CreateRecord(args[0], args[1], dt);
+            int recordId = fileCabinetService.CreateRecord(args[0], args[1], dt, carAmount, money, favoriteChar);
 
             Console.WriteLine($"First name: {args[0]}{Environment.NewLine}" +
                                 $"Last name: {args[1]}{Environment.NewLine}" +
-                                $"Date of birth: {args[2]}{Environment.NewLine}" +
+                                $"Date of birth: {dt.ToString("MM/dd/YYYY", CultureInfo.InvariantCulture)}{Environment.NewLine}" +
+                                $"Car amount: {carAmount}{Environment.NewLine}" +
+                                $"Money: {money}{Environment.NewLine}" +
+                                $"Favorite char: {favoriteChar}{Environment.NewLine}" +
                                 $"Record #{recordId} is created.");
         }
 
@@ -170,7 +199,13 @@ namespace FileCabinetApp
             }
         }
 
-        private static string FormatRecord(FileCabinetRecord record) => $"#{record.Id}, {record.FirstName}, {record.LastName}, {record.DateOfBirth.ToString("yyyy-MMM-dd")}";
+        private static string FormatRecord(FileCabinetRecord record) => $"#{record.Id}, " +
+            $"{record.FirstName}, " +
+            $"{record.LastName}, " +
+            $"{record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, " +
+            $"{record.CarAmount}, " +
+            $"{record.Money}, " +
+            $"{record.FavoriteChar}";
 
         private static void Exit(string parameters)
         {
