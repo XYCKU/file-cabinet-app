@@ -1,4 +1,6 @@
-﻿namespace FileCabinetApp
+﻿using System.Globalization;
+
+namespace FileCabinetApp
 {
     public static class Program
     {
@@ -10,15 +12,23 @@
 
         private static bool isRunning = true;
 
+        private static FileCabinetService fileCabinetService = new FileCabinetService();
+
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
+            new Tuple<string, Action<string>>("create", Create),
+            new Tuple<string, Action<string>>("stat", Stat),
+            new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("exit", Exit),
         };
 
         private static string[][] helpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
+            new string[] { "create", "creates new record", "The 'stat' command creates new record." },
+            new string[] { "stat", "shows records statistics", "The 'stat' command shows records statistics." },
+            new string[] { "list", "lists all records", "The 'stat' command lists all records." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
@@ -42,7 +52,7 @@
                     continue;
                 }
 
-                var index = Array.FindIndex(commands, 0, commands.Length, i => i.Item1.Equals(command, StringComparison.InvariantCultureIgnoreCase));
+                var index = Array.FindIndex(commands, 0, commands.Length, i => i.Item1.Equals(command, StringComparison.OrdinalIgnoreCase));
                 if (index >= 0)
                 {
                     const int parametersIndex = 1;
@@ -67,7 +77,7 @@
         {
             if (!string.IsNullOrEmpty(parameters))
             {
-                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.InvariantCultureIgnoreCase));
+                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.OrdinalIgnoreCase));
                 if (index >= 0)
                 {
                     Console.WriteLine(helpMessages[index][Program.ExplanationHelpIndex]);
@@ -89,6 +99,113 @@
 
             Console.WriteLine();
         }
+
+        private static void Create(string parameters)
+        {
+            const int argsAmount = 6;
+
+            string[] args = parameters.Split(' ', argsAmount);
+
+            if (args is null)
+            {
+                Console.WriteLine("Arguments are null");
+                return;
+            }
+
+            if (args.Length != argsAmount)
+            {
+                Console.WriteLine("Wrong amount of arguments.");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(args[0]))
+            {
+                Console.WriteLine("FirstName is null");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(args[1]))
+            {
+                Console.WriteLine("LastName is null");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(args[2]))
+            {
+                Console.WriteLine("DateOfBirth is null");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(args[3]))
+            {
+                Console.WriteLine("CarAmount is null");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(args[4]))
+            {
+                Console.WriteLine("Money is null");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(args[5]))
+            {
+                Console.WriteLine("FavoriteChar is null");
+                return;
+            }
+
+            DateTime dt;
+            short carAmount;
+            decimal money;
+            char favoriteChar;
+
+            try
+            {
+                dt = DateTime.ParseExact(args[2], "MM/dd/YYYY", CultureInfo.CurrentCulture);
+                carAmount = short.Parse(args[3], CultureInfo.InvariantCulture);
+                money = decimal.Parse(args[4], CultureInfo.InvariantCulture);
+                favoriteChar = char.Parse(args[5]);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return;
+            }
+
+            int recordId = fileCabinetService.CreateRecord(args[0], args[1], dt, carAmount, money, favoriteChar);
+
+            Console.WriteLine($"First name: {args[0]}{Environment.NewLine}" +
+                                $"Last name: {args[1]}{Environment.NewLine}" +
+                                $"Date of birth: {dt.ToString("MM/dd/YYYY", CultureInfo.InvariantCulture)}{Environment.NewLine}" +
+                                $"Car amount: {carAmount}{Environment.NewLine}" +
+                                $"Money: {money}{Environment.NewLine}" +
+                                $"Favorite char: {favoriteChar}{Environment.NewLine}" +
+                                $"Record #{recordId} is created.");
+        }
+
+        private static void Stat(string parameters)
+        {
+            var recordsCount = Program.fileCabinetService.GetStat();
+            Console.WriteLine($"{recordsCount} record(s).");
+        }
+
+        private static void List(string parameters)
+        {
+            var record = fileCabinetService.GetRecords();
+
+            for (int i = 0; i < record.Length; ++i)
+            {
+                Console.WriteLine(FormatRecord(record[i]));
+            }
+        }
+
+        private static string FormatRecord(FileCabinetRecord record) => $"#{record.Id}, " +
+            $"{record.FirstName}, " +
+            $"{record.LastName}, " +
+            $"{record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)}, " +
+            $"{record.CarAmount}, " +
+            $"{record.Money}, " +
+            $"{record.FavoriteChar}";
 
         private static void Exit(string parameters)
         {
