@@ -103,74 +103,37 @@ namespace FileCabinetApp
         private static void Create(string parameters)
         {
             const int argsAmount = 6;
+            string[] args;
 
-            string[] args = parameters.Split(' ', argsAmount);
-
-            if (args is null)
+            if (parameters is null)
             {
-                Console.WriteLine("Arguments are null");
+                Console.WriteLine("Invalid arguments");
                 return;
             }
 
-            if (args.Length != argsAmount)
+            args = parameters.Split(' ', argsAmount);
+
+            if (args.Length < argsAmount)
             {
-                Console.WriteLine("Wrong amount of arguments.");
+                Console.WriteLine("Not enough arguments");
                 return;
             }
 
-            if (string.IsNullOrEmpty(args[0]))
+            for (int i = 0; i < argsAmount; ++i)
             {
-                Console.WriteLine("FirstName is null");
-                return;
+                if (string.IsNullOrWhiteSpace(args[i]))
+                {
+                    Console.WriteLine($"args[{i}] is null or whitespace");
+                    return;
+                }
             }
 
-            if (string.IsNullOrEmpty(args[1]))
-            {
-                Console.WriteLine("LastName is null");
-                return;
-            }
+            args = parameters.Split(' ', argsAmount);
 
-            if (string.IsNullOrEmpty(args[2]))
-            {
-                Console.WriteLine("DateOfBirth is null");
-                return;
-            }
-
-            if (string.IsNullOrEmpty(args[3]))
-            {
-                Console.WriteLine("CarAmount is null");
-                return;
-            }
-
-            if (string.IsNullOrEmpty(args[4]))
-            {
-                Console.WriteLine("Money is null");
-                return;
-            }
-
-            if (string.IsNullOrEmpty(args[5]))
-            {
-                Console.WriteLine("FavoriteChar is null");
-                return;
-            }
-
-            DateTime dt;
-            short carAmount;
-            decimal money;
-            char favoriteChar;
-
-            try
-            {
-                dt = DateTime.ParseExact(args[2], "MM/dd/YYYY", CultureInfo.CurrentCulture);
-                carAmount = short.Parse(args[3], CultureInfo.InvariantCulture);
-                money = decimal.Parse(args[4], CultureInfo.InvariantCulture);
-                favoriteChar = char.Parse(args[5]);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return;
-            }
+            DateTime dt = DateTime.ParseExact(args[2], "MM/dd/YYYY", CultureInfo.CurrentCulture);
+            short carAmount = short.Parse(args[3], CultureInfo.InvariantCulture);
+            decimal money = decimal.Parse(args[4], CultureInfo.InvariantCulture);
+            char favoriteChar = char.ToUpperInvariant(char.Parse(args[5]));
 
             int recordId = fileCabinetService.CreateRecord(args[0], args[1], dt, carAmount, money, favoriteChar);
 
