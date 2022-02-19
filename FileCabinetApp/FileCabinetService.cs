@@ -33,9 +33,9 @@ namespace FileCabinetApp
                 throw new ArgumentException("money is less than zero", nameof(money));
             }
 
-            if (char.IsLetter(favoriteChar))
+            if (!char.IsLetter(favoriteChar))
             {
-                throw new ArgumentException("favoriteChar is not a letter", nameof(favoriteChar));
+                throw new ArgumentException($"favoriteChar {favoriteChar} is not a letter", nameof(favoriteChar));
             }
 
             var record = new FileCabinetRecord

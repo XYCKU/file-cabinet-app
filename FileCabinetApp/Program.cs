@@ -104,46 +104,83 @@ namespace FileCabinetApp
         {
             const int argsAmount = 6;
             string[] args;
+            bool isValid = true;
 
-            if (parameters is null)
+            do
             {
-                Console.WriteLine("Invalid arguments");
-                return;
-            }
-
-            args = parameters.Split(' ', argsAmount);
-
-            if (args.Length < argsAmount)
-            {
-                Console.WriteLine("Not enough arguments");
-                return;
-            }
-
-            for (int i = 0; i < argsAmount; ++i)
-            {
-                if (string.IsNullOrWhiteSpace(args[i]))
+                if (!isValid)
                 {
-                    Console.WriteLine($"args[{i}] is null or whitespace");
-                    return;
+                    Console.WriteLine("Input arguments or q to exit");
+                    var line = Console.ReadLine();
+
+                    if (string.Equals(line, "q", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return;
+                    }
+
+                    parameters = line != null ? line : string.Empty;
+                }
+
+                isValid = true;
+
+                if (parameters is null)
+                {
+                    Console.WriteLine("Invalid arguments");
+                    isValid = false;
+                    continue;
+                }
+
+                args = parameters.Split(' ', argsAmount);
+
+                if (args.Length < argsAmount)
+                {
+                    Console.WriteLine("Not enough arguments");
+                    isValid = false;
+                    continue;
+                }
+
+                for (int i = 0; i < argsAmount; ++i)
+                {
+                    if (string.IsNullOrWhiteSpace(args[i]))
+                    {
+                        Console.WriteLine($"args[{i}] is null or whitespace");
+                        isValid = false;
+                        break;
+                    }
+                }
+
+                if (!isValid)
+                {
+                    continue;
+                }
+
+                args = parameters.Split(' ', argsAmount);
+                int recordId;
+                try
+                {
+                    DateTime dt = DateTime.Parse(args[2], new CultureInfo("en-US"));
+                    short carAmount = short.Parse(args[3], CultureInfo.InvariantCulture);
+                    decimal money = decimal.Parse(args[4], CultureInfo.InvariantCulture);
+                    char favoriteChar = char.ToUpperInvariant(char.Parse(args[5]));
+
+                    recordId = fileCabinetService.CreateRecord(args[0], args[1], dt, carAmount, money, favoriteChar);
+
+                    Console.WriteLine($"First name: {args[0]}{Environment.NewLine} " +
+                                                        $"Last name: {args[1]}{Environment.NewLine}" +
+                                                        $"Date of birth: {dt.ToString("MM/dd/YYYY", CultureInfo.InvariantCulture)}{Environment.NewLine}" +
+                                                        $"Car amount: {carAmount}{Environment.NewLine}" +
+                                                        $"Money: {money}{Environment.NewLine}" +
+                                                        $"Favorite char: {favoriteChar}{Environment.NewLine}" +
+                                                        $"Record #{recordId} is created.");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Invalid arguments");
+                    Console.WriteLine(e.Message);
+                    isValid = false;
                 }
             }
-
-            args = parameters.Split(' ', argsAmount);
-
-            DateTime dt = DateTime.ParseExact(args[2], "MM/dd/YYYY", CultureInfo.CurrentCulture);
-            short carAmount = short.Parse(args[3], CultureInfo.InvariantCulture);
-            decimal money = decimal.Parse(args[4], CultureInfo.InvariantCulture);
-            char favoriteChar = char.ToUpperInvariant(char.Parse(args[5]));
-
-            int recordId = fileCabinetService.CreateRecord(args[0], args[1], dt, carAmount, money, favoriteChar);
-
-            Console.WriteLine($"First name: {args[0]}{Environment.NewLine}" +
-                                $"Last name: {args[1]}{Environment.NewLine}" +
-                                $"Date of birth: {dt.ToString("MM/dd/YYYY", CultureInfo.InvariantCulture)}{Environment.NewLine}" +
-                                $"Car amount: {carAmount}{Environment.NewLine}" +
-                                $"Money: {money}{Environment.NewLine}" +
-                                $"Favorite char: {favoriteChar}{Environment.NewLine}" +
-                                $"Record #{recordId} is created.");
+            while (!isValid);
         }
 
         private static void Stat(string parameters)
