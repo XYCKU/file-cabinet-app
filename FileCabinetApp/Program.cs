@@ -9,6 +9,7 @@ namespace FileCabinetApp
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
+        private const int ArgsAmount = 6;
 
         private static bool isRunning = true;
 
@@ -18,6 +19,7 @@ namespace FileCabinetApp
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("create", Create),
+            new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("exit", Exit),
@@ -26,9 +28,10 @@ namespace FileCabinetApp
         private static string[][] helpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
-            new string[] { "create", "creates new record", "The 'stat' command creates new record." },
+            new string[] { "create", "creates new record", "The 'create' command creates new record." },
+            new string[] { "edit", "edits exsisting record", "The 'edit' command edits exsisting record." },
             new string[] { "stat", "shows records statistics", "The 'stat' command shows records statistics." },
-            new string[] { "list", "lists all records", "The 'stat' command lists all records." },
+            new string[] { "list", "lists all records", "The 'list' command lists all records." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
@@ -102,85 +105,131 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            const int argsAmount = 6;
+            string[] args;
+            bool isValid = true;
 
-            string[] args = parameters.Split(' ', argsAmount);
-
-            if (args is null)
+            do
             {
-                Console.WriteLine("Arguments are null");
+                if (!isValid)
+                {
+                    Console.WriteLine("Input arguments or q to exit");
+                    var line = Console.ReadLine();
+
+                    if (string.Equals(line, "q", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return;
+                    }
+
+                    parameters = line != null ? line : string.Empty;
+                }
+
+                isValid = true;
+
+                if (parameters is null)
+                {
+                    Console.WriteLine("Invalid arguments");
+                    isValid = false;
+                    continue;
+                }
+
+                args = parameters.Split(' ', ArgsAmount);
+
+                if (args.Length < ArgsAmount)
+                {
+                    Console.WriteLine("Not enough arguments");
+                    isValid = false;
+                    continue;
+                }
+
+                for (int i = 0; i < ArgsAmount; ++i)
+                {
+                    if (string.IsNullOrWhiteSpace(args[i]))
+                    {
+                        Console.WriteLine($"args[{i}] is null or whitespace");
+                        isValid = false;
+                        break;
+                    }
+                }
+
+                if (!isValid)
+                {
+                    continue;
+                }
+
+                args = parameters.Split(' ', ArgsAmount);
+                int recordId;
+                try
+                {
+                    DateTime dt = DateTime.Parse(args[2], new CultureInfo("en-US"));
+                    short carAmount = short.Parse(args[3], CultureInfo.InvariantCulture);
+                    decimal money = decimal.Parse(args[4], CultureInfo.InvariantCulture);
+                    char favoriteChar = char.ToUpperInvariant(char.Parse(args[5]));
+
+                    recordId = fileCabinetService.CreateRecord(args[0], args[1], dt, carAmount, money, favoriteChar);
+
+                    Console.WriteLine($"First name: {args[0]}{Environment.NewLine} " +
+                                                        $"Last name: {args[1]}{Environment.NewLine}" +
+                                                        $"Date of birth: {dt.ToString("MM/dd/YYYY", CultureInfo.InvariantCulture)}{Environment.NewLine}" +
+                                                        $"Car amount: {carAmount}{Environment.NewLine}" +
+                                                        $"Money: {money}{Environment.NewLine}" +
+                                                        $"Favorite char: {favoriteChar}{Environment.NewLine}" +
+                                                        $"Record #{recordId} is created.");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Invalid arguments");
+                    Console.WriteLine(e.Message);
+                    isValid = false;
+                }
+            }
+            while (!isValid);
+        }
+
+        private static void Edit(string parameters)
+        {
+            if (string.IsNullOrWhiteSpace(parameters))
+            {
+                Console.WriteLine("Invalid arguments");
                 return;
             }
-
-            if (args.Length != argsAmount)
-            {
-                Console.WriteLine("Wrong amount of arguments.");
-                return;
-            }
-
-            if (string.IsNullOrEmpty(args[0]))
-            {
-                Console.WriteLine("FirstName is null");
-                return;
-            }
-
-            if (string.IsNullOrEmpty(args[1]))
-            {
-                Console.WriteLine("LastName is null");
-                return;
-            }
-
-            if (string.IsNullOrEmpty(args[2]))
-            {
-                Console.WriteLine("DateOfBirth is null");
-                return;
-            }
-
-            if (string.IsNullOrEmpty(args[3]))
-            {
-                Console.WriteLine("CarAmount is null");
-                return;
-            }
-
-            if (string.IsNullOrEmpty(args[4]))
-            {
-                Console.WriteLine("Money is null");
-                return;
-            }
-
-            if (string.IsNullOrEmpty(args[5]))
-            {
-                Console.WriteLine("FavoriteChar is null");
-                return;
-            }
-
-            DateTime dt;
-            short carAmount;
-            decimal money;
-            char favoriteChar;
 
             try
             {
-                dt = DateTime.ParseExact(args[2], "MM/dd/YYYY", CultureInfo.CurrentCulture);
-                carAmount = short.Parse(args[3], CultureInfo.InvariantCulture);
-                money = decimal.Parse(args[4], CultureInfo.InvariantCulture);
-                favoriteChar = char.Parse(args[5]);
+                int id = int.Parse(parameters, CultureInfo.InvariantCulture);
+
+                if (fileCabinetService.GetStat() <= id)
+                {
+                    Console.WriteLine($"#{id} record is not found.");
+                    return;
+                }
+
+                Console.Write("First name: ");
+                string firstName = Console.ReadLine() ?? string.Empty;
+                Console.Write("Last name: ");
+                string lastName = Console.ReadLine() ?? string.Empty;
+                Console.Write("Date of birth: ");
+                DateTime dt = DateTime.Parse(Console.ReadLine() ?? string.Empty, new CultureInfo("en-US"));
+                Console.Write("Car amount: ");
+                short carAmount = short.Parse(Console.ReadLine() ?? string.Empty, CultureInfo.InvariantCulture);
+                Console.Write("Money: ");
+                decimal money = decimal.Parse(Console.ReadLine() ?? string.Empty, CultureInfo.InvariantCulture);
+                Console.Write("Favorite char: ");
+                char favoriteChar = char.ToUpperInvariant(char.Parse(Console.ReadLine() ?? string.Empty));
+
+                fileCabinetService.EditRecord(id, firstName, lastName, dt, carAmount, money, favoriteChar);
+
+                Console.WriteLine($"First name: {firstName}{Environment.NewLine} " +
+                                                       $"Last name: {lastName}{Environment.NewLine}" +
+                                                       $"Date of birth: {dt.ToString("MM/dd/YYYY", CultureInfo.InvariantCulture)}{Environment.NewLine}" +
+                                                       $"Car amount: {carAmount}{Environment.NewLine}" +
+                                                       $"Money: {money}{Environment.NewLine}" +
+                                                       $"Favorite char: {favoriteChar}{Environment.NewLine}" +
+                                                       $"Record #{id} is updated.");
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return;
             }
-
-            int recordId = fileCabinetService.CreateRecord(args[0], args[1], dt, carAmount, money, favoriteChar);
-
-            Console.WriteLine($"First name: {args[0]}{Environment.NewLine}" +
-                                $"Last name: {args[1]}{Environment.NewLine}" +
-                                $"Date of birth: {dt.ToString("MM/dd/YYYY", CultureInfo.InvariantCulture)}{Environment.NewLine}" +
-                                $"Car amount: {carAmount}{Environment.NewLine}" +
-                                $"Money: {money}{Environment.NewLine}" +
-                                $"Favorite char: {favoriteChar}{Environment.NewLine}" +
-                                $"Record #{recordId} is created.");
         }
 
         private static void Stat(string parameters)
