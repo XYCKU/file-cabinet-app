@@ -104,6 +104,61 @@ namespace FileCabinetApp
             this.list[id].FavoriteChar = favoriteChar;
         }
 
+        public FileCabinetRecord[] FindByFirstName(string firstName)
+        {
+            if (string.IsNullOrWhiteSpace(firstName))
+            {
+                throw new ArgumentNullException(nameof(firstName));
+            }
+
+            List<FileCabinetRecord> result = new List<FileCabinetRecord>();
+
+            for (int i = 0; i < this.list.Count; ++i)
+            {
+                if (string.Equals(this.list[i].FirstName, firstName, StringComparison.OrdinalIgnoreCase))
+                {
+                    result.Add(this.list[i]);
+                }
+            }
+
+            return result.ToArray();
+        }
+
+        public FileCabinetRecord[] FindByLastName(string lastName)
+        {
+            if (string.IsNullOrWhiteSpace(lastName))
+            {
+                throw new ArgumentNullException(nameof(lastName));
+            }
+
+            List<FileCabinetRecord> result = new List<FileCabinetRecord>();
+
+            for (int i = 0; i < this.list.Count; ++i)
+            {
+                if (string.Equals(this.list[i].LastName, lastName, StringComparison.OrdinalIgnoreCase))
+                {
+                    result.Add(this.list[i]);
+                }
+            }
+
+            return result.ToArray();
+        }
+
+        public FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfBirth)
+        {
+            List<FileCabinetRecord> result = new List<FileCabinetRecord>();
+
+            for (int i = 0; i < this.list.Count; ++i)
+            {
+                if (DateTime.Equals(this.list[i].DateOfBirth, dateOfBirth))
+                {
+                    result.Add(this.list[i]);
+                }
+            }
+
+            return result.ToArray();
+        }
+
         public FileCabinetRecord[] GetRecords()
         {
             return this.list.ToArray();
