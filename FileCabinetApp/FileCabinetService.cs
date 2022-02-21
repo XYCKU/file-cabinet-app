@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Globalization;
 
 namespace FileCabinetApp
 {
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
 
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, short carAmount, decimal money, char favoriteChar)
         {
@@ -50,6 +54,27 @@ namespace FileCabinetApp
             };
 
             this.list.Add(record);
+
+            if (!this.firstNameDictionary.ContainsKey(record.FirstName))
+            {
+                this.firstNameDictionary[record.FirstName] = new List<FileCabinetRecord>();
+            }
+
+            if (!this.lastNameDictionary.ContainsKey(record.LastName))
+            {
+                this.lastNameDictionary[record.LastName] = new List<FileCabinetRecord>();
+            }
+
+            string stringDate = record.DateOfBirth.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
+
+            if (!this.dateOfBirthDictionary.ContainsKey(stringDate))
+            {
+                this.dateOfBirthDictionary[stringDate] = new List<FileCabinetRecord>();
+            }
+
+            this.firstNameDictionary[record.FirstName].Add(record);
+            this.lastNameDictionary[record.LastName].Add(record);
+            this.dateOfBirthDictionary[stringDate].Add(record);
 
             return record.Id;
         }

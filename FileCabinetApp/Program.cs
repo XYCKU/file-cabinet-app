@@ -168,7 +168,7 @@ namespace FileCabinetApp
 
                     recordId = fileCabinetService.CreateRecord(args[0], args[1], dt, carAmount, money, favoriteChar);
 
-                    Console.WriteLine($"First name: {args[0]}{Environment.NewLine} " +
+                    Console.WriteLine($"First name: {args[0]}{Environment.NewLine}" +
                                                         $"Last name: {args[1]}{Environment.NewLine}" +
                                                         $"Date of birth: {dt.ToString("MM/dd/YYYY", CultureInfo.InvariantCulture)}{Environment.NewLine}" +
                                                         $"Car amount: {carAmount}{Environment.NewLine}" +
