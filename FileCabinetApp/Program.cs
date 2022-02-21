@@ -20,6 +20,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("edit", Edit),
+            new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("exit", Exit),
@@ -167,7 +168,7 @@ namespace FileCabinetApp
 
                     recordId = fileCabinetService.CreateRecord(args[0], args[1], dt, carAmount, money, favoriteChar);
 
-                    Console.WriteLine($"First name: {args[0]}{Environment.NewLine} " +
+                    Console.WriteLine($"First name: {args[0]}{Environment.NewLine}" +
                                                         $"Last name: {args[1]}{Environment.NewLine}" +
                                                         $"Date of birth: {dt.ToString("MM/dd/YYYY", CultureInfo.InvariantCulture)}{Environment.NewLine}" +
                                                         $"Car amount: {carAmount}{Environment.NewLine}" +
@@ -229,6 +230,67 @@ namespace FileCabinetApp
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+            }
+        }
+
+        private static void Find(string parameters)
+        {
+            if (string.IsNullOrWhiteSpace(parameters))
+            {
+                Console.WriteLine("Invalid arguments");
+                return;
+            }
+
+            string[] args = parameters.Split(' ', 2);
+
+            FileCabinetRecord[] result;
+
+            if (string.IsNullOrWhiteSpace(args[1]))
+            {
+                Console.WriteLine("Invalid search argument");
+                return;
+            }
+
+            string searchText;
+            try
+            {
+                searchText = args[1].Split(new char[] { '"', '"' })[1];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Console.WriteLine("Invalid search argument");
+                return;
+            }
+
+            switch (args[0].ToLowerInvariant())
+            {
+                case "firstname":
+                    result = fileCabinetService.FindByFirstName(searchText);
+                    break;
+                case "lastname":
+                    result = fileCabinetService.FindByLastName(searchText);
+                    break;
+                case "dateofbirth":
+                    DateTime dt;
+                    if (DateTime.TryParseExact(searchText, "yyyy-MMM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
+                    {
+                        result = fileCabinetService.FindByDateOfBirth(dt);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid date");
+                        return;
+                    }
+
+                    break;
+                default:
+                    Console.WriteLine("Unknown search property");
+                    return;
+            }
+
+            for (int i = 0; i < result.Length; ++i)
+            {
+                Console.WriteLine(FormatRecord(result[i]));
             }
         }
 
