@@ -6,11 +6,22 @@ namespace FileCabinetApp
     /// <summary>
     /// Service for creating, editing and storing <see cref="FileCabinetRecord"/>s.
     /// </summary>
-    public class FileCabinetService
+    public abstract class FileCabinetService
     {
-        private const int MinNameLength = 2;
-        private const int MaxNameLength = 60;
-        private static readonly DateTime EarliestDate = new DateTime(1950, 01, 01);
+        /// <summary>
+        /// Minimum length for name field.
+        /// </summary>
+        protected const int MinNameLength = 2;
+
+        /// <summary>
+        /// Maximum length for name field.
+        /// </summary>
+        protected const int MaxNameLength = 60;
+
+        /// <summary>
+        /// The earliest date that can DateOfBirth field has.
+        /// </summary>
+        protected static readonly DateTime EarliestDate = new DateTime(1950, 01, 01);
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -28,51 +39,7 @@ namespace FileCabinetApp
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.FavoriteChar"/> is not a letter of english alphaber.</exception>
         public int CreateRecord(FileCabinetData data)
         {
-            if (data is null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
-
-            if (data.FirstName is null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
-
-            if (data.LastName is null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
-
-            if (data.FirstName.Length < MinNameLength || data.FirstName.Length > MaxNameLength)
-            {
-                throw new ArgumentException($"FirstName.Length is less than {MinNameLength} or greater than {MaxNameLength}", nameof(data));
-            }
-
-            if (data.LastName.Length < MinNameLength || data.LastName.Length > MaxNameLength)
-            {
-                throw new ArgumentException($"lastName.Length is less than {MinNameLength} or greater than {MaxNameLength}", nameof(data));
-            }
-
-            if (data.DateOfBirth < EarliestDate || data.DateOfBirth > DateTime.Now)
-            {
-                throw new ArgumentException($"dateOfBirth is earlier than {EarliestDate.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)} or later than DateTime.Now", nameof(data));
-            }
-
-            if (data.CarAmount < 0)
-            {
-                throw new ArgumentException("carAmount is less than zero", nameof(data));
-            }
-
-            if (data.Money < 0)
-            {
-                throw new ArgumentException("money is less than zero", nameof(data));
-            }
-
-            if (!char.IsLetter(data.FavoriteChar))
-            {
-                throw new ArgumentException($"favoriteChar {data.FavoriteChar} is not a letter", nameof(data));
-            }
-
+            this.ValidateParameters(data);
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
@@ -111,45 +78,7 @@ namespace FileCabinetApp
                 throw new ArgumentException("id cannot be less than 0", nameof(id));
             }
 
-            if (data.FirstName is null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
-
-            if (data.LastName is null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
-
-            if (data.FirstName.Length < MinNameLength || data.FirstName.Length > MaxNameLength)
-            {
-                throw new ArgumentException($"firstName.Length is less than {MinNameLength} or greater than {MaxNameLength}", nameof(data));
-            }
-
-            if (data.LastName.Length < MinNameLength || data.LastName.Length > MaxNameLength)
-            {
-                throw new ArgumentException($"lastName.Length is less than {MinNameLength} or greater than {MaxNameLength}", nameof(data));
-            }
-
-            if (data.DateOfBirth < EarliestDate || data.DateOfBirth > DateTime.Now)
-            {
-                throw new ArgumentException($"dateOfBirth is earlier than {EarliestDate.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)} or later than DateTime.Now", nameof(data));
-            }
-
-            if (data.CarAmount < 0)
-            {
-                throw new ArgumentException("carAmount is less than zero", nameof(data));
-            }
-
-            if (data.Money < 0)
-            {
-                throw new ArgumentException("money is less than zero", nameof(data));
-            }
-
-            if (!char.IsLetter(data.FavoriteChar))
-            {
-                throw new ArgumentException($"favoriteChar {data.FavoriteChar} is not a letter", nameof(data));
-            }
+            this.ValidateParameters(data);
 
             if (id >= this.list.Count)
             {
@@ -244,6 +173,12 @@ namespace FileCabinetApp
         {
             return this.list.Count;
         }
+
+        /// <summary>
+        /// Validates given data parameters.
+        /// </summary>
+        /// <param name="data"><see cref="FileCabinetData"/> parameters.</param>
+        protected abstract void ValidateParameters(FileCabinetData data);
 
         private static FileCabinetRecord[] FindBy<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T parameter)
             where T : notnull
