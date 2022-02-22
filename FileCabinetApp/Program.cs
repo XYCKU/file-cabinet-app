@@ -2,6 +2,9 @@
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Console application class.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Vladislav Sharaev";
@@ -36,6 +39,10 @@ namespace FileCabinetApp
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
+        /// <summary>
+        /// Entry point.
+        /// </summary>
+        /// <param name="args">Console arguments.</param>
         public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -166,15 +173,11 @@ namespace FileCabinetApp
                     decimal money = decimal.Parse(args[4], CultureInfo.InvariantCulture);
                     char favoriteChar = char.ToUpperInvariant(char.Parse(args[5]));
 
-                    recordId = fileCabinetService.CreateRecord(args[0], args[1], dt, carAmount, money, favoriteChar);
+                    var data = new FileCabinetData(args[0], args[1], dt, carAmount, money, favoriteChar);
 
-                    Console.WriteLine($"First name: {args[0]}{Environment.NewLine}" +
-                                                        $"Last name: {args[1]}{Environment.NewLine}" +
-                                                        $"Date of birth: {dt.ToString("MM/dd/YYYY", CultureInfo.InvariantCulture)}{Environment.NewLine}" +
-                                                        $"Car amount: {carAmount}{Environment.NewLine}" +
-                                                        $"Money: {money}{Environment.NewLine}" +
-                                                        $"Favorite char: {favoriteChar}{Environment.NewLine}" +
-                                                        $"Record #{recordId} is created.");
+                    recordId = fileCabinetService.CreateRecord(data);
+
+                    Console.WriteLine(LongFormatRecord(fileCabinetService.GetRecords()[recordId - 1]));
                 }
                 catch (Exception e)
                 {
@@ -206,18 +209,25 @@ namespace FileCabinetApp
 
                 Console.Write("First name: ");
                 string firstName = Console.ReadLine() ?? string.Empty;
+
                 Console.Write("Last name: ");
                 string lastName = Console.ReadLine() ?? string.Empty;
+
                 Console.Write("Date of birth: ");
                 DateTime dt = DateTime.Parse(Console.ReadLine() ?? string.Empty, new CultureInfo("en-US"));
+
                 Console.Write("Car amount: ");
                 short carAmount = short.Parse(Console.ReadLine() ?? string.Empty, CultureInfo.InvariantCulture);
+
                 Console.Write("Money: ");
                 decimal money = decimal.Parse(Console.ReadLine() ?? string.Empty, CultureInfo.InvariantCulture);
+
                 Console.Write("Favorite char: ");
                 char favoriteChar = char.ToUpperInvariant(char.Parse(Console.ReadLine() ?? string.Empty));
 
-                fileCabinetService.EditRecord(id, firstName, lastName, dt, carAmount, money, favoriteChar);
+                var data = new FileCabinetData(firstName, lastName, dt, carAmount, money, favoriteChar);
+
+                fileCabinetService.EditRecord(id, data);
 
                 Console.WriteLine($"First name: {firstName}{Environment.NewLine} " +
                                                        $"Last name: {lastName}{Environment.NewLine}" +
@@ -317,6 +327,14 @@ namespace FileCabinetApp
             $"{record.CarAmount}, " +
             $"{record.Money}, " +
             $"{record.FavoriteChar}";
+
+        private static string LongFormatRecord(FileCabinetRecord record) => $"First name: {record.FirstName}{Environment.NewLine}" +
+            $"Last name: {record.LastName}{Environment.NewLine}" +
+            $"Date of birth: {record.DateOfBirth.ToString("MM/dd/YYYY", CultureInfo.InvariantCulture)}{Environment.NewLine}" +
+            $"Car amount: {record.CarAmount}{Environment.NewLine}" +
+            $"Money: {record.Money}{Environment.NewLine}" +
+            $"Favorite char: {record.Money}{Environment.NewLine}" +
+            $"Record #{record.Id} is created.";
 
         private static void Exit(string parameters)
         {

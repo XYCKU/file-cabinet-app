@@ -4,5 +4,182 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.FileCabinetData">
+            <summary>
+            Represents data for FileCabinetRecord.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetData.#ctor(System.String,System.String,System.DateTime,System.Int16,System.Decimal,System.Char)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetData"/> class.
+            </summary>
+            <param name="firstName">FirstName data.</param>
+            <param name="lastName">LastName data.</param>
+            <param name="dateOfBirth">DateOfBirth data.</param>
+            <param name="carAmount">CarAmount data.</param>
+            <param name="money">Money data.</param>
+            <param name="favoriteChar">FavoriteChar data.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="firstName"/> or <paramref name="lastName"/> is <c>null</c>.</exception>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetData.FirstName">
+            <summary>
+            Gets first name data.
+            </summary>
+            <value>First name <see cref="T:System.String"/>.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetData.LastName">
+            <summary>
+            Gets last name data.
+            </summary>
+            <value>Last name <see cref="T:System.String"/>.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetData.DateOfBirth">
+            <summary>
+            Gets date of birth data.
+            </summary>
+            <value>Date of birth <see cref="T:System.DateTime"/>.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetData.CarAmount">
+            <summary>
+            Gets car amount data.
+            </summary>
+            <value>Car amount <see cref="T:System.Int32"/>.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetData.Money">
+            <summary>
+            Gets money data.
+            </summary>
+            <value>Money <see cref="T:System.Decimal"/>.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetData.FavoriteChar">
+            <summary>
+            Gets favorite char data.
+            </summary>
+            <value>Favorite char <see cref="T:System.Char"/>.</value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecord">
+            <summary>
+            Data class for storing record information.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Id">
+            <summary>
+            Gets or sets id of <see cref="T:FileCabinetApp.FileCabinetRecord"/>.
+            </summary>
+            <value>The id of the <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.FirstName">
+            <summary>
+            Gets or sets first name of <see cref="T:FileCabinetApp.FileCabinetRecord"/>.
+            </summary>
+            <value>The fisrt name of the <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.LastName">
+            <summary>
+            Gets or sets last name of <see cref="T:FileCabinetApp.FileCabinetRecord"/>.
+            </summary>
+            <value>The last name of the <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
+            <summary>
+            Gets or sets date of birth of <see cref="T:FileCabinetApp.FileCabinetRecord"/>.
+            </summary>
+            <value>Date of birth of the <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.CarAmount">
+            <summary>
+            Gets or sets car amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/>.
+            </summary>
+            <value>Car amount of the <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Money">
+            <summary>
+            Gets or sets money amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/>.
+            </summary>
+            <value>Amount of money of the <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.FavoriteChar">
+            <summary>
+            Gets or sets favorite char of <see cref="T:FileCabinetApp.FileCabinetRecord"/>.
+            </summary>
+            <value>The favorite char of the <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetService">
+            <summary>
+            Service for creating, editing and storing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.FileCabinetData)">
+            <summary>
+            Creates a new <see cref="T:FileCabinetApp.FileCabinetRecord"/> instance.
+            </summary>
+            <param name="data">Data of a person.</param>
+            <returns>Id of a new <see cref="T:FileCabinetApp.FileCabinetRecord"/> instance, created with given parameters.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="data.FirstName.FirstName"/> or <paramref name="data.LastName.LastName"/> is <c>null</c> or whitespace.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FirstName.FirstName"/>.Length or <paramref name="data.LastName.LastName"/>.Length is less than 2 or greater than 60.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="T:System.DateTime"/>.Now.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> or <paramref name="data.Money.Money"/> is less than zero.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a letter of english alphaber.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,FileCabinetApp.FileCabinetData)">
+            <summary>
+            Edits existing <see cref="T:FileCabinetApp.FileCabinetRecord"/> instance.
+            </summary>
+            <param name="id">Id of an instance in list.</param>
+            <param name="data"><see cref="T:FileCabinetApp.FileCabinetData"/> with new <see cref="T:FileCabinetApp.FileCabinetRecord"/> information.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="data.FirstName.FirstName"/> or <paramref name="data.LastName.LastName"/> is <c>null</c> or whitespace.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="id"/>is less than zero or record doesn't exist.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FirstName.FirstName"/>.Length or <paramref name="data.LastName.LastName"/>.Length is less than 2 or greater than 60.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="T:System.DateTime"/>.Now.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> or <paramref name="data.Money.Money"/> is less than zero.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a letter of english alphaber.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">
+            <summary>
+            Searching for existing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s with given <paramref name="firstName"/>.
+            </summary>
+            <param name="firstName">Search parameter.</param>
+            <returns>Array of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances, matching the search parameter.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="firstName"/> is <c>null</c> or whitespace.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByLastName(System.String)">
+            <summary>
+            Searching for existing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s with given <paramref name="lastName"/>.
+            </summary>
+            <param name="lastName">Search parameter.</param>
+            <returns>Array of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances, matching the search parameter.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="lastName"/> is <c>null</c> or whitespace.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByDateOfBirth(System.DateTime)">
+            <summary>
+            Searching for existing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s with given <paramref name="dateOfBirth"/>.
+            </summary>
+            <param name="dateOfBirth">Search parameter.</param>
+            <returns>Array of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances, matching the search parameter.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="dateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="T:System.DateTime"/>.Now.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
+            <summary>
+            Get all <see cref="T:FileCabinetApp.FileCabinetRecord"/>s.
+            </summary>
+            <returns>Array of all <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.GetStat">
+            <summary>
+            Get amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/>s.
+            </summary>
+            <returns>Amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances in list.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Program">
+            <summary>
+            Console application class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Program.Main(System.String[])">
+            <summary>
+            Entry point.
+            </summary>
+            <param name="args">Console arguments.</param>
+        </member>
     </members>
 </doc>
