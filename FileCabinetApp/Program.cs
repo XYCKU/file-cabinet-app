@@ -45,8 +45,10 @@ namespace FileCabinetApp
         /// <param name="args">Console arguments.</param>
         public static void Main(string[] args)
         {
+            ProcessArguments(args);
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
+            Console.WriteLine($"Using {GetCabinetServiceType(fileCabinetService)} validation rules.");
             Console.WriteLine();
 
             do
@@ -340,6 +342,57 @@ namespace FileCabinetApp
         {
             Console.WriteLine("Exiting an application...");
             isRunning = false;
+        }
+
+        private static FileCabinetService GetCabinetService(string name) => name switch
+        {
+            "custom" => new FileCabinetCustomService(),
+            _ => fileCabinetService,
+        };
+
+        private static string GetCabinetServiceType(FileCabinetService service) => service switch
+        {
+            FileCabinetCustomService fcs => "custom",
+            FileCabinetDefaultService fcs => "default",
+            _ => string.Empty,
+        };
+
+        private static void ProcessArguments(string[] args)
+        {
+            if (args == null)
+            {
+                fileCabinetService = GetCabinetService("default");
+                return;
+            }
+
+            Dictionary<string, Action> arguments = new Dictionary<string, Action>()
+            {
+                { "--validation-rules=default", () => { fileCabinetService = GetCabinetService("default"); } },
+                { "--validation-rules=custom", () => { fileCabinetService = GetCabinetService("custom"); } },
+            };
+
+            Dictionary<string, Action<string>> valueArguments = new Dictionary<string, Action<string>>()
+            {
+                { "-v", (string value) => { fileCabinetService = GetCabinetService(value); } },
+            };
+
+            for (int i = 0; i < args.Length; ++i)
+            {
+                string lowerCaseArgument = args[i].ToLowerInvariant();
+
+                if (arguments.ContainsKey(lowerCaseArgument))
+                {
+                    arguments[lowerCaseArgument]();
+                }
+                else if (valueArguments.ContainsKey(lowerCaseArgument))
+                {
+                    valueArguments[lowerCaseArgument](args[++i]);
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid argument {args[i]}");
+                }
+            }
         }
     }
 }
