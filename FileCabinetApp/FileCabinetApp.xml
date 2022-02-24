@@ -243,6 +243,58 @@
             </summary>
             <returns>Amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances in list.</returns>
         </member>
+        <member name="T:FileCabinetApp.IFileCabinetService">
+            <summary>
+            Interface for FileCabinetService.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord(FileCabinetApp.FileCabinetData)">
+            <summary>
+            Creates a new <see cref="T:FileCabinetApp.FileCabinetRecord"/> instance.
+            </summary>
+            <param name="data">Data of a person.</param>
+            <returns>Id of a new <see cref="T:FileCabinetApp.FileCabinetRecord"/> instance, created with given parameters.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.EditRecord(System.Int32,FileCabinetApp.FileCabinetData)">
+            <summary>
+            Edits existing <see cref="T:FileCabinetApp.FileCabinetRecord"/> instance.
+            </summary>
+            <param name="id">Id of an instance in list.</param>
+            <param name="data"><see cref="T:FileCabinetApp.FileCabinetData"/> with new <see cref="T:FileCabinetApp.FileCabinetRecord"/> information.</param>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByFirstName(System.String)">
+            <summary>
+            Searching for existing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s with given <paramref name="firstName"/>.
+            </summary>
+            <param name="firstName">Search parameter.</param>
+            <returns>Array of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances, matching the search parameter.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByLastName(System.String)">
+            <summary>
+            Searching for existing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s with given <paramref name="lastName"/>.
+            </summary>
+            <param name="lastName">Search parameter.</param>
+            <returns>Array of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances, matching the search parameter.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByDateOfBirth(System.DateTime)">
+            <summary>
+            Searching for existing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s with given <paramref name="dateOfBirth"/>.
+            </summary>
+            <param name="dateOfBirth">Search parameter.</param>
+            <returns>Array of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances, matching the search parameter.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.GetRecords">
+            <summary>
+            Get all <see cref="T:FileCabinetApp.FileCabinetRecord"/>s.
+            </summary>
+            <returns>Array of all <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.GetStat">
+            <summary>
+            Get amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/>s.
+            </summary>
+            <returns>Amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances in list.</returns>
+        </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>
             Record Validator interface.

@@ -7,7 +7,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Service for creating, editing and storing <see cref="FileCabinetRecord"/>s.
     /// </summary>
-    public class FileCabinetService
+    public class FileCabinetService : IFileCabinetService
     {
         /// <summary>
         /// The earliest date that can DateOfBirth field has.
