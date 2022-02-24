@@ -1,197 +1,222 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Globalization;
 
 namespace FileCabinetApp
 {
-    public class FileCabinetService
+    /// <summary>
+    /// Service for creating, editing and storing <see cref="FileCabinetRecord"/>s.
+    /// </summary>
+    public class FileCabinetService : IFileCabinetService
     {
+        /// <summary>
+        /// The earliest date that can DateOfBirth field has.
+        /// </summary>
+        protected static readonly DateTime EarliestDate = new DateTime(1950, 01, 01);
+
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-        private readonly Dictionary<string, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
-        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth, short carAmount, decimal money, char favoriteChar)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetService"/> class with validator.
+        /// </summary>
+        /// <param name="validator">Validator.</param>
+        public FileCabinetService(IRecordValidator validator)
         {
-            if (firstName.Length < 2 || firstName.Length > 60)
+            if (validator is null)
             {
-                throw new ArgumentException("firstName.Length is less than 2 or greater than 60", nameof(firstName));
+                throw new ArgumentNullException(nameof(validator));
             }
 
-            if (lastName.Length < 2 || lastName.Length > 60)
-            {
-                throw new ArgumentException("lastName.Length is less than 2 or greater than 60", nameof(lastName));
-            }
+            this.Validator = validator;
+        }
 
-            if (dateOfBirth < new DateTime(1950, 1, 1) || dateOfBirth > DateTime.Now)
-            {
-                throw new ArgumentException("dateOfBirth is earlier than 01-Jan-1950 or greater than DateTime.Now", nameof(dateOfBirth));
-            }
+        /// <inheritdoc/>
+        public IRecordValidator Validator { get; }
 
-            if (carAmount < 0)
-            {
-                throw new ArgumentException("carAmount is less than zero", nameof(carAmount));
-            }
-
-            if (money < 0)
-            {
-                throw new ArgumentException("money is less than zero", nameof(money));
-            }
-
-            if (!char.IsLetter(favoriteChar))
-            {
-                throw new ArgumentException($"favoriteChar {favoriteChar} is not a letter", nameof(favoriteChar));
-            }
-
+        /// <summary>
+        /// Creates a new <see cref="FileCabinetRecord"/> instance.
+        /// </summary>
+        /// <param name="data">Data of a person.</param>
+        /// <returns>Id of a new <see cref="FileCabinetRecord"/> instance, created with given parameters.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="data.FirstName"/> or <paramref name="data.LastName"/> is <c>null</c> or whitespace.</exception>
+        /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.FirstName"/>.Length or <paramref name="data.LastName"/>.Length is less than 2 or greater than 60.</exception>
+        /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="DateTime"/>.Now.</exception>
+        /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.CarAmount"/> or <paramref name="data.Money"/> is less than zero.</exception>
+        /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.FavoriteChar"/> is not a letter of english alphaber.</exception>
+        public int CreateRecord(FileCabinetData data)
+        {
+            this.Validator.ValidateParameters(data);
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
-                FirstName = firstName,
-                LastName = lastName,
-                DateOfBirth = dateOfBirth,
-                CarAmount = carAmount,
-                Money = money,
-                FavoriteChar = favoriteChar,
+                FirstName = data.FirstName,
+                LastName = data.LastName,
+                DateOfBirth = data.DateOfBirth,
+                CarAmount = data.CarAmount,
+                Money = data.Money,
+                FavoriteChar = data.FavoriteChar,
             };
 
             this.list.Add(record);
 
-            if (!this.firstNameDictionary.ContainsKey(record.FirstName))
-            {
-                this.firstNameDictionary[record.FirstName] = new List<FileCabinetRecord>();
-            }
-
-            if (!this.lastNameDictionary.ContainsKey(record.LastName))
-            {
-                this.lastNameDictionary[record.LastName] = new List<FileCabinetRecord>();
-            }
-
-            string stringDate = record.DateOfBirth.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
-
-            if (!this.dateOfBirthDictionary.ContainsKey(stringDate))
-            {
-                this.dateOfBirthDictionary[stringDate] = new List<FileCabinetRecord>();
-            }
-
-            this.firstNameDictionary[record.FirstName].Add(record);
-            this.lastNameDictionary[record.LastName].Add(record);
-            this.dateOfBirthDictionary[stringDate].Add(record);
+            AddToDictionary(this.firstNameDictionary, record.FirstName.ToUpperInvariant(), record);
+            AddToDictionary(this.lastNameDictionary, record.LastName.ToUpperInvariant(), record);
+            AddToDictionary(this.dateOfBirthDictionary, record.DateOfBirth, record);
 
             return record.Id;
         }
 
-        public void EditRecord(int id, string firstName, string lastName, DateTime dateOfBirth, short carAmount, decimal money, char favoriteChar)
+        /// <summary>
+        /// Edits existing <see cref="FileCabinetRecord"/> instance.
+        /// </summary>
+        /// <param name="id">Id of an instance in list.</param>
+        /// <param name="data"><see cref="FileCabinetData"/> with new <see cref="FileCabinetRecord"/> information.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="data.FirstName"/> or <paramref name="data.LastName"/> is <c>null</c> or whitespace.</exception>
+        /// <exception cref="System.ArgumentException">Thrown when <paramref name="id"/>is less than zero or record doesn't exist.</exception>
+        /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.FirstName"/>.Length or <paramref name="data.LastName"/>.Length is less than 2 or greater than 60.</exception>
+        /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="DateTime"/>.Now.</exception>
+        /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.CarAmount"/> or <paramref name="data.Money"/> is less than zero.</exception>
+        /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.FavoriteChar"/> is not a letter of english alphaber.</exception>
+        public void EditRecord(int id, FileCabinetData data)
         {
             if (id < 0)
             {
                 throw new ArgumentException("id cannot be less than 0", nameof(id));
             }
 
-            if (firstName.Length < 2 || firstName.Length > 60)
-            {
-                throw new ArgumentException("firstName.Length is less than 2 or greater than 60", nameof(firstName));
-            }
-
-            if (lastName.Length < 2 || lastName.Length > 60)
-            {
-                throw new ArgumentException("lastName.Length is less than 2 or greater than 60", nameof(lastName));
-            }
-
-            if (dateOfBirth < new DateTime(1950, 1, 1) || dateOfBirth > DateTime.Now)
-            {
-                throw new ArgumentException("dateOfBirth is earlier than 01-Jan-1950 or greater than DateTime.Now", nameof(dateOfBirth));
-            }
-
-            if (carAmount < 0)
-            {
-                throw new ArgumentException("carAmount is less than zero", nameof(carAmount));
-            }
-
-            if (money < 0)
-            {
-                throw new ArgumentException("money is less than zero", nameof(money));
-            }
-
-            if (!char.IsLetter(favoriteChar))
-            {
-                throw new ArgumentException($"favoriteChar {favoriteChar} is not a letter", nameof(favoriteChar));
-            }
+            this.Validator.ValidateParameters(data);
 
             if (id >= this.list.Count)
             {
                 throw new ArgumentException($"#{id} record is not found.", nameof(id));
             }
 
-            this.list[id].FirstName = firstName;
-            this.list[id].LastName = lastName;
-            this.list[id].DateOfBirth = dateOfBirth;
-            this.list[id].CarAmount = carAmount;
-            this.list[id].Money = money;
-            this.list[id].FavoriteChar = favoriteChar;
+            if (!string.Equals(this.list[id].FirstName, data.FirstName, StringComparison.OrdinalIgnoreCase))
+            {
+                RemoveFromDictionary(this.firstNameDictionary, this.list[id].FirstName.ToUpperInvariant(), this.list[id]);
+                this.list[id].FirstName = data.FirstName;
+                AddToDictionary(this.firstNameDictionary, this.list[id].FirstName.ToUpperInvariant(), this.list[id]);
+            }
+
+            if (!string.Equals(this.list[id].LastName, data.LastName, StringComparison.OrdinalIgnoreCase))
+            {
+                RemoveFromDictionary(this.lastNameDictionary, this.list[id].LastName.ToUpperInvariant(), this.list[id]);
+                this.list[id].LastName = data.LastName;
+                AddToDictionary(this.lastNameDictionary, this.list[id].LastName.ToUpperInvariant(), this.list[id]);
+            }
+
+            if (this.list[id].DateOfBirth != data.DateOfBirth)
+            {
+                RemoveFromDictionary(this.dateOfBirthDictionary, this.list[id].DateOfBirth, this.list[id]);
+                this.list[id].DateOfBirth = data.DateOfBirth;
+                AddToDictionary(this.dateOfBirthDictionary, this.list[id].DateOfBirth, this.list[id]);
+            }
+
+            this.list[id].CarAmount = data.CarAmount;
+            this.list[id].Money = data.Money;
+            this.list[id].FavoriteChar = data.FavoriteChar;
         }
 
-        public FileCabinetRecord[] FindByFirstName(string firstName)
+        /// <summary>
+        /// Searching for existing <see cref="FileCabinetRecord"/>s with given <paramref name="firstName"/>.
+        /// </summary>
+        /// <param name="firstName">Search parameter.</param>
+        /// <returns>Array of <see cref="FileCabinetRecord"/> instances, matching the search parameter.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="firstName"/> is <c>null</c> or whitespace.</exception>
+        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (string.IsNullOrWhiteSpace(firstName))
             {
                 throw new ArgumentNullException(nameof(firstName));
             }
 
-            List<FileCabinetRecord> result = new List<FileCabinetRecord>();
-
-            for (int i = 0; i < this.list.Count; ++i)
-            {
-                if (string.Equals(this.list[i].FirstName, firstName, StringComparison.OrdinalIgnoreCase))
-                {
-                    result.Add(this.list[i]);
-                }
-            }
-
-            return result.ToArray();
+            return FindBy(this.firstNameDictionary, firstName.ToUpperInvariant());
         }
 
-        public FileCabinetRecord[] FindByLastName(string lastName)
+        /// <summary>
+        /// Searching for existing <see cref="FileCabinetRecord"/>s with given <paramref name="lastName"/>.
+        /// </summary>
+        /// <param name="lastName">Search parameter.</param>
+        /// <returns>Array of <see cref="FileCabinetRecord"/> instances, matching the search parameter.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="lastName"/> is <c>null</c> or whitespace.</exception>
+        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
             if (string.IsNullOrWhiteSpace(lastName))
             {
                 throw new ArgumentNullException(nameof(lastName));
             }
 
-            List<FileCabinetRecord> result = new List<FileCabinetRecord>();
+            return FindBy(this.lastNameDictionary, lastName.ToUpperInvariant());
+        }
 
-            for (int i = 0; i < this.list.Count; ++i)
+        /// <summary>
+        /// Searching for existing <see cref="FileCabinetRecord"/>s with given <paramref name="dateOfBirth"/>.
+        /// </summary>
+        /// <param name="dateOfBirth">Search parameter.</param>
+        /// <returns>Array of <see cref="FileCabinetRecord"/> instances, matching the search parameter.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="dateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="DateTime"/>.Now.</exception>
+        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        {
+            if (dateOfBirth < EarliestDate || dateOfBirth > DateTime.Now)
             {
-                if (string.Equals(this.list[i].LastName, lastName, StringComparison.OrdinalIgnoreCase))
-                {
-                    result.Add(this.list[i]);
-                }
+                throw new ArgumentException($"dateOfBirth is earlier than {EarliestDate.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)} or greater than DateTime.Now", nameof(dateOfBirth));
             }
 
-            return result.ToArray();
+            return FindBy(this.dateOfBirthDictionary, dateOfBirth);
         }
 
-        public FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfBirth)
+        /// <summary>
+        /// Get all <see cref="FileCabinetRecord"/>s.
+        /// </summary>
+        /// <returns>Array of all <see cref="FileCabinetRecord"/> instances.</returns>
+        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            List<FileCabinetRecord> result = new List<FileCabinetRecord>();
-
-            for (int i = 0; i < this.list.Count; ++i)
-            {
-                if (DateTime.Equals(this.list[i].DateOfBirth, dateOfBirth))
-                {
-                    result.Add(this.list[i]);
-                }
-            }
-
-            return result.ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(this.list);
         }
 
-        public FileCabinetRecord[] GetRecords()
-        {
-            return this.list.ToArray();
-        }
-
+        /// <summary>
+        /// Get amount of <see cref="FileCabinetRecord"/>s.
+        /// </summary>
+        /// <returns>Amount of <see cref="FileCabinetRecord"/> instances in list.</returns>
         public int GetStat()
         {
             return this.list.Count;
+        }
+
+        private static ReadOnlyCollection<FileCabinetRecord> FindBy<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T parameter)
+            where T : notnull
+        {
+            if (!dictionary.ContainsKey(parameter))
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(dictionary[parameter]);
+        }
+
+        private static void AddToDictionary<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T value, FileCabinetRecord record)
+            where T : notnull
+        {
+            if (!dictionary.ContainsKey(value))
+            {
+                dictionary[value] = new List<FileCabinetRecord>();
+            }
+
+            dictionary[value].Add(record);
+        }
+
+        private static void RemoveFromDictionary<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T value, FileCabinetRecord record)
+            where T : notnull
+        {
+            if (!dictionary.ContainsKey(value))
+            {
+                return;
+            }
+
+            dictionary[value].Remove(record);
         }
     }
 }
