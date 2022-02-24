@@ -4,10 +4,25 @@ using System.Globalization;
 namespace FileCabinetApp
 {
     /// <summary>
-    /// Custom file cabinet service.
+    /// Default validator for <see cref="FileCabinetData"/>.
     /// </summary>
-    public class FileCabinetCustomService : FileCabinetService
+    public class DefaultValidator : IRecordValidator
     {
+        /// <summary>
+        /// Minimum length for name field.
+        /// </summary>
+        protected const int MinNameLength = 2;
+
+        /// <summary>
+        /// Maximum length for name field.
+        /// </summary>
+        protected const int MaxNameLength = 60;
+
+        /// <summary>
+        /// The earliest date that can DateOfBirth field has.
+        /// </summary>
+        protected static readonly DateTime EarliestDate = new DateTime(1950, 01, 01);
+
         /// <summary>
         /// Validates given data parameters.
         /// </summary>
@@ -16,8 +31,8 @@ namespace FileCabinetApp
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.FirstName"/>.Length or <paramref name="data.LastName"/>.Length is less than 2 or greater than 60.</exception>
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="DateTime"/>.Now.</exception>
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.CarAmount"/> or <paramref name="data.Money"/> is less than zero.</exception>
-        /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.FavoriteChar"/> is not a digit.</exception>
-        protected override void ValidateParameters(FileCabinetData data)
+        /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.FavoriteChar"/> is not a letter of english alphabet.</exception>
+        public void ValidateParameters(FileCabinetData data)
         {
             if (data is null)
             {
@@ -59,9 +74,9 @@ namespace FileCabinetApp
                 throw new ArgumentException("money is less than zero", nameof(data));
             }
 
-            if (!char.IsDigit(data.FavoriteChar))
+            if (!char.IsLetter(data.FavoriteChar))
             {
-                throw new ArgumentException($"favoriteChar {data.FavoriteChar} is not a digit", nameof(data));
+                throw new ArgumentException($"favoriteChar {data.FavoriteChar} is not a letter", nameof(data));
             }
         }
     }

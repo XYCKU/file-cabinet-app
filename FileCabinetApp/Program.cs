@@ -16,7 +16,7 @@ namespace FileCabinetApp
 
         private static bool isRunning = true;
 
-        private static FileCabinetService fileCabinetService = new FileCabinetDefaultService();
+        private static FileCabinetService fileCabinetService = new FileCabinetService(new DefaultValidator());
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -48,7 +48,7 @@ namespace FileCabinetApp
             ProcessArguments(args);
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
-            Console.WriteLine($"Using {GetCabinetServiceType(fileCabinetService)} validation rules.");
+            Console.WriteLine($"Using {fileCabinetService.ToString()} validation rules.");
             Console.WriteLine();
 
             do
@@ -346,15 +346,8 @@ namespace FileCabinetApp
 
         private static FileCabinetService GetCabinetService(string name) => name switch
         {
-            "custom" => new FileCabinetCustomService(),
-            _ => fileCabinetService,
-        };
-
-        private static string GetCabinetServiceType(FileCabinetService service) => service switch
-        {
-            FileCabinetCustomService fcs => "custom",
-            FileCabinetDefaultService fcs => "default",
-            _ => string.Empty,
+            "custom" => new FileCabinetService(new CustomValidator()),
+            _ => new FileCabinetService(new DefaultValidator()),
         };
 
         private static void ProcessArguments(string[] args)
@@ -367,7 +360,6 @@ namespace FileCabinetApp
 
             Dictionary<string, Action> arguments = new Dictionary<string, Action>()
             {
-                { "--validation-rules=default", () => { fileCabinetService = GetCabinetService("default"); } },
                 { "--validation-rules=custom", () => { fileCabinetService = GetCabinetService("custom"); } },
             };
 
@@ -392,6 +384,11 @@ namespace FileCabinetApp
                 {
                     Console.WriteLine($"Invalid argument {args[i]}");
                 }
+            }
+
+            if (fileCabinetService is null)
+            {
+                fileCabinetService = GetCabinetService("default");
             }
         }
     }

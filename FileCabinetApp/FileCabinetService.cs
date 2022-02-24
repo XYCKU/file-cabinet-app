@@ -6,26 +6,32 @@ namespace FileCabinetApp
     /// <summary>
     /// Service for creating, editing and storing <see cref="FileCabinetRecord"/>s.
     /// </summary>
-    public abstract class FileCabinetService
+    public class FileCabinetService
     {
-        /// <summary>
-        /// Minimum length for name field.
-        /// </summary>
-        protected const int MinNameLength = 2;
-
-        /// <summary>
-        /// Maximum length for name field.
-        /// </summary>
-        protected const int MaxNameLength = 60;
-
         /// <summary>
         /// The earliest date that can DateOfBirth field has.
         /// </summary>
         protected static readonly DateTime EarliestDate = new DateTime(1950, 01, 01);
+
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+        private readonly IRecordValidator validator;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetService"/> class with validator.
+        /// </summary>
+        /// <param name="validator">Validator.</param>
+        public FileCabinetService(IRecordValidator validator)
+        {
+            if (validator is null)
+            {
+                throw new ArgumentNullException(nameof(validator));
+            }
+
+            this.validator = validator;
+        }
 
         /// <summary>
         /// Creates a new <see cref="FileCabinetRecord"/> instance.
@@ -39,7 +45,7 @@ namespace FileCabinetApp
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.FavoriteChar"/> is not a letter of english alphaber.</exception>
         public int CreateRecord(FileCabinetData data)
         {
-            this.ValidateParameters(data);
+            this.validator.ValidateParameters(data);
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
@@ -78,7 +84,7 @@ namespace FileCabinetApp
                 throw new ArgumentException("id cannot be less than 0", nameof(id));
             }
 
-            this.ValidateParameters(data);
+            this.validator.ValidateParameters(data);
 
             if (id >= this.list.Count)
             {
@@ -173,12 +179,6 @@ namespace FileCabinetApp
         {
             return this.list.Count;
         }
-
-        /// <summary>
-        /// Validates given data parameters.
-        /// </summary>
-        /// <param name="data"><see cref="FileCabinetData"/> parameters.</param>
-        protected abstract void ValidateParameters(FileCabinetData data);
 
         private static FileCabinetRecord[] FindBy<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T parameter)
             where T : notnull

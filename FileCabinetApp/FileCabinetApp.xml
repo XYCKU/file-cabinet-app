@@ -4,12 +4,27 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
-        <member name="T:FileCabinetApp.FileCabinetCustomService">
+        <member name="T:FileCabinetApp.CustomValidator">
             <summary>
-            Custom file cabinet service.
+            Default validator for <see cref="T:FileCabinetApp.FileCabinetData"/>.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateParameters(FileCabinetApp.FileCabinetData)">
+        <member name="F:FileCabinetApp.CustomValidator.MinNameLength">
+            <summary>
+            Minimum length for name field.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.CustomValidator.MaxNameLength">
+            <summary>
+            Maximum length for name field.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.CustomValidator.EarliestDate">
+            <summary>
+            The earliest date that can DateOfBirth field has.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CustomValidator.ValidateParameters(FileCabinetApp.FileCabinetData)">
             <summary>
             Validates given data parameters.
             </summary>
@@ -19,6 +34,37 @@
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="T:System.DateTime"/>.Now.</exception>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> or <paramref name="data.Money.Money"/> is less than zero.</exception>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a digit.</exception>
+        </member>
+        <member name="T:FileCabinetApp.DefaultValidator">
+            <summary>
+            Default validator for <see cref="T:FileCabinetApp.FileCabinetData"/>.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.DefaultValidator.MinNameLength">
+            <summary>
+            Minimum length for name field.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.DefaultValidator.MaxNameLength">
+            <summary>
+            Maximum length for name field.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.DefaultValidator.EarliestDate">
+            <summary>
+            The earliest date that can DateOfBirth field has.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.DefaultValidator.ValidateParameters(FileCabinetApp.FileCabinetData)">
+            <summary>
+            Validates given data parameters.
+            </summary>
+            <param name="data"><see cref="T:FileCabinetApp.FileCabinetData"/> parameters.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="data.FirstName.FirstName"/> or <paramref name="data.LastName.LastName"/> is <c>null</c> or whitespace.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FirstName.FirstName"/>.Length or <paramref name="data.LastName.LastName"/>.Length is less than 2 or greater than 60.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="T:System.DateTime"/>.Now.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> or <paramref name="data.Money.Money"/> is less than zero.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a letter of english alphabet.</exception>
         </member>
         <member name="T:FileCabinetApp.FileCabinetData">
             <summary>
@@ -73,22 +119,6 @@
             </summary>
             <value>Favorite char <see cref="T:System.Char"/>.</value>
         </member>
-        <member name="T:FileCabinetApp.FileCabinetDefaultService">
-            <summary>
-            Default file cabinet service.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateParameters(FileCabinetApp.FileCabinetData)">
-            <summary>
-            Validates given data parameters.
-            </summary>
-            <param name="data"><see cref="T:FileCabinetApp.FileCabinetData"/> parameters.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="data.FirstName.FirstName"/> or <paramref name="data.LastName.LastName"/> is <c>null</c> or whitespace.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FirstName.FirstName"/>.Length or <paramref name="data.LastName.LastName"/>.Length is less than 2 or greater than 60.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="T:System.DateTime"/>.Now.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> or <paramref name="data.Money.Money"/> is less than zero.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a letter of english alphabet.</exception>
-        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Data class for storing record information.
@@ -141,20 +171,16 @@
             Service for creating, editing and storing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s.
             </summary>
         </member>
-        <member name="F:FileCabinetApp.FileCabinetService.MinNameLength">
-            <summary>
-            Minimum length for name field.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FileCabinetService.MaxNameLength">
-            <summary>
-            Maximum length for name field.
-            </summary>
-        </member>
         <member name="F:FileCabinetApp.FileCabinetService.EarliestDate">
             <summary>
             The earliest date that can DateOfBirth field has.
             </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.#ctor(FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetService"/> class with validator.
+            </summary>
+            <param name="validator">Validator.</param>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.FileCabinetData)">
             <summary>
@@ -217,7 +243,12 @@
             </summary>
             <returns>Amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances in list.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.ValidateParameters(FileCabinetApp.FileCabinetData)">
+        <member name="T:FileCabinetApp.IRecordValidator">
+            <summary>
+            Record Validator interface.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateParameters(FileCabinetApp.FileCabinetData)">
             <summary>
             Validates given data parameters.
             </summary>
