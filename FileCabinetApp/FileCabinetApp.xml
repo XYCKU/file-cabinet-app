@@ -30,10 +30,36 @@
             </summary>
             <param name="data"><see cref="T:FileCabinetApp.FileCabinetData"/> parameters.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="data.FirstName.FirstName"/> or <paramref name="data.LastName.LastName"/> is <c>null</c> or whitespace.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FirstName.FirstName"/>.Length or <paramref name="data.LastName.LastName"/>.Length is less than 2 or greater than 60.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="T:System.DateTime"/>.Now.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FirstName.Length.FirstName.Length"/> or <paramref name="data.LastName.Length.LastName.Length"/> is less than 2 or greater than 60.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="P:System.DateTime.Now"/>.</exception>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> or <paramref name="data.Money.Money"/> is less than zero.</exception>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a digit.</exception>
+        </member>
+        <member name="M:FileCabinetApp.CustomValidator.ValidateFirstName(System.String)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="firstName"/> is <c>null</c> or whitespace.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="firstName.Length.Length"/> is less than 2 or greater than 60.</exception>
+        </member>
+        <member name="M:FileCabinetApp.CustomValidator.ValidateLastName(System.String)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="lastName"/> is <c>null</c> or whitespace.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="lastName.Length.Length"/> is less than 2 or greater than 60.</exception>
+        </member>
+        <member name="M:FileCabinetApp.CustomValidator.ValidateDateOfBirth(System.DateTime)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="dateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="P:System.DateTime.Now"/>.</exception>
+        </member>
+        <member name="M:FileCabinetApp.CustomValidator.ValidateCarAmount(System.Decimal)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="carAmount"/> is less than zero.</exception>
+        </member>
+        <member name="M:FileCabinetApp.CustomValidator.ValidateMoney(System.Decimal)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="money"/> is less than zero.</exception>
+        </member>
+        <member name="M:FileCabinetApp.CustomValidator.ValidateFavoriteChar(System.Char)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="favoriteChar"/> is not a letter of english alphabet.</exception>
         </member>
         <member name="T:FileCabinetApp.DefaultValidator">
             <summary>
@@ -61,10 +87,36 @@
             </summary>
             <param name="data"><see cref="T:FileCabinetApp.FileCabinetData"/> parameters.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="data.FirstName.FirstName"/> or <paramref name="data.LastName.LastName"/> is <c>null</c> or whitespace.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FirstName.FirstName"/>.Length or <paramref name="data.LastName.LastName"/>.Length is less than 2 or greater than 60.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="T:System.DateTime"/>.Now.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FirstName.Length.FirstName.Length"/> or <paramref name="data.LastName.Length.LastName.Length"/> is less than 2 or greater than 60.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="P:System.DateTime.Now"/>.</exception>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> or <paramref name="data.Money.Money"/> is less than zero.</exception>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a letter of english alphabet.</exception>
+        </member>
+        <member name="M:FileCabinetApp.DefaultValidator.ValidateFirstName(System.String)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="firstName"/> is <c>null</c> or whitespace.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="firstName.Length.Length"/> is less than 2 or greater than 60.</exception>
+        </member>
+        <member name="M:FileCabinetApp.DefaultValidator.ValidateLastName(System.String)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="lastName"/> is <c>null</c> or whitespace.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="lastName.Length.Length"/> is less than 2 or greater than 60.</exception>
+        </member>
+        <member name="M:FileCabinetApp.DefaultValidator.ValidateDateOfBirth(System.DateTime)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="dateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="P:System.DateTime.Now"/>.</exception>
+        </member>
+        <member name="M:FileCabinetApp.DefaultValidator.ValidateCarAmount(System.Decimal)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="carAmount"/> is less than zero.</exception>
+        </member>
+        <member name="M:FileCabinetApp.DefaultValidator.ValidateMoney(System.Decimal)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="money"/> is less than zero.</exception>
+        </member>
+        <member name="M:FileCabinetApp.DefaultValidator.ValidateFavoriteChar(System.Char)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="favoriteChar"/> is not a letter of english alphabet.</exception>
         </member>
         <member name="T:FileCabinetApp.FileCabinetData">
             <summary>
@@ -182,6 +234,9 @@
             </summary>
             <param name="validator">Validator.</param>
         </member>
+        <member name="P:FileCabinetApp.FileCabinetService.Validator">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.FileCabinetData)">
             <summary>
             Creates a new <see cref="T:FileCabinetApp.FileCabinetRecord"/> instance.
@@ -248,6 +303,12 @@
             Interface for FileCabinetService.
             </summary>
         </member>
+        <member name="P:FileCabinetApp.IFileCabinetService.Validator">
+            <summary>
+            Gets validator for input data.
+            </summary>
+            <value>Validator for input data.</value>
+        </member>
         <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord(FileCabinetApp.FileCabinetData)">
             <summary>
             Creates a new <see cref="T:FileCabinetApp.FileCabinetRecord"/> instance.
@@ -305,6 +366,42 @@
             Validates given data parameters.
             </summary>
             <param name="data"><see cref="T:FileCabinetApp.FileCabinetData"/> parameters.</param>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateFirstName(System.String)">
+            <summary>
+            Validates given <paramref name="firstName"/> parameter.
+            </summary>
+            <param name="firstName">First name of a person.</param>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateLastName(System.String)">
+            <summary>
+            Validates given <paramref name="lastName"/> parameter.
+            </summary>
+            <param name="lastName">Last name of a person.</param>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateDateOfBirth(System.DateTime)">
+            <summary>
+            Validates given <paramref name="dateOfBirth"/> parameter.
+            </summary>
+            <param name="dateOfBirth">Date of birth of a person.</param>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateCarAmount(System.Decimal)">
+            <summary>
+            Validates given <paramref name="carAmount"/> parameter.
+            </summary>
+            <param name="carAmount">Car amount of a person.</param>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateMoney(System.Decimal)">
+            <summary>
+            Validates given <paramref name="money"/> parameter.
+            </summary>
+            <param name="money">Money amount of a person.</param>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateFavoriteChar(System.Char)">
+            <summary>
+            Validates given <paramref name="favoriteChar"/> parameter.
+            </summary>
+            <param name="favoriteChar">Favorite char of a person.</param>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>

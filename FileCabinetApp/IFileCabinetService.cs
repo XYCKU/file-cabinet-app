@@ -9,6 +9,12 @@ namespace FileCabinetApp
     public interface IFileCabinetService
     {
         /// <summary>
+        /// Gets validator for input data.
+        /// </summary>
+        /// <value>Validator for input data.</value>
+        public IRecordValidator Validator { get; }
+
+        /// <summary>
         /// Creates a new <see cref="FileCabinetRecord"/> instance.
         /// </summary>
         /// <param name="data">Data of a person.</param>

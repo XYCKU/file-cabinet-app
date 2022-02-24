@@ -18,7 +18,6 @@ namespace FileCabinetApp
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
-        private readonly IRecordValidator validator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetService"/> class with validator.
@@ -31,8 +30,11 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(validator));
             }
 
-            this.validator = validator;
+            this.Validator = validator;
         }
+
+        /// <inheritdoc/>
+        public IRecordValidator Validator { get; }
 
         /// <summary>
         /// Creates a new <see cref="FileCabinetRecord"/> instance.
@@ -46,7 +48,7 @@ namespace FileCabinetApp
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.FavoriteChar"/> is not a letter of english alphaber.</exception>
         public int CreateRecord(FileCabinetData data)
         {
-            this.validator.ValidateParameters(data);
+            this.Validator.ValidateParameters(data);
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
@@ -85,7 +87,7 @@ namespace FileCabinetApp
                 throw new ArgumentException("id cannot be less than 0", nameof(id));
             }
 
-            this.validator.ValidateParameters(data);
+            this.Validator.ValidateParameters(data);
 
             if (id >= this.list.Count)
             {
@@ -94,20 +96,23 @@ namespace FileCabinetApp
 
             if (!string.Equals(this.list[id].FirstName, data.FirstName, StringComparison.OrdinalIgnoreCase))
             {
-                RemoveFromDictionary(this.firstNameDictionary, this.list[id].FirstName, this.list[id]);
+                RemoveFromDictionary(this.firstNameDictionary, this.list[id].FirstName.ToUpperInvariant(), this.list[id]);
                 this.list[id].FirstName = data.FirstName;
+                AddToDictionary(this.firstNameDictionary, this.list[id].FirstName.ToUpperInvariant(), this.list[id]);
             }
 
             if (!string.Equals(this.list[id].LastName, data.LastName, StringComparison.OrdinalIgnoreCase))
             {
-                RemoveFromDictionary(this.lastNameDictionary, this.list[id].LastName, this.list[id]);
+                RemoveFromDictionary(this.lastNameDictionary, this.list[id].LastName.ToUpperInvariant(), this.list[id]);
                 this.list[id].LastName = data.LastName;
+                AddToDictionary(this.lastNameDictionary, this.list[id].LastName.ToUpperInvariant(), this.list[id]);
             }
 
             if (this.list[id].DateOfBirth != data.DateOfBirth)
             {
                 RemoveFromDictionary(this.dateOfBirthDictionary, this.list[id].DateOfBirth, this.list[id]);
                 this.list[id].DateOfBirth = data.DateOfBirth;
+                AddToDictionary(this.dateOfBirthDictionary, this.list[id].DateOfBirth, this.list[id]);
             }
 
             this.list[id].CarAmount = data.CarAmount;
