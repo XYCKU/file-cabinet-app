@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace FileCabinetApp
 {
@@ -255,7 +256,7 @@ namespace FileCabinetApp
 
             string[] args = parameters.Split(' ', 2);
 
-            FileCabinetRecord[] result;
+            ReadOnlyCollection<FileCabinetRecord> result;
 
             if (string.IsNullOrWhiteSpace(args[1]))
             {
@@ -300,7 +301,7 @@ namespace FileCabinetApp
                     return;
             }
 
-            for (int i = 0; i < result.Length; ++i)
+            for (int i = 0; i < result.Count; ++i)
             {
                 Console.WriteLine(FormatRecord(result[i]));
             }
@@ -316,7 +317,7 @@ namespace FileCabinetApp
         {
             var record = fileCabinetService.GetRecords();
 
-            for (int i = 0; i < record.Length; ++i)
+            for (int i = 0; i < record.Count; ++i)
             {
                 Console.WriteLine(FormatRecord(record[i]));
             }

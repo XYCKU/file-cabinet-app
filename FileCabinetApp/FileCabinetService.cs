@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Globalization;
 
 namespace FileCabinetApp
@@ -120,7 +121,7 @@ namespace FileCabinetApp
         /// <param name="firstName">Search parameter.</param>
         /// <returns>Array of <see cref="FileCabinetRecord"/> instances, matching the search parameter.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="firstName"/> is <c>null</c> or whitespace.</exception>
-        public FileCabinetRecord[] FindByFirstName(string firstName)
+        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (string.IsNullOrWhiteSpace(firstName))
             {
@@ -136,7 +137,7 @@ namespace FileCabinetApp
         /// <param name="lastName">Search parameter.</param>
         /// <returns>Array of <see cref="FileCabinetRecord"/> instances, matching the search parameter.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="lastName"/> is <c>null</c> or whitespace.</exception>
-        public FileCabinetRecord[] FindByLastName(string lastName)
+        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
             if (string.IsNullOrWhiteSpace(lastName))
             {
@@ -152,7 +153,7 @@ namespace FileCabinetApp
         /// <param name="dateOfBirth">Search parameter.</param>
         /// <returns>Array of <see cref="FileCabinetRecord"/> instances, matching the search parameter.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="dateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="DateTime"/>.Now.</exception>
-        public FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfBirth)
+        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             if (dateOfBirth < EarliestDate || dateOfBirth > DateTime.Now)
             {
@@ -166,9 +167,9 @@ namespace FileCabinetApp
         /// Get all <see cref="FileCabinetRecord"/>s.
         /// </summary>
         /// <returns>Array of all <see cref="FileCabinetRecord"/> instances.</returns>
-        public FileCabinetRecord[] GetRecords()
+        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            return this.list.ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(this.list);
         }
 
         /// <summary>
@@ -180,15 +181,15 @@ namespace FileCabinetApp
             return this.list.Count;
         }
 
-        private static FileCabinetRecord[] FindBy<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T parameter)
+        private static ReadOnlyCollection<FileCabinetRecord> FindBy<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T parameter)
             where T : notnull
         {
             if (!dictionary.ContainsKey(parameter))
             {
-                return Array.Empty<FileCabinetRecord>();
+                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
             }
 
-            return dictionary[parameter].ToArray();
+            return new ReadOnlyCollection<FileCabinetRecord>(dictionary[parameter]);
         }
 
         private static void AddToDictionary<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T value, FileCabinetRecord record)
