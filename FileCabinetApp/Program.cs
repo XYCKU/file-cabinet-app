@@ -313,7 +313,6 @@ namespace FileCabinetApp
                 }
             }
 
-
             try
             {
                 using (StreamWriter writer = new StreamWriter(path))
@@ -324,6 +323,9 @@ namespace FileCabinetApp
                     {
                         case "csv":
                             snapshot.SaveToCsv(writer);
+                            break;
+                        case "xml":
+                            snapshot.SaveToXml(writer);
                             break;
                         default:
                             Console.WriteLine("Unknown export format");

@@ -240,6 +240,21 @@
             <inheritdoc/>
             <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="record"/> is <c>null</c>.</exception>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
+            <summary>
+            Writes <see cref="T:FileCabinetApp.FileCabinetRecord"/> to XML file using <see cref="T:System.Xml.Serialization.XmlSerializer"/>.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.Xml.XmlWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="writer"><see cref="T:System.Xml.XmlWriter"/>.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="writer"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
             Service for creating, editing and storing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s.
@@ -338,6 +353,13 @@
         <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
             <summary>
             Saves <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> to CSV format.
+            </summary>
+            <param name="writer"><see cref="T:System.IO.StreamWriter"/>.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown whe <paramref name="writer"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXml(System.IO.StreamWriter)">
+            <summary>
+            Saves <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> to XML format.
             </summary>
             <param name="writer"><see cref="T:System.IO.StreamWriter"/>.</param>
             <exception cref="T:System.ArgumentNullException">Thrown whe <paramref name="writer"/> is <c>null</c>.</exception>

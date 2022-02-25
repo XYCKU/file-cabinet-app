@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml;
 
 namespace FileCabinetApp
 {
@@ -44,6 +45,26 @@ namespace FileCabinetApp
             for (int i = 0; i < this.records.Length; ++i)
             {
                 csvRecordWriter.Write(this.records[i]);
+            }
+        }
+
+        /// <summary>
+        /// Saves <see cref="FileCabinetServiceSnapshot"/> to XML format.
+        /// </summary>
+        /// <param name="writer"><see cref="StreamWriter"/>.</param>
+        /// <exception cref="ArgumentNullException">Thrown whe <paramref name="writer"/> is <c>null</c>.</exception>
+        public void SaveToXml(StreamWriter writer)
+        {
+            if (writer is null)
+            {
+                throw new ArgumentNullException(nameof(writer));
+            }
+
+            IFileCabinetRecordWriter xmlRecordWriter = new FileCabinetRecordXmlWriter(XmlWriter.Create(writer));
+
+            for (int i = 0; i < this.records.Length; ++i)
+            {
+                xmlRecordWriter.Write(this.records[i]);
             }
         }
     }
