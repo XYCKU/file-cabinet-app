@@ -186,6 +186,12 @@ namespace FileCabinetApp
             return this.list.Count;
         }
 
+        /// <inheritdoc/>
+        public FileCabinetServiceSnapshot MakeSnapshot()
+        {
+            return new FileCabinetServiceSnapshot(this.list.ToArray());
+        }
+
         private static ReadOnlyCollection<FileCabinetRecord> FindBy<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T parameter)
             where T : notnull
         {

@@ -118,5 +118,8 @@ namespace FileCabinetApp
                 throw new ArgumentException($"favoriteChar {favoriteChar} is not a letter", nameof(favoriteChar));
             }
         }
+
+        /// <inheritdoc/>
+        public override string ToString() => $"default";
     }
 }

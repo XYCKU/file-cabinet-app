@@ -61,6 +61,9 @@
             <inheritdoc/>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="favoriteChar"/> is not a letter of english alphabet.</exception>
         </member>
+        <member name="M:FileCabinetApp.CustomValidator.ToString">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.DefaultValidator">
             <summary>
             Default validator for <see cref="T:FileCabinetApp.FileCabinetData"/>.
@@ -117,6 +120,9 @@
         <member name="M:FileCabinetApp.DefaultValidator.ValidateFavoriteChar(System.Char)">
             <inheritdoc/>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="favoriteChar"/> is not a letter of english alphabet.</exception>
+        </member>
+        <member name="M:FileCabinetApp.DefaultValidator.ToString">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.FileCabinetData">
             <summary>
@@ -218,6 +224,37 @@
             </summary>
             <value>The favorite char of the <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</value>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
+            <summary>
+            Writes <see cref="T:FileCabinetApp.FileCabinetRecord"/> to CSV file using <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.#ctor(System.IO.TextWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvWriter"/> class.
+            </summary>
+            <param name="writer"><see cref="T:System.IO.TextWriter"/>.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="writer"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="record"/> is <c>null</c>.</exception>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
+            <summary>
+            Writes <see cref="T:FileCabinetApp.FileCabinetRecord"/> to XML file using <see cref="T:System.Xml.Serialization.XmlSerializer"/>.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.Xml.XmlWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="writer"><see cref="T:System.Xml.XmlWriter"/>.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="writer"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
             Service for creating, editing and storing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s.
@@ -298,6 +335,46 @@
             </summary>
             <returns>Amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances in list.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetService.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
+            <summary>
+            Snapshot of <see cref="T:FileCabinetApp.FileCabinetService"/>.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(FileCabinetApp.FileCabinetRecord[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
+            </summary>
+            <param name="records">Array of <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="records"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
+            <summary>
+            Saves <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> to CSV format.
+            </summary>
+            <param name="writer"><see cref="T:System.IO.StreamWriter"/>.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown whe <paramref name="writer"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXml(System.IO.StreamWriter)">
+            <summary>
+            Saves <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> to XML format.
+            </summary>
+            <param name="writer"><see cref="T:System.IO.StreamWriter"/>.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown whe <paramref name="writer"/> is <c>null</c>.</exception>
+        </member>
+        <member name="T:FileCabinetApp.IFileCabinetRecordWriter">
+            <summary>
+            Writes <see cref="T:FileCabinetApp.FileCabinetRecord"/> to file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetRecordWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes <see cref="T:FileCabinetApp.FileCabinetRecord"/> <paramref name="record"/> to file.
+            </summary>
+            <param name="record"><see cref="T:FileCabinetApp.FileCabinetRecord"/> instance.</param>
+        </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
             Interface for FileCabinetService.
@@ -355,6 +432,12 @@
             Get amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/>s.
             </summary>
             <returns>Amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances in list.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapshot">
+            <summary>
+            Creates an instance of <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/>.
+            </summary>
+            <returns><see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> of <see cref="T:FileCabinetApp.FileCabinetService"/>.</returns>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>
