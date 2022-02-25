@@ -12,16 +12,26 @@ namespace FileCabinetApp
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
         /// </summary>
         /// <param name="fileStream"><see cref="FileStream"/>.</param>
+        /// <param name="validator"><see cref="IRecordValidator"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="fileStream"/> is <c>null</c>.</exception>
-        public FileCabinetFilesystemService(FileStream fileStream)
+        public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator)
         {
             if (fileStream is null)
             {
                 throw new ArgumentNullException(nameof(fileStream));
             }
 
+            if (validator is null)
+            {
+                throw new ArgumentNullException(nameof(validator));
+            }
+
             this.fileStream = fileStream;
+            this.Validator = validator;
         }
+
+        /// <inheritdoc/>
+        public IRecordValidator Validator { get; }
 
         /// <inheritdoc/>
         public int CreateRecord(FileCabinetData data)
@@ -64,5 +74,8 @@ namespace FileCabinetApp
         {
             throw new NotImplementedException();
         }
+
+        /// <inheritdoc/>
+        public override string ToString() => "file";
     }
 }

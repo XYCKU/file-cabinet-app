@@ -198,6 +198,9 @@ namespace FileCabinetApp
             return new FileCabinetServiceSnapshot(this.list.ToArray());
         }
 
+        /// <inheritdoc/>
+        public override string ToString() => "memory";
+
         private static ReadOnlyCollection<FileCabinetRecord> FindBy<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T parameter)
             where T : notnull
         {
