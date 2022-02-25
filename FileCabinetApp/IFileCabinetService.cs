@@ -9,12 +9,6 @@ namespace FileCabinetApp
     public interface IFileCabinetService
     {
         /// <summary>
-        /// Gets validator for input data.
-        /// </summary>
-        /// <value>Validator for input data.</value>
-        public IRecordValidator Validator { get; }
-
-        /// <summary>
         /// Creates a new <see cref="FileCabinetRecord"/> instance.
         /// </summary>
         /// <param name="data">Data of a person.</param>
@@ -60,11 +54,5 @@ namespace FileCabinetApp
         /// </summary>
         /// <returns>Amount of <see cref="FileCabinetRecord"/> instances in list.</returns>
         public int GetStat();
-
-        /// <summary>
-        /// Creates an instance of <see cref="FileCabinetServiceSnapshot"/>.
-        /// </summary>
-        /// <returns><see cref="FileCabinetServiceSnapshot"/> of <see cref="FileCabinetService"/>.</returns>
-        public FileCabinetServiceSnapshot MakeSnapshot();
     }
 }
