@@ -9,7 +9,7 @@ namespace FileCabinetApp
     public class FileCabinetRecordCsvWriter : IFileCabinetRecordWriter
     {
         private const string DateTimeFormat = "MM/dd/yyyy";
-        private readonly TextWriter textWriter;
+        private readonly TextWriter writer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordCsvWriter"/> class.
@@ -23,7 +23,7 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(writer));
             }
 
-            this.textWriter = writer;
+            this.writer = writer;
         }
 
         /// <inheritdoc/>
@@ -35,7 +35,7 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(record));
             }
 
-            this.textWriter.WriteLine(FormatRecord(record));
+            this.writer.WriteLine(FormatRecord(record));
         }
 
         private static string FormatRecord(FileCabinetRecord record) => $"{record.Id}," +
