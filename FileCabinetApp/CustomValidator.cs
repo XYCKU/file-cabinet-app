@@ -118,5 +118,8 @@ namespace FileCabinetApp
                 throw new ArgumentException($"favoriteChar {favoriteChar} is not a digit", nameof(favoriteChar));
             }
         }
+
+        /// <inheritdoc/>
+        public override string ToString() => $"custom";
     }
 }
