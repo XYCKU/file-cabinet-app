@@ -1,22 +1,31 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileCabinetApp", "FileCabinetApp\FileCabinetApp.csproj", "{556E7E23-EA61-4405-8D44-42F33EA3C1BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileCabinetApp", "FileCabinetApp\FileCabinetApp.csproj", "{556E7E23-EA61-4405-8D44-42F33EA3C1BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileCabinetGenerator", "FileCabinetGenerator\FileCabinetGenerator.csproj", "{1109144E-50CC-40D9-ABF6-CA45B3FFDA9D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{556E7E23-EA61-4405-8D44-42F33EA3C1BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{556E7E23-EA61-4405-8D44-42F33EA3C1BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{556E7E23-EA61-4405-8D44-42F33EA3C1BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{556E7E23-EA61-4405-8D44-42F33EA3C1BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1109144E-50CC-40D9-ABF6-CA45B3FFDA9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1109144E-50CC-40D9-ABF6-CA45B3FFDA9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1109144E-50CC-40D9-ABF6-CA45B3FFDA9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1109144E-50CC-40D9-ABF6-CA45B3FFDA9D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {518464D6-0A46-4494-8695-B6139C44F504}
 	EndGlobalSection
 EndGlobal
