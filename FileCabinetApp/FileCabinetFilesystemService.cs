@@ -34,6 +34,8 @@ namespace FileCabinetApp
 
             this.fileStream = fileStream;
             this.Validator = validator;
+
+            this.count = this.GetStat();
         }
 
         /// <inheritdoc/>
@@ -117,19 +119,19 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            throw new NotImplementedException();
+            return this.FindBy((FileCabinetRecord record) => record.DateOfBirth == dateOfBirth);
         }
 
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            throw new NotImplementedException();
+            return this.FindBy((FileCabinetRecord record) => string.Equals(record.FirstName, firstName, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            throw new NotImplementedException();
+            return this.FindBy((FileCabinetRecord record) => string.Equals(record.LastName, lastName, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <inheritdoc/>
@@ -146,7 +148,9 @@ namespace FileCabinetApp
 
                 int id = BitConverter.ToInt32(spanBytes[0..4]);
                 string firstName = Encoding.GetString(spanBytes[4..124]);
+                firstName = firstName[..firstName.IndexOf('\0', StringComparison.Ordinal)];
                 string lastName = Encoding.GetString(spanBytes[124..244]);
+                lastName = lastName[..lastName.IndexOf('\0', StringComparison.Ordinal)];
                 int year = BitConverter.ToInt32(spanBytes[244..248]);
                 int month = BitConverter.ToInt32(spanBytes[248..252]);
                 int day = BitConverter.ToInt32(spanBytes[252..256]);
@@ -206,6 +210,23 @@ namespace FileCabinetApp
             }
 
             return bytes;
+        }
+
+        private ReadOnlyCollection<FileCabinetRecord> FindBy(Predicate<FileCabinetRecord> predicate)
+        {
+            List<FileCabinetRecord> result = new List<FileCabinetRecord>();
+
+            var allRecords = this.GetRecords();
+
+            for (int i = 0; i < allRecords.Count; ++i)
+            {
+                if (predicate(allRecords[i]))
+                {
+                    result.Add(allRecords[i]);
+                }
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(result);
         }
     }
 }
