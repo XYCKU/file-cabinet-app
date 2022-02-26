@@ -11,17 +11,17 @@ namespace FileCabinetApp
         /// <summary>
         /// Minimum length for name field.
         /// </summary>
-        protected const int MinNameLength = 2;
+        public const int MinNameLength = 2;
 
         /// <summary>
         /// Maximum length for name field.
         /// </summary>
-        protected const int MaxNameLength = 60;
+        public const int MaxNameLength = 60;
 
         /// <summary>
         /// The earliest date that can DateOfBirth field has.
         /// </summary>
-        protected static readonly DateTime EarliestDate = new DateTime(1950, 01, 01);
+        public static readonly DateTime EarliestDate = new DateTime(1950, 01, 01);
 
         /// <summary>
         /// Validates given data parameters.
