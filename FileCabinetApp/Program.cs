@@ -156,7 +156,7 @@ namespace FileCabinetApp
 
             recordId = fileCabinetService.CreateRecord(data);
 
-            Console.WriteLine(LongFormatRecord(fileCabinetService.GetRecords()[recordId - 1], "created"));
+            Console.WriteLine(LongFormatRecord(data, recordId, "created"));
         }
 
         private static void Edit(string parameters)
@@ -208,7 +208,7 @@ namespace FileCabinetApp
 
             fileCabinetService.EditRecord(id, data);
 
-            Console.WriteLine(LongFormatRecord(fileCabinetService.GetRecords()[id], "updated"));
+            Console.WriteLine(LongFormatRecord(data, id, "updated"));
         }
 
         private static void Find(string parameters)
@@ -372,6 +372,14 @@ namespace FileCabinetApp
             $"{record.Money}, " +
             $"{record.FavoriteChar}";
 
+        private static string FormatRecord(FileCabinetData record, int id) => $"#{id}, " +
+            $"{record.FirstName}, " +
+            $"{record.LastName}, " +
+            $"{record.DateOfBirth.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}, " +
+            $"{record.CarAmount}, " +
+            $"{record.Money}, " +
+            $"{record.FavoriteChar}";
+
         private static string LongFormatRecord(FileCabinetRecord record, string pastAction) => $"First name: {record.FirstName}{Environment.NewLine}" +
             $"Last name: {record.LastName}{Environment.NewLine}" +
             $"Date of birth: {record.DateOfBirth.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}{Environment.NewLine}" +
@@ -379,6 +387,14 @@ namespace FileCabinetApp
             $"Money: {record.Money}{Environment.NewLine}" +
             $"Favorite char: {record.Money}{Environment.NewLine}" +
             $"Record #{record.Id} is {pastAction}.";
+
+        private static string LongFormatRecord(FileCabinetData record, int id, string pastAction) => $"First name: {record.FirstName}{Environment.NewLine}" +
+            $"Last name: {record.LastName}{Environment.NewLine}" +
+            $"Date of birth: {record.DateOfBirth.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}{Environment.NewLine}" +
+            $"Car amount: {record.CarAmount}{Environment.NewLine}" +
+            $"Money: {record.Money}{Environment.NewLine}" +
+            $"Favorite char: {record.Money}{Environment.NewLine}" +
+            $"Record #{id} is {pastAction}.";
 
         private static void Exit(string parameters)
         {
