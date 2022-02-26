@@ -8,6 +8,9 @@ namespace FileCabinetApp
     /// <inheritdoc/>
     public class FileCabinetFilesystemService : IFileCabinetService
     {
+        private const int RecordSize = 4 + 120 + 120 + 4 + 4 + 4 + 2 + 8 + 1;
+        private static readonly Encoding Encoding = Encoding.UTF8;
+        private static readonly int[] DataSizes = { 4, 120, 120, 4, 4, 4, 2, 8, 1 };
         private readonly FileStream fileStream;
         private int count;
 
@@ -57,28 +60,26 @@ namespace FileCabinetApp
                 FavoriteChar = data.FavoriteChar,
             };
 
-            Encoding encoding = Encoding.UTF8;
-            const int recordSize = 4 + 120 + 120 + 4 + 4 + 4 + 2 + 8 + 1;
-            byte[] bytes = new byte[recordSize];
+            byte[] bytes = new byte[RecordSize];
 
-            var dataInfo = new[]
+            var dataInfo = new byte[][]
             {
-                new { Size = 4, Bytes = BitConverter.GetBytes(record.Id) },
-                new { Size = 120, Bytes = encoding.GetBytes(record.FirstName) },
-                new { Size = 120, Bytes = encoding.GetBytes(record.LastName) },
-                new { Size = 4, Bytes = BitConverter.GetBytes(record.DateOfBirth.Year) },
-                new { Size = 4, Bytes = BitConverter.GetBytes(record.DateOfBirth.Month) },
-                new { Size = 4, Bytes = BitConverter.GetBytes(record.DateOfBirth.Day) },
-                new { Size = 2, Bytes = BitConverter.GetBytes(record.CarAmount) },
-                new { Size = 8, Bytes = BitConverter.GetBytes((double)record.Money) },
-                new { Size = 1, Bytes = BitConverter.GetBytes(record.FavoriteChar) },
+                BitConverter.GetBytes(record.Id),
+                Encoding.GetBytes(record.FirstName),
+                Encoding.GetBytes(record.LastName),
+                BitConverter.GetBytes(record.DateOfBirth.Year),
+                BitConverter.GetBytes(record.DateOfBirth.Month),
+                BitConverter.GetBytes(record.DateOfBirth.Day),
+                BitConverter.GetBytes(record.CarAmount),
+                BitConverter.GetBytes((double)record.Money),
+                BitConverter.GetBytes(record.FavoriteChar),
             };
 
             int offset = 0;
             for (int i = 0; i < dataInfo.Length; ++i)
             {
-                Array.Copy(dataInfo[i].Bytes, 0, bytes, offset, Math.Min(dataInfo[i].Size, dataInfo[i].Bytes.Length));
-                offset += dataInfo[i].Size;
+                Array.Copy(dataInfo[i], 0, bytes, offset, Math.Min(DataSizes[i], dataInfo[i].Length));
+                offset += DataSizes[i];
             }
 
             this.fileStream.Write(bytes);
@@ -115,7 +116,41 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            throw new NotImplementedException();
+            byte[] bytes = new byte[RecordSize];
+            List<FileCabinetRecord> result = new List<FileCabinetRecord>();
+
+            this.fileStream.Seek(0, SeekOrigin.Begin);
+
+            while (this.fileStream.Read(bytes, 0, RecordSize) > 0)
+            {
+                var spanBytes = bytes.AsSpan();
+
+                int id = BitConverter.ToInt32(spanBytes[0..4]);
+                string firstName = Encoding.GetString(spanBytes[4..124]);
+                string lastName = Encoding.GetString(spanBytes[124..244]);
+                int year = BitConverter.ToInt32(spanBytes[244..248]);
+                int month = BitConverter.ToInt32(spanBytes[248..252]);
+                int day = BitConverter.ToInt32(spanBytes[252..256]);
+                DateTime dob = new DateTime(year, month, day);
+                short carAmount = BitConverter.ToInt16(spanBytes[256..258]);
+                decimal money = (decimal)BitConverter.ToDouble(spanBytes[258..266]);
+                char favoriteChar = BitConverter.ToChar(new byte[] { spanBytes[266], 0 });
+
+                var record = new FileCabinetRecord()
+                {
+                    Id = id,
+                    FirstName = firstName,
+                    LastName = lastName,
+                    DateOfBirth = dob,
+                    CarAmount = carAmount,
+                    Money = money,
+                    FavoriteChar = favoriteChar,
+                };
+
+                result.Add(record);
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(result);
         }
 
         /// <inheritdoc/>
