@@ -268,7 +268,7 @@ namespace FileCabinetApp
 
             for (int i = 0; i < result.Count; ++i)
             {
-                Console.WriteLine(FormatRecord(result[i]));
+                Console.WriteLine(result[i]);
             }
         }
 
@@ -284,7 +284,7 @@ namespace FileCabinetApp
 
             for (int i = 0; i < record.Count; ++i)
             {
-                Console.WriteLine(FormatRecord(record[i]));
+                Console.WriteLine(record[i]);
             }
         }
 
@@ -364,14 +364,6 @@ namespace FileCabinetApp
             Console.WriteLine($"All records are exported to file {Path.GetFileName(path)}.");
         }
 
-        private static string FormatRecord(FileCabinetRecord record) => $"#{record.Id}, " +
-            $"{record.FirstName}, " +
-            $"{record.LastName}, " +
-            $"{record.DateOfBirth.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}, " +
-            $"{record.CarAmount}, " +
-            $"{record.Money}, " +
-            $"{record.FavoriteChar}";
-
         private static string FormatRecord(FileCabinetData record, int id) => $"#{id}, " +
             $"{record.FirstName}, " +
             $"{record.LastName}, " +
@@ -380,13 +372,7 @@ namespace FileCabinetApp
             $"{record.Money}, " +
             $"{record.FavoriteChar}";
 
-        private static string LongFormatRecord(FileCabinetRecord record, string pastAction) => $"First name: {record.FirstName}{Environment.NewLine}" +
-            $"Last name: {record.LastName}{Environment.NewLine}" +
-            $"Date of birth: {record.DateOfBirth.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}{Environment.NewLine}" +
-            $"Car amount: {record.CarAmount}{Environment.NewLine}" +
-            $"Money: {record.Money}{Environment.NewLine}" +
-            $"Favorite char: {record.Money}{Environment.NewLine}" +
-            $"Record #{record.Id} is {pastAction}.";
+        
 
         private static string LongFormatRecord(FileCabinetData record, int id, string pastAction) => $"First name: {record.FirstName}{Environment.NewLine}" +
             $"Last name: {record.LastName}{Environment.NewLine}" +
