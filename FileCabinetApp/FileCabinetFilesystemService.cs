@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Text;
 
 namespace FileCabinetApp
 {
@@ -7,6 +9,7 @@ namespace FileCabinetApp
     public class FileCabinetFilesystemService : IFileCabinetService
     {
         private readonly FileStream fileStream;
+        private int count;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
@@ -36,7 +39,53 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public int CreateRecord(FileCabinetData data)
         {
-            throw new NotImplementedException();
+            if (data is null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
+            this.Validator.ValidateParameters(data);
+
+            var record = new FileCabinetRecord
+            {
+                Id = this.count++,
+                FirstName = data.FirstName,
+                LastName = data.LastName,
+                DateOfBirth = data.DateOfBirth,
+                CarAmount = data.CarAmount,
+                Money = data.Money,
+                FavoriteChar = data.FavoriteChar,
+            };
+
+            Encoding encoding = Encoding.UTF8;
+            const int recordSize = 4 + 120 + 120 + 4 + 4 + 4 + 2 + 8 + 1;
+            byte[] bytes = new byte[recordSize];
+
+            var dataInfo = new[]
+            {
+                new { Size = 4, Bytes = BitConverter.GetBytes(record.Id) },
+                new { Size = 120, Bytes = encoding.GetBytes(record.FirstName) },
+                new { Size = 120, Bytes = encoding.GetBytes(record.LastName) },
+                new { Size = 4, Bytes = BitConverter.GetBytes(record.DateOfBirth.Year) },
+                new { Size = 4, Bytes = BitConverter.GetBytes(record.DateOfBirth.Month) },
+                new { Size = 4, Bytes = BitConverter.GetBytes(record.DateOfBirth.Day) },
+                new { Size = 2, Bytes = BitConverter.GetBytes(record.CarAmount) },
+                new { Size = 8, Bytes = BitConverter.GetBytes((double)record.Money) },
+                new { Size = 1, Bytes = BitConverter.GetBytes(record.FavoriteChar) },
+            };
+
+            int offset = 0;
+            for (int i = 0; i < dataInfo.Length; ++i)
+            {
+                Array.Copy(dataInfo[i].Bytes, 0, bytes, offset, Math.Min(dataInfo[i].Size, dataInfo[i].Bytes.Length));
+                offset += dataInfo[i].Size;
+            }
+
+            this.fileStream.Write(bytes);
+
+            this.fileStream.Flush();
+
+            return record.Id;
         }
 
         /// <inheritdoc/>
