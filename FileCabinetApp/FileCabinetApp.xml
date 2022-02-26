@@ -354,6 +354,16 @@
             </summary>
             <value>The favorite char of the <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</value>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetRecord.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecord.ToString(System.String)">
+            <summary>
+            Returns a string that represents the current object.
+            </summary>
+            <param name="pastAction">Action</param>
+            <returns>A string that represents the current object.</returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
             <summary>
             Writes <see cref="T:FileCabinetApp.FileCabinetRecord"/> to CSV file using <see cref="T:System.IO.TextWriter"/>.

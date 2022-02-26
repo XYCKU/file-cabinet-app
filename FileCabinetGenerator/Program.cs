@@ -1,4 +1,6 @@
-﻿namespace FileCabinetGenerator
+﻿using FileCabinetApp;
+
+namespace FileCabinetGenerator
 {
     /// <summary>
     /// Console application class.
@@ -33,6 +35,15 @@
             ProcessArguments(args);
 
             Console.WriteLine($"{exporter}{Environment.NewLine}{path}{Environment.NewLine}{fileName}{Environment.NewLine}{recordAmount}{Environment.NewLine}{startId}");
+
+            var generator = new FileCabinetRecordGenerator();
+
+            FileCabinetRecord[] records = generator.Generate(10, 45);
+
+            for (int i = 0; i < records.Length; ++i)
+            {
+                Console.WriteLine(records[i].ToString());
+            }
 
             Console.WriteLine($"{recordAmount} were written to {path}\\{fileName}");
         }
