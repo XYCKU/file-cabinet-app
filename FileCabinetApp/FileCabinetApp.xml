@@ -177,6 +177,136 @@
             </summary>
             <value>Favorite char <see cref="T:System.Char"/>.</value>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetFilesystemService">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream,FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetFilesystemService"/> class.
+            </summary>
+            <param name="fileStream"><see cref="T:System.IO.FileStream"/>.</param>
+            <param name="validator"><see cref="T:FileCabinetApp.IRecordValidator"/>.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="fileStream"/> is <c>null</c>.</exception>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetFilesystemService.Validator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord(FileCabinetApp.FileCabinetData)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.EditRecord(System.Int32,FileCabinetApp.FileCabinetData)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByDateOfBirth(System.DateTime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetMemoryService">
+            <summary>
+            Service for creating, editing and storing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetMemoryService.EarliestDate">
+            <summary>
+            The earliest date that can DateOfBirth field has.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.#ctor(FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetMemoryService"/> class with validator.
+            </summary>
+            <param name="validator">Validator.</param>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetMemoryService.Validator">
+            <summary>
+            Gets validator for input data.
+            </summary>
+            <value>Validator for input data.</value>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.CreateRecord(FileCabinetApp.FileCabinetData)">
+            <summary>
+            Creates a new <see cref="T:FileCabinetApp.FileCabinetRecord"/> instance.
+            </summary>
+            <param name="data">Data of a person.</param>
+            <returns>Id of a new <see cref="T:FileCabinetApp.FileCabinetRecord"/> instance, created with given parameters.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="data.FirstName.FirstName"/> or <paramref name="data.LastName.LastName"/> is <c>null</c> or whitespace.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FirstName.FirstName"/>.Length or <paramref name="data.LastName.LastName"/>.Length is less than 2 or greater than 60.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="T:System.DateTime"/>.Now.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> or <paramref name="data.Money.Money"/> is less than zero.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a letter of english alphaber.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.EditRecord(System.Int32,FileCabinetApp.FileCabinetData)">
+            <summary>
+            Edits existing <see cref="T:FileCabinetApp.FileCabinetRecord"/> instance.
+            </summary>
+            <param name="id">Id of an instance in list.</param>
+            <param name="data"><see cref="T:FileCabinetApp.FileCabinetData"/> with new <see cref="T:FileCabinetApp.FileCabinetRecord"/> information.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="data.FirstName.FirstName"/> or <paramref name="data.LastName.LastName"/> is <c>null</c> or whitespace.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="id"/>is less than zero or record doesn't exist.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FirstName.FirstName"/>.Length or <paramref name="data.LastName.LastName"/>.Length is less than 2 or greater than 60.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="T:System.DateTime"/>.Now.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> or <paramref name="data.Money.Money"/> is less than zero.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a letter of english alphaber.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByFirstName(System.String)">
+            <summary>
+            Searching for existing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s with given <paramref name="firstName"/>.
+            </summary>
+            <param name="firstName">Search parameter.</param>
+            <returns>Array of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances, matching the search parameter.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="firstName"/> is <c>null</c> or whitespace.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByLastName(System.String)">
+            <summary>
+            Searching for existing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s with given <paramref name="lastName"/>.
+            </summary>
+            <param name="lastName">Search parameter.</param>
+            <returns>Array of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances, matching the search parameter.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="lastName"/> is <c>null</c> or whitespace.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByDateOfBirth(System.DateTime)">
+            <summary>
+            Searching for existing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s with given <paramref name="dateOfBirth"/>.
+            </summary>
+            <param name="dateOfBirth">Search parameter.</param>
+            <returns>Array of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances, matching the search parameter.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="dateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="T:System.DateTime"/>.Now.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetRecords">
+            <summary>
+            Get all <see cref="T:FileCabinetApp.FileCabinetRecord"/>s.
+            </summary>
+            <returns>Array of all <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.GetStat">
+            <summary>
+            Get amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/>s.
+            </summary>
+            <returns>Amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances in list.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.MakeSnapshot">
+            <summary>
+            Creates an instance of <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/>.
+            </summary>
+            <returns><see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> of <see cref="T:FileCabinetApp.FileCabinetMemoryService"/>.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.ToString">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Data class for storing record information.
@@ -255,92 +385,9 @@
         <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
         </member>
-        <member name="T:FileCabinetApp.FileCabinetService">
-            <summary>
-            Service for creating, editing and storing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.FileCabinetService.EarliestDate">
-            <summary>
-            The earliest date that can DateOfBirth field has.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.#ctor(FileCabinetApp.IRecordValidator)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetService"/> class with validator.
-            </summary>
-            <param name="validator">Validator.</param>
-        </member>
-        <member name="P:FileCabinetApp.FileCabinetService.Validator">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.FileCabinetData)">
-            <summary>
-            Creates a new <see cref="T:FileCabinetApp.FileCabinetRecord"/> instance.
-            </summary>
-            <param name="data">Data of a person.</param>
-            <returns>Id of a new <see cref="T:FileCabinetApp.FileCabinetRecord"/> instance, created with given parameters.</returns>
-            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="data.FirstName.FirstName"/> or <paramref name="data.LastName.LastName"/> is <c>null</c> or whitespace.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FirstName.FirstName"/>.Length or <paramref name="data.LastName.LastName"/>.Length is less than 2 or greater than 60.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="T:System.DateTime"/>.Now.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> or <paramref name="data.Money.Money"/> is less than zero.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a letter of english alphaber.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,FileCabinetApp.FileCabinetData)">
-            <summary>
-            Edits existing <see cref="T:FileCabinetApp.FileCabinetRecord"/> instance.
-            </summary>
-            <param name="id">Id of an instance in list.</param>
-            <param name="data"><see cref="T:FileCabinetApp.FileCabinetData"/> with new <see cref="T:FileCabinetApp.FileCabinetRecord"/> information.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="data.FirstName.FirstName"/> or <paramref name="data.LastName.LastName"/> is <c>null</c> or whitespace.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="id"/>is less than zero or record doesn't exist.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FirstName.FirstName"/>.Length or <paramref name="data.LastName.LastName"/>.Length is less than 2 or greater than 60.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="T:System.DateTime"/>.Now.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> or <paramref name="data.Money.Money"/> is less than zero.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a letter of english alphaber.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">
-            <summary>
-            Searching for existing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s with given <paramref name="firstName"/>.
-            </summary>
-            <param name="firstName">Search parameter.</param>
-            <returns>Array of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances, matching the search parameter.</returns>
-            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="firstName"/> is <c>null</c> or whitespace.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByLastName(System.String)">
-            <summary>
-            Searching for existing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s with given <paramref name="lastName"/>.
-            </summary>
-            <param name="lastName">Search parameter.</param>
-            <returns>Array of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances, matching the search parameter.</returns>
-            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="lastName"/> is <c>null</c> or whitespace.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.FindByDateOfBirth(System.DateTime)">
-            <summary>
-            Searching for existing <see cref="T:FileCabinetApp.FileCabinetRecord"/>s with given <paramref name="dateOfBirth"/>.
-            </summary>
-            <param name="dateOfBirth">Search parameter.</param>
-            <returns>Array of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances, matching the search parameter.</returns>
-            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="dateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="T:System.DateTime"/>.Now.</exception>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
-            <summary>
-            Get all <see cref="T:FileCabinetApp.FileCabinetRecord"/>s.
-            </summary>
-            <returns>Array of all <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.GetStat">
-            <summary>
-            Get amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/>s.
-            </summary>
-            <returns>Amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances in list.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.MakeSnapshot">
-            <inheritdoc/>
-        </member>
         <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
             <summary>
-            Snapshot of <see cref="T:FileCabinetApp.FileCabinetService"/>.
+            Snapshot of <see cref="T:FileCabinetApp.FileCabinetMemoryService"/>.
             </summary>
         </member>
         <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(FileCabinetApp.FileCabinetRecord[])">
@@ -432,12 +479,6 @@
             Get amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/>s.
             </summary>
             <returns>Amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances in list.</returns>
-        </member>
-        <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapshot">
-            <summary>
-            Creates an instance of <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/>.
-            </summary>
-            <returns><see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> of <see cref="T:FileCabinetApp.FileCabinetService"/>.</returns>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>

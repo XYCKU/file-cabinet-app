@@ -4,7 +4,7 @@ using System.Xml;
 namespace FileCabinetApp
 {
     /// <summary>
-    /// Snapshot of <see cref="FileCabinetService"/>.
+    /// Snapshot of <see cref="FileCabinetMemoryService"/>.
     /// </summary>
     public class FileCabinetServiceSnapshot
     {

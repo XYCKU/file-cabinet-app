@@ -14,10 +14,23 @@ namespace FileCabinetApp
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
         private const string DateTimeFormat = "MM/dd/yyyy";
+        private const string FileSystemPath = "cabinet-records.db";
+
+        private static readonly Dictionary<string, Action> ConsoleVoidArguments = new Dictionary<string, Action>()
+        {
+            { "--validation-rules=custom", () => { validator = GetCabinetServiceValidator("custom"); } },
+        };
+
+        private static readonly Dictionary<string, Action<string>> ConsoleStringArguments = new Dictionary<string, Action<string>>()
+        {
+            { "-v", (string value) => { validator = GetCabinetServiceValidator(value); } },
+            { "--storage", (string value) => { fileCabinetService = GetCabinetService(value); } },
+        };
 
         private static bool isRunning = true;
 
-        private static IFileCabinetService fileCabinetService = new FileCabinetService(new DefaultValidator());
+        private static IRecordValidator validator = new DefaultValidator();
+        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(validator);
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -51,7 +64,8 @@ namespace FileCabinetApp
             ProcessArguments(args);
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
-            Console.WriteLine($"Using {fileCabinetService.Validator} validation rules.");
+            Console.WriteLine($"Using {validator} validation rules.");
+            Console.WriteLine($"Using {fileCabinetService} storage method.");
             Console.WriteLine();
 
             do
@@ -142,7 +156,7 @@ namespace FileCabinetApp
 
             recordId = fileCabinetService.CreateRecord(data);
 
-            Console.WriteLine(LongFormatRecord(fileCabinetService.GetRecords()[recordId - 1], "created"));
+            Console.WriteLine(LongFormatRecord(data, recordId, "created"));
         }
 
         private static void Edit(string parameters)
@@ -194,7 +208,7 @@ namespace FileCabinetApp
 
             fileCabinetService.EditRecord(id, data);
 
-            Console.WriteLine(LongFormatRecord(fileCabinetService.GetRecords()[id], "updated"));
+            Console.WriteLine(LongFormatRecord(data, id, "updated"));
         }
 
         private static void Find(string parameters)
@@ -276,6 +290,14 @@ namespace FileCabinetApp
 
         private static void Export(string parameters)
         {
+            var fileCabinet = fileCabinetService as FileCabinetMemoryService;
+
+            if (fileCabinet is null)
+            {
+                Console.WriteLine("File cabinet is not memory type");
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(parameters))
             {
                 Console.WriteLine("Invalid arguments");
@@ -317,7 +339,7 @@ namespace FileCabinetApp
             {
                 using (StreamWriter writer = new StreamWriter(path))
                 {
-                    var snapshot = fileCabinetService.MakeSnapshot();
+                    var snapshot = fileCabinet.MakeSnapshot();
 
                     switch (exportType)
                     {
@@ -350,6 +372,14 @@ namespace FileCabinetApp
             $"{record.Money}, " +
             $"{record.FavoriteChar}";
 
+        private static string FormatRecord(FileCabinetData record, int id) => $"#{id}, " +
+            $"{record.FirstName}, " +
+            $"{record.LastName}, " +
+            $"{record.DateOfBirth.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}, " +
+            $"{record.CarAmount}, " +
+            $"{record.Money}, " +
+            $"{record.FavoriteChar}";
+
         private static string LongFormatRecord(FileCabinetRecord record, string pastAction) => $"First name: {record.FirstName}{Environment.NewLine}" +
             $"Last name: {record.LastName}{Environment.NewLine}" +
             $"Date of birth: {record.DateOfBirth.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}{Environment.NewLine}" +
@@ -358,17 +388,19 @@ namespace FileCabinetApp
             $"Favorite char: {record.Money}{Environment.NewLine}" +
             $"Record #{record.Id} is {pastAction}.";
 
+        private static string LongFormatRecord(FileCabinetData record, int id, string pastAction) => $"First name: {record.FirstName}{Environment.NewLine}" +
+            $"Last name: {record.LastName}{Environment.NewLine}" +
+            $"Date of birth: {record.DateOfBirth.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}{Environment.NewLine}" +
+            $"Car amount: {record.CarAmount}{Environment.NewLine}" +
+            $"Money: {record.Money}{Environment.NewLine}" +
+            $"Favorite char: {record.Money}{Environment.NewLine}" +
+            $"Record #{id} is {pastAction}.";
+
         private static void Exit(string parameters)
         {
             Console.WriteLine("Exiting an application...");
             isRunning = false;
         }
-
-        private static FileCabinetService GetCabinetService(string name) => name switch
-        {
-            "custom" => new FileCabinetService(new CustomValidator()),
-            _ => new FileCabinetService(new DefaultValidator()),
-        };
 
         private static Tuple<bool, string, string> StringConverter(string input)
         {
@@ -402,7 +434,7 @@ namespace FileCabinetApp
         {
             try
             {
-                fileCabinetService.Validator.ValidateFirstName(firstName);
+                validator.ValidateFirstName(firstName);
             }
             catch (Exception e)
             {
@@ -416,7 +448,7 @@ namespace FileCabinetApp
         {
             try
             {
-                fileCabinetService.Validator.ValidateLastName(lastName);
+                validator.ValidateLastName(lastName);
             }
             catch (Exception e)
             {
@@ -430,7 +462,7 @@ namespace FileCabinetApp
         {
             try
             {
-                fileCabinetService.Validator.ValidateDateOfBirth(dateOfBirth);
+                validator.ValidateDateOfBirth(dateOfBirth);
             }
             catch (Exception e)
             {
@@ -444,7 +476,7 @@ namespace FileCabinetApp
         {
             try
             {
-                fileCabinetService.Validator.ValidateCarAmount(carAmount);
+                validator.ValidateCarAmount(carAmount);
             }
             catch (Exception e)
             {
@@ -458,7 +490,7 @@ namespace FileCabinetApp
         {
             try
             {
-                fileCabinetService.Validator.ValidateMoney(money);
+                validator.ValidateMoney(money);
             }
             catch (Exception e)
             {
@@ -472,7 +504,7 @@ namespace FileCabinetApp
         {
             try
             {
-                fileCabinetService.Validator.ValidateFavoriteChar(favoriteChar);
+                validator.ValidateFavoriteChar(favoriteChar);
             }
             catch (Exception e)
             {
@@ -511,6 +543,18 @@ namespace FileCabinetApp
             while (true);
         }
 
+        private static IRecordValidator GetCabinetServiceValidator(string name) => name switch
+        {
+            "custom" => new CustomValidator(),
+            _ => new DefaultValidator(),
+        };
+
+        private static IFileCabinetService GetCabinetService(string name) => name switch
+        {
+            "file" => new FileCabinetFilesystemService(new FileStream(FileSystemPath, FileMode.OpenOrCreate), validator),
+            _ => new FileCabinetMemoryService(validator),
+        };
+
         private static void ProcessArguments(string[] args)
         {
             if (args == null)
@@ -519,27 +563,17 @@ namespace FileCabinetApp
                 return;
             }
 
-            Dictionary<string, Action> arguments = new Dictionary<string, Action>()
-            {
-                { "--validation-rules=custom", () => { fileCabinetService = GetCabinetService("custom"); } },
-            };
-
-            Dictionary<string, Action<string>> valueArguments = new Dictionary<string, Action<string>>()
-            {
-                { "-v", (string value) => { fileCabinetService = GetCabinetService(value); } },
-            };
-
             for (int i = 0; i < args.Length; ++i)
             {
                 string lowerCaseArgument = args[i].ToLowerInvariant();
 
-                if (arguments.ContainsKey(lowerCaseArgument))
+                if (ConsoleVoidArguments.ContainsKey(lowerCaseArgument))
                 {
-                    arguments[lowerCaseArgument]();
+                    ConsoleVoidArguments[lowerCaseArgument]();
                 }
-                else if (valueArguments.ContainsKey(lowerCaseArgument))
+                else if (ConsoleStringArguments.ContainsKey(lowerCaseArgument))
                 {
-                    valueArguments[lowerCaseArgument](args[++i]);
+                    ConsoleStringArguments[lowerCaseArgument](args[++i]);
                 }
                 else
                 {

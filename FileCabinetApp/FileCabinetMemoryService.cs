@@ -7,7 +7,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Service for creating, editing and storing <see cref="FileCabinetRecord"/>s.
     /// </summary>
-    public class FileCabinetService : IFileCabinetService
+    public class FileCabinetMemoryService : IFileCabinetService
     {
         /// <summary>
         /// The earliest date that can DateOfBirth field has.
@@ -20,10 +20,10 @@ namespace FileCabinetApp
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetService"/> class with validator.
+        /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class with validator.
         /// </summary>
         /// <param name="validator">Validator.</param>
-        public FileCabinetService(IRecordValidator validator)
+        public FileCabinetMemoryService(IRecordValidator validator)
         {
             if (validator is null)
             {
@@ -33,7 +33,10 @@ namespace FileCabinetApp
             this.Validator = validator;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets validator for input data.
+        /// </summary>
+        /// <value>Validator for input data.</value>
         public IRecordValidator Validator { get; }
 
         /// <summary>
@@ -186,11 +189,17 @@ namespace FileCabinetApp
             return this.list.Count;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Creates an instance of <see cref="FileCabinetServiceSnapshot"/>.
+        /// </summary>
+        /// <returns><see cref="FileCabinetServiceSnapshot"/> of <see cref="FileCabinetMemoryService"/>.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.list.ToArray());
         }
+
+        /// <inheritdoc/>
+        public override string ToString() => "memory";
 
         private static ReadOnlyCollection<FileCabinetRecord> FindBy<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T parameter)
             where T : notnull
