@@ -372,8 +372,6 @@ namespace FileCabinetApp
             $"{record.Money}, " +
             $"{record.FavoriteChar}";
 
-        
-
         private static string LongFormatRecord(FileCabinetData record, int id, string pastAction) => $"First name: {record.FirstName}{Environment.NewLine}" +
             $"Last name: {record.LastName}{Environment.NewLine}" +
             $"Date of birth: {record.DateOfBirth.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}{Environment.NewLine}" +
