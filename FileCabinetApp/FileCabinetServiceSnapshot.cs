@@ -52,7 +52,7 @@ namespace FileCabinetApp
         /// Saves <see cref="FileCabinetServiceSnapshot"/> to XML format.
         /// </summary>
         /// <param name="writer"><see cref="StreamWriter"/>.</param>
-        /// <exception cref="ArgumentNullException">Thrown whe <paramref name="writer"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="writer"/> is <c>null</c>.</exception>
         public void SaveToXml(StreamWriter writer)
         {
             if (writer is null)
