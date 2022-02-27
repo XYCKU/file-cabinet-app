@@ -361,7 +361,7 @@
             <summary>
             Returns a string that represents the current object.
             </summary>
-            <param name="pastAction">Action</param>
+            <param name="pastAction">Action.</param>
             <returns>A string that represents the current object.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
@@ -419,7 +419,7 @@
             Saves <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> to XML format.
             </summary>
             <param name="writer"><see cref="T:System.IO.StreamWriter"/>.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown whe <paramref name="writer"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="writer"/> is <c>null</c>.</exception>
         </member>
         <member name="T:FileCabinetApp.IFileCabinetRecordWriter">
             <summary>

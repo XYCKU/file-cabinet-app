@@ -64,7 +64,7 @@ namespace FileCabinetApp
         /// <summary>
         /// Returns a string that represents the current object.
         /// </summary>
-        /// <param name="pastAction">Action</param>
+        /// <param name="pastAction">Action.</param>
         /// <returns>A string that represents the current object.</returns>
         public string ToString(string pastAction) => $"First name: {this.FirstName}{Environment.NewLine}" +
             $"Last name: {this.LastName}{Environment.NewLine}" +
