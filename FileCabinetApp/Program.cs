@@ -339,7 +339,7 @@ namespace FileCabinetApp
             {
                 using (StreamWriter writer = new StreamWriter(path))
                 {
-                    var snapshot = fileCabinet.MakeSnapshot();
+                    FileCabinetServiceSnapshot snapshot = fileCabinet.MakeSnapshot();
 
                     switch (exportType)
                     {
