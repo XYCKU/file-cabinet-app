@@ -9,7 +9,7 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetRecordXmlWriter : IFileCabinetRecordWriter
     {
-        private static readonly XmlSerializer XmlSerializer = new XmlSerializer(typeof(FileCabinetRecord));
+        private static readonly XmlSerializer XmlSerializer = new XmlSerializer(typeof(FileCabinetRecord[]));
         private readonly XmlWriter writer;
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace FileCabinetApp
             {
                 throw new ArgumentNullException(nameof(record));
             }
-
+            
             XmlSerializer.Serialize(this.writer, record);
         }
     }

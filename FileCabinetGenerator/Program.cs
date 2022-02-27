@@ -9,8 +9,8 @@ namespace FileCabinetGenerator
     {
         private static readonly Dictionary<string, Action<string>> ParameterArguments = new Dictionary<string, Action<string>>()
         {
-            { "--output-type", (string value) => { exporter = GetExporter(value); } },
-            { "-t", (string value) => { exporter = GetExporter(value); } },
+            { "--output-type", (string value) => { SetExportType(value); } },
+            { "-t", (string value) => { SetExportType(value); } },
             { "--output", (string value) => { SetFilePath(value); } },
             { "-o", (string value) => { SetFilePath(value); } },
             { "--records-amount", (string value) => { SetRecordsAmount(value); } },
@@ -20,7 +20,7 @@ namespace FileCabinetGenerator
         };
 
         private static readonly string DefaultFileName = "defaultFile.txt";
-        private static IExporter exporter = new CsvExporter();
+        private static string exportType = string.Empty;
         private static string path = string.Empty;
         private static string fileName = string.Empty;
         private static int recordAmount;
@@ -34,18 +34,39 @@ namespace FileCabinetGenerator
         {
             ProcessArguments(args);
 
-            Console.WriteLine($"{exporter}{Environment.NewLine}{path}{Environment.NewLine}{fileName}{Environment.NewLine}{recordAmount}{Environment.NewLine}{startId}");
+            Console.WriteLine($"{exportType}{Environment.NewLine}{path}{Environment.NewLine}{recordAmount}{Environment.NewLine}{startId}");
 
             var generator = new FileCabinetRecordGenerator();
 
-            FileCabinetRecord[] records = generator.Generate(10, 45);
+            FileCabinetRecord[] records = generator.Generate(3, 45);
 
-            for (int i = 0; i < records.Length; ++i)
+            try
             {
-                Console.WriteLine(records[i].ToString());
+                using (StreamWriter writer = new StreamWriter(path))
+                {
+                    var snapshot = new FileCabinetServiceSnapshot(records);
+
+                    switch (exportType)
+                    {
+                        case "csv":
+                            snapshot.SaveToCsv(writer);
+                            break;
+                        case "xml":
+                            snapshot.SaveToXml(writer);
+                            break;
+                        default:
+                            Console.WriteLine($"Invalid export type: {exportType}");
+                            return;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return;
             }
 
-            Console.WriteLine($"{recordAmount} were written to {path}\\{fileName}");
+            Console.WriteLine($"{recordAmount} were written to {path}");
         }
 
         private static void ProcessArguments(string[] args)
@@ -90,12 +111,10 @@ namespace FileCabinetGenerator
             }
         }
 
-        private static IExporter GetExporter(string value) => value.ToLowerInvariant() switch
+        private static void SetExportType(string value)
         {
-            "csv" => new CsvExporter(),
-            "xml" => new XmlExporter(),
-            _ => new CsvExporter(),
-        };
+            exportType = value.ToLowerInvariant();
+        }
 
         private static void SetStartId(string value)
         {
@@ -129,8 +148,8 @@ namespace FileCabinetGenerator
         {
             try
             {
-                path = Path.GetDirectoryName(value) ?? string.Empty;
-                fileName = Path.GetFileName(value);
+                path = value ?? string.Empty;
+                fileName = Path.GetFileName(value) ?? string.Empty;
 
                 if (string.IsNullOrWhiteSpace(fileName))
                 {
