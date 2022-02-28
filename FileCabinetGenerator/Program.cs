@@ -35,7 +35,7 @@ namespace FileCabinetGenerator
 
             var generator = new FileCabinetRecordGenerator();
 
-            FileCabinetRecord[] records = generator.Generate(recordAmount, 45);
+            FileCabinetRecord[] records = generator.Generate(recordAmount, startId);
 
             try
             {

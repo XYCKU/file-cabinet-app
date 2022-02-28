@@ -8,11 +8,12 @@ namespace FileCabinetApp
     /// <inheritdoc/>
     public class FileCabinetFilesystemService : IFileCabinetService
     {
-        private const int RecordSize = 4 + 120 + 120 + 4 + 4 + 4 + 2 + 8 + 1;
+        private const int RecordSize = 4 + 120 + 120 + 4 + 4 + 4 + 2 + 8 + 1 + 1;
         private static readonly Encoding Encoding = Encoding.UTF8;
-        private static readonly int[] DataSizes = { 4, 120, 120, 4, 4, 4, 2, 8, 1 };
+        private static readonly int[] DataSizes = { 1, 4, 120, 120, 4, 4, 4, 2, 8, 1 };
         private readonly FileStream fileStream;
         private int count;
+        private int deleted;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
@@ -64,6 +65,8 @@ namespace FileCabinetApp
 
             byte[] bytes = ToBytes(record);
 
+            this.fileStream.Seek(0, SeekOrigin.End);
+
             this.fileStream.Write(bytes);
             this.fileStream.Flush();
 
@@ -88,7 +91,7 @@ namespace FileCabinetApp
             {
                 var spanBytes = bytes.AsSpan();
 
-                int recordId = BitConverter.ToInt32(spanBytes[0..4]);
+                int recordId = BitConverter.ToInt32(spanBytes[1..5]);
 
                 if (id == recordId)
                 {
@@ -144,33 +147,14 @@ namespace FileCabinetApp
 
             while (this.fileStream.Read(bytes, 0, RecordSize) > 0)
             {
-                var spanBytes = bytes.AsSpan();
-
-                int id = BitConverter.ToInt32(spanBytes[0..4]);
-                string firstName = Encoding.GetString(spanBytes[4..124]);
-                firstName = firstName[..firstName.IndexOf('\0', StringComparison.Ordinal)];
-                string lastName = Encoding.GetString(spanBytes[124..244]);
-                lastName = lastName[..lastName.IndexOf('\0', StringComparison.Ordinal)];
-                int year = BitConverter.ToInt32(spanBytes[244..248]);
-                int month = BitConverter.ToInt32(spanBytes[248..252]);
-                int day = BitConverter.ToInt32(spanBytes[252..256]);
-                DateTime dob = new DateTime(year, month, day);
-                short carAmount = BitConverter.ToInt16(spanBytes[256..258]);
-                decimal money = (decimal)BitConverter.ToDouble(spanBytes[258..266]);
-                char favoriteChar = BitConverter.ToChar(new byte[] { spanBytes[266], 0 });
-
-                var record = new FileCabinetRecord()
+                if (bytes[0] == 1)
                 {
-                    Id = id,
-                    FirstName = firstName,
-                    LastName = lastName,
-                    DateOfBirth = dob,
-                    CarAmount = carAmount,
-                    Money = money,
-                    FavoriteChar = favoriteChar,
-                };
+                    continue;
+                }
 
-                result.Add(record);
+                var spanBytes = bytes.AsSpan()[1..];
+
+                result.Add(ToRecord(spanBytes));
             }
 
             return new ReadOnlyCollection<FileCabinetRecord>(result);
@@ -179,7 +163,7 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public int GetStat()
         {
-            return (int)(this.fileStream.Length / RecordSize);
+            return (int)(this.fileStream.Length / RecordSize) - this.deleted;
         }
 
         /// <inheritdoc/>
@@ -201,13 +185,69 @@ namespace FileCabinetApp
             {
                 byte[] bytes = ToBytes(records[i]);
 
+                if (bytes[0] == 1)
+                {
+                    ++this.deleted;
+                }
+
                 this.fileStream.Write(bytes);
                 this.fileStream.Flush();
             }
         }
 
         /// <inheritdoc/>
+        public void RemoveRecord(int id)
+        {
+            int index = this.FindById(id);
+
+            if (index == -1)
+            {
+                throw new ArgumentException($"Record #{id} is not found", nameof(id));
+            }
+
+            this.fileStream.Position = index * RecordSize;
+            this.fileStream.Write(new byte[] { 1 });
+            ++this.deleted;
+        }
+
+        /// <inheritdoc/>
         public override string ToString() => "file";
+
+        private static FileCabinetRecord ToRecord(Span<byte> spanBytes)
+        {
+            int id = BitConverter.ToInt32(spanBytes[0..4]);
+
+            string firstName = Encoding.GetString(spanBytes[4..124]);
+            firstName = firstName[..firstName.IndexOf('\0', StringComparison.Ordinal)];
+
+            string lastName = Encoding.GetString(spanBytes[124..244]);
+            lastName = lastName[..lastName.IndexOf('\0', StringComparison.Ordinal)];
+
+            int year = BitConverter.ToInt32(spanBytes[244..248]);
+            int month = BitConverter.ToInt32(spanBytes[248..252]);
+            int day = BitConverter.ToInt32(spanBytes[252..256]);
+
+            DateTime dob = new DateTime(year, month, day);
+
+            short carAmount = BitConverter.ToInt16(spanBytes[256..258]);
+
+            decimal money = (decimal)BitConverter.ToDouble(spanBytes[258..266]);
+
+            char favoriteChar = BitConverter.ToChar(new byte[] { spanBytes[266], 0 });
+
+            var record = new FileCabinetRecord()
+            {
+                Id = id,
+                FirstName = firstName,
+                LastName = lastName,
+                DateOfBirth = dob,
+                CarAmount = carAmount,
+                Money = money,
+                FavoriteChar = favoriteChar,
+            };
+
+            return record;
+        }
 
         private static byte[] ToBytes(FileCabinetRecord record)
         {
@@ -215,6 +255,7 @@ namespace FileCabinetApp
 
             var dataInfo = new byte[][]
             {
+                new byte[] { 0 },
                 BitConverter.GetBytes(record.Id),
                 Encoding.GetBytes(record.FirstName),
                 Encoding.GetBytes(record.LastName),
@@ -253,9 +294,36 @@ namespace FileCabinetApp
             return new ReadOnlyCollection<FileCabinetRecord>(result);
         }
 
-        public void RemoveRecord(int id)
+        private int FindById(int id)
         {
-            throw new NotImplementedException();
+            if (id < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "id cannot be less than 0");
+            }
+
+            byte[] bytes = new byte[RecordSize];
+
+            int index = 0;
+            this.fileStream.Position = 0;
+
+            while (this.fileStream.Read(bytes, 0, RecordSize) > 0)
+            {
+                if (bytes[0] == 1)
+                {
+                    continue;
+                }
+
+                var record = ToRecord(bytes.AsSpan()[1..]);
+
+                if (id == record.Id)
+                {
+                    return index;
+                }
+
+                ++index;
+            }
+
+            return -1;
         }
     }
 }

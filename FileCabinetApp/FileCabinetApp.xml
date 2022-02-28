@@ -218,6 +218,9 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.RemoveRecord(System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.ToString">
             <inheritdoc/>
         </member>
@@ -259,7 +262,7 @@
             <summary>
             Edits existing <see cref="T:FileCabinetApp.FileCabinetRecord"/> instance.
             </summary>
-            <param name="id">Id of an instance in list.</param>
+            <param name="id">Id of a record in list.</param>
             <param name="data"><see cref="T:FileCabinetApp.FileCabinetData"/> with new <see cref="T:FileCabinetApp.FileCabinetRecord"/> information.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="data.FirstName.FirstName"/> or <paramref name="data.LastName.LastName"/> is <c>null</c> or whitespace.</exception>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="id"/>is less than zero or record doesn't exist.</exception>
@@ -308,6 +311,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.RemoveRecord(System.Int32)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.ToString">
@@ -573,6 +579,12 @@
             Restores data from <paramref name="snapshot"/>.
             </summary>
             <param name="snapshot"><see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> with data.</param>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.RemoveRecord(System.Int32)">
+            <summary>
+            Removes record from service.
+            </summary>
+            <param name="id">Id of a <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</param>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>
