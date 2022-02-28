@@ -33,8 +33,6 @@ namespace FileCabinetGenerator
         {
             ProcessArguments(args);
 
-            Console.WriteLine($"{exportType}{Environment.NewLine}{path}{Environment.NewLine}{recordAmount}{Environment.NewLine}{startId}");
-
             var generator = new FileCabinetRecordGenerator();
 
             FileCabinetRecord[] records = generator.Generate(recordAmount, 45);
@@ -65,7 +63,7 @@ namespace FileCabinetGenerator
                 return;
             }
 
-            Console.WriteLine($"{recordAmount} were written to {path}");
+            Console.WriteLine($"{recordAmount} records were written to {path}");
         }
 
         private static void ProcessArguments(string[] args)
