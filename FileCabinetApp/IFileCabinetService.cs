@@ -72,5 +72,11 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="snapshot"><see cref="FileCabinetServiceSnapshot"/> with data.</param>
         public void Restore(FileCabinetServiceSnapshot snapshot);
+
+        /// <summary>
+        /// Removes record from service.
+        /// </summary>
+        /// <param name="id">Id of a <see cref="FileCabinetRecord"/>.</param>
+        public void RemoveRecord(int id);
     }
 }

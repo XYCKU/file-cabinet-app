@@ -252,5 +252,10 @@ namespace FileCabinetApp
 
             return new ReadOnlyCollection<FileCabinetRecord>(result);
         }
+
+        public void RemoveRecord(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

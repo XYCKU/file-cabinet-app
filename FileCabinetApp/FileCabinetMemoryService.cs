@@ -248,5 +248,10 @@ namespace FileCabinetApp
 
             dictionary[value].Remove(record);
         }
+
+        public void RemoveRecord(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

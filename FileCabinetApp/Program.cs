@@ -42,6 +42,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
+            new Tuple<string, Action<string>>("remove", Remove),
             new Tuple<string, Action<string>>("exit", Exit),
         };
 
@@ -54,6 +55,7 @@ namespace FileCabinetApp
             new string[] { "list", "lists all records", "The 'list' command lists all records." },
             new string[] { "export", "exports all records", "The 'export' command exports all records." },
             new string[] { "import", "imports records from file", "The 'import' command imports records from file." },
+            new string[] { "remove", "removes record", "The 'remove' command removes record." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
@@ -421,6 +423,32 @@ namespace FileCabinetApp
             }
 
             Console.WriteLine($"All records are imported from file {Path.GetFileName(path)}.");
+        }
+
+        private static void Remove(string parameter)
+        {
+            if (string.IsNullOrWhiteSpace(parameter))
+            {
+                Console.WriteLine($"Id is null or whitespace.");
+                return;
+            }
+
+            int id;
+
+
+            if (!int.TryParse(parameter, out id))
+            {
+                Console.WriteLine($"Invalid id: {parameter}");
+                return;
+            }
+
+            if (id < 0)
+            {
+                Console.WriteLine("Id is less than zero.");
+                return;
+            }
+
+            fileCabinetService.RemoveRecord(id);
         }
 
         private static string FormatRecord(FileCabinetData record, int id) => $"#{id}, " +
