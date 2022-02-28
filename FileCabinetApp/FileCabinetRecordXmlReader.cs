@@ -33,10 +33,8 @@ namespace FileCabinetApp
         {
             var records = new List<FileCabinetRecord>();
             this.reader.ReadToFollowing(nameof(FileCabinetRecord));
-
             do
             {
-
                 var record = Serializer.Deserialize(this.reader) as FileCabinetRecord;
 
                 if (record is null)
@@ -44,7 +42,6 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                Console.WriteLine(records.Count);
                 records.Add(record);
             }
             while (this.reader.ReadToFollowing(nameof(FileCabinetRecord)));

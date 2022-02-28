@@ -32,14 +32,6 @@ namespace FileCabinetApp
             this.writer.WriteStartElement("ArrayOfFileCabinetRecord");
         }
 
-        /// <summary>
-        /// Finalizes an instance of the <see cref="FileCabinetRecordXmlWriter"/> class.
-        /// </summary>
-        ~FileCabinetRecordXmlWriter()
-        {
-            this.writer.Close();
-        }
-
         /// <inheritdoc/>
         public void Dispose()
         {
