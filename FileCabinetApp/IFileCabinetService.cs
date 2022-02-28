@@ -60,5 +60,11 @@ namespace FileCabinetApp
         /// </summary>
         /// <returns>Amount of <see cref="FileCabinetRecord"/> instances in list.</returns>
         public int GetStat();
+
+        /// <summary>
+        /// Creates an instance of <see cref="FileCabinetServiceSnapshot"/>.
+        /// </summary>
+        /// <returns><see cref="FileCabinetServiceSnapshot"/> of file cabinet service.</returns>
+        public FileCabinetServiceSnapshot MakeSnapshot();
     }
 }
