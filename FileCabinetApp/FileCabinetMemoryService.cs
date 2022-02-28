@@ -19,6 +19,8 @@ namespace FileCabinetApp
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
+        private int count;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class with validator.
         /// </summary>
@@ -54,7 +56,7 @@ namespace FileCabinetApp
             this.Validator.ValidateParameters(data);
             var record = new FileCabinetRecord
             {
-                Id = this.list.Count + 1,
+                Id = this.count++,
                 FirstName = data.FirstName,
                 LastName = data.LastName,
                 DateOfBirth = data.DateOfBirth,
@@ -75,7 +77,7 @@ namespace FileCabinetApp
         /// <summary>
         /// Edits existing <see cref="FileCabinetRecord"/> instance.
         /// </summary>
-        /// <param name="id">Id of an instance in list.</param>
+        /// <param name="id">Id of a record in list.</param>
         /// <param name="data"><see cref="FileCabinetData"/> with new <see cref="FileCabinetRecord"/> information.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="data.FirstName"/> or <paramref name="data.LastName"/> is <c>null</c> or whitespace.</exception>
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="id"/>is less than zero or record doesn't exist.</exception>
@@ -87,12 +89,17 @@ namespace FileCabinetApp
         {
             if (id < 0)
             {
-                throw new ArgumentException("id cannot be less than 0", nameof(id));
+                throw new ArgumentOutOfRangeException(nameof(id), "id cannot be less than 0");
+            }
+
+            if (id > this.list.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "id cannot be greater than list size");
             }
 
             this.Validator.ValidateParameters(data);
 
-            if (id >= this.list.Count)
+            if (id == -1)
             {
                 throw new ArgumentException($"#{id} record is not found.", nameof(id));
             }
@@ -214,6 +221,32 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
+        public void RemoveRecord(int id)
+        {
+            if (id < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "id cannot be less than 0.");
+            }
+
+            if (id >= this.list.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "id cannot be greater than list size.");
+            }
+
+            if (id != -1)
+            {
+                RemoveFromDictionary(this.firstNameDictionary, this.list[id].FirstName.ToLowerInvariant(), this.list[id]);
+                RemoveFromDictionary(this.lastNameDictionary, this.list[id].LastName.ToLowerInvariant(), this.list[id]);
+                RemoveFromDictionary(this.dateOfBirthDictionary, this.list[id].DateOfBirth, this.list[id]);
+
+                this.list.RemoveAt(id);
+                return;
+            }
+
+            throw new ArgumentException($"Record #{id} doesn't exist", nameof(id));
+        }
+
+        /// <inheritdoc/>
         public override string ToString() => "memory";
 
         private static ReadOnlyCollection<FileCabinetRecord> FindBy<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T parameter)
@@ -247,11 +280,6 @@ namespace FileCabinetApp
             }
 
             dictionary[value].Remove(record);
-        }
-
-        public void RemoveRecord(int id)
-        {
-            throw new NotImplementedException();
         }
     }
 }
