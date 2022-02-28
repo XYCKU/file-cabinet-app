@@ -22,7 +22,6 @@ namespace FileCabinetGenerator
         private static readonly string DefaultFileName = "defaultFile.txt";
         private static string exportType = string.Empty;
         private static string path = string.Empty;
-        private static string fileName = string.Empty;
         private static int recordAmount;
         private static int startId;
 
@@ -38,7 +37,7 @@ namespace FileCabinetGenerator
 
             var generator = new FileCabinetRecordGenerator();
 
-            FileCabinetRecord[] records = generator.Generate(3, 45);
+            FileCabinetRecord[] records = generator.Generate(recordAmount, 45);
 
             try
             {
@@ -146,20 +145,7 @@ namespace FileCabinetGenerator
 
         private static void SetFilePath(string value)
         {
-            try
-            {
-                path = value ?? string.Empty;
-                fileName = Path.GetFileName(value) ?? string.Empty;
-
-                if (string.IsNullOrWhiteSpace(fileName))
-                {
-                    fileName = DefaultFileName;
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Path is invalid: {e.Message}");
-            }
+            path = string.IsNullOrWhiteSpace(value) ? DefaultFileName : value;
         }
     }
 }
