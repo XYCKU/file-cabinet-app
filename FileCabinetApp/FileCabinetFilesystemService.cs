@@ -183,6 +183,12 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
+        public FileCabinetServiceSnapshot MakeSnapshot()
+        {
+            return new FileCabinetServiceSnapshot(this.GetRecords().ToArray());
+        }
+
+        /// <inheritdoc/>
         public override string ToString() => "file";
 
         private static byte[] ToBytes(FileCabinetRecord record)
