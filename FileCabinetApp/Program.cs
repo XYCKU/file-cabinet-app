@@ -448,7 +448,15 @@ namespace FileCabinetApp
                 return;
             }
 
-            fileCabinetService.RemoveRecord(id);
+            try
+            {
+                fileCabinetService.RemoveRecord(id);
+                Console.WriteLine($"Record #{id} is removed.");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         private static string FormatRecord(FileCabinetData record, int id) => $"#{id}, " +
