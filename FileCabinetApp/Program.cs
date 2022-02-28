@@ -41,6 +41,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("export", Export),
+            new Tuple<string, Action<string>>("import", Import),
             new Tuple<string, Action<string>>("exit", Exit),
         };
 
@@ -52,6 +53,7 @@ namespace FileCabinetApp
             new string[] { "stat", "shows records statistics", "The 'stat' command shows records statistics." },
             new string[] { "list", "lists all records", "The 'list' command lists all records." },
             new string[] { "export", "exports all records", "The 'export' command exports all records." },
+            new string[] { "import", "imports records from file", "The 'import' command imports records from file." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
@@ -289,6 +291,82 @@ namespace FileCabinetApp
         }
 
         private static void Export(string parameters)
+        {
+            var fileCabinet = fileCabinetService as FileCabinetMemoryService;
+
+            if (fileCabinet is null)
+            {
+                Console.WriteLine("File cabinet is not memory type");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(parameters))
+            {
+                Console.WriteLine("Invalid arguments");
+                return;
+            }
+
+            const int ArgumentsAmount = 2;
+            string[] args = parameters.Split(' ', ArgumentsAmount, StringSplitOptions.RemoveEmptyEntries);
+
+            if (args is null)
+            {
+                Console.WriteLine("Invalid arguments");
+                return;
+            }
+
+            if (args.Length != ArgumentsAmount)
+            {
+                Console.WriteLine("Invalid amount of arguments");
+                return;
+            }
+
+            string exportType = args[0].ToLowerInvariant();
+            string path = args[1];
+
+            if (File.Exists(path))
+            {
+                Console.Write($"File is exist - rewrite {path}? [Y/n] ");
+                string answer = Console.ReadLine() ?? string.Empty;
+
+                const string positiveAnswer = "y";
+
+                if (!string.Equals(answer, positiveAnswer, StringComparison.OrdinalIgnoreCase))
+                {
+                    return;
+                }
+            }
+
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(path))
+                {
+                    FileCabinetServiceSnapshot snapshot = fileCabinet.MakeSnapshot();
+
+                    switch (exportType)
+                    {
+                        case "csv":
+                            snapshot.SaveToCsv(writer);
+                            break;
+                        case "xml":
+                            snapshot.SaveToXml(writer);
+                            break;
+                        default:
+                            Console.WriteLine("Unknown export format");
+                            return;
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine($"Export failed: can't open file {path}.");
+                return;
+            }
+
+            Console.WriteLine($"All records are exported to file {Path.GetFileName(path)}.");
+        }
+
+        private static void Import(string parameters)
         {
             var fileCabinet = fileCabinetService as FileCabinetMemoryService;
 
