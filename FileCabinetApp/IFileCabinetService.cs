@@ -66,5 +66,11 @@ namespace FileCabinetApp
         /// </summary>
         /// <returns><see cref="FileCabinetServiceSnapshot"/> of file cabinet service.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot();
+
+        /// <summary>
+        /// Restores data from <paramref name="snapshot"/>.
+        /// </summary>
+        /// <param name="snapshot"><see cref="FileCabinetServiceSnapshot"/> with data.</param>
+        public void Restore(FileCabinetServiceSnapshot snapshot);
     }
 }

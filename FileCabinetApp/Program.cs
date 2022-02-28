@@ -368,14 +368,6 @@ namespace FileCabinetApp
 
         private static void Import(string parameters)
         {
-            var fileCabinet = fileCabinetService as FileCabinetMemoryService;
-
-            if (fileCabinet is null)
-            {
-                Console.WriteLine("File cabinet is not memory type");
-                return;
-            }
-
             if (string.IsNullOrWhiteSpace(parameters))
             {
                 Console.WriteLine("Invalid arguments");
@@ -397,40 +389,29 @@ namespace FileCabinetApp
                 return;
             }
 
-            string exportType = args[0].ToLowerInvariant();
+            string importType = args[0].ToLowerInvariant();
             string path = args[1];
-
-            if (File.Exists(path))
-            {
-                Console.Write($"File is exist - rewrite {path}? [Y/n] ");
-                string answer = Console.ReadLine() ?? string.Empty;
-
-                const string positiveAnswer = "y";
-
-                if (!string.Equals(answer, positiveAnswer, StringComparison.OrdinalIgnoreCase))
-                {
-                    return;
-                }
-            }
 
             try
             {
-                using (StreamWriter writer = new StreamWriter(path))
+                using (var reader = new StreamReader(path))
                 {
-                    FileCabinetServiceSnapshot snapshot = fileCabinet.MakeSnapshot();
+                    FileCabinetServiceSnapshot snapshot = fileCabinetService.MakeSnapshot();
 
-                    switch (exportType)
+                    switch (importType)
                     {
                         case "csv":
-                            snapshot.SaveToCsv(writer);
+                            snapshot.LoadFromCsv(reader);
                             break;
                         case "xml":
-                            snapshot.SaveToXml(writer);
+                            snapshot.LoadFromXml(reader);
                             break;
                         default:
                             Console.WriteLine("Unknown export format");
                             return;
                     }
+
+                    fileCabinetService.Restore(snapshot);
                 }
             }
             catch
@@ -439,7 +420,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            Console.WriteLine($"All records are exported to file {Path.GetFileName(path)}.");
+            Console.WriteLine($"All records are imported from file {Path.GetFileName(path)}.");
         }
 
         private static string FormatRecord(FileCabinetData record, int id) => $"#{id}, " +

@@ -212,6 +212,9 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetStat">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.MakeSnapshot">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.ToString">
             <inheritdoc/>
         </member>
@@ -299,10 +302,10 @@
             <returns>Amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances in list.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.MakeSnapshot">
-            <summary>
-            Creates an instance of <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/>.
-            </summary>
-            <returns><see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> of <see cref="T:FileCabinetApp.FileCabinetMemoryService"/>.</returns>
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.ToString">
             <inheritdoc/>
@@ -364,6 +367,19 @@
             <param name="pastAction">Action.</param>
             <returns>A string that represents the current object.</returns>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvReader">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvReader.#ctor(System.IO.StreamReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvReader"/> class.
+            </summary>
+            <param name="reader"><see cref="T:System.IO.StreamReader"/>.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="reader"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvReader.ReadAll">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
             <summary>
             Writes <see cref="T:FileCabinetApp.FileCabinetRecord"/> to CSV file using <see cref="T:System.IO.TextWriter"/>.
@@ -407,6 +423,14 @@
             <param name="records">Array of <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="records"/> is <c>null</c>.</exception>
         </member>
+        <member name="P:FileCabinetApp.FileCabinetServiceSnapshot.Records">
+            <summary>
+            Gets <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1"/> of records.
+            </summary>
+            <value>
+            <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1"/> of records.
+            </value>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
             <summary>
             Saves <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> to CSV format.
@@ -420,6 +444,29 @@
             </summary>
             <param name="writer"><see cref="T:System.IO.StreamWriter"/>.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="writer"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromCsv(System.IO.StreamReader)">
+            <summary>
+            Loads <see cref="T:FileCabinetApp.FileCabinetRecord"/> array from csv.
+            </summary>
+            <param name="reader"><see cref="T:System.IO.StreamReader"/> to read from.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromXml(System.IO.StreamReader)">
+            <summary>
+            Loads <see cref="T:FileCabinetApp.FileCabinetRecord"/> array from xml.
+            </summary>
+            <param name="reader"><see cref="T:System.IO.StreamReader"/> to read from.</param>
+        </member>
+        <member name="T:FileCabinetApp.IFileCabinetRecordReader">
+            <summary>
+            FileCabinetRecordReader.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetRecordReader.ReadAll">
+            <summary>
+            Reads all records.
+            </summary>
+            <returns>List of <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</returns>
         </member>
         <member name="T:FileCabinetApp.IFileCabinetRecordWriter">
             <summary>
@@ -489,6 +536,18 @@
             Get amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/>s.
             </summary>
             <returns>Amount of <see cref="T:FileCabinetApp.FileCabinetRecord"/> instances in list.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapshot">
+            <summary>
+            Creates an instance of <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/>.
+            </summary>
+            <returns><see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> of file cabinet service.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <summary>
+            Restores data from <paramref name="snapshot"/>.
+            </summary>
+            <param name="snapshot"><see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> with data.</param>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>

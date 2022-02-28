@@ -182,6 +182,11 @@ namespace FileCabinetApp
             return (int)(this.fileStream.Length / RecordSize);
         }
 
+        public void Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {

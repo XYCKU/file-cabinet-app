@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Xml;
+using System.Collections.ObjectModel;
 
 namespace FileCabinetApp
 {
@@ -8,7 +8,7 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetServiceSnapshot
     {
-        private readonly FileCabinetRecord[] records;
+        private FileCabinetRecord[] records;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
@@ -24,6 +24,14 @@ namespace FileCabinetApp
 
             this.records = records;
         }
+
+        /// <summary>
+        /// Gets <see cref="ReadOnlyCollection{FileCabinetRecord}"/> of records.
+        /// </summary>
+        /// <value>
+        /// <see cref="ReadOnlyCollection{FileCabinetRecord}"/> of records.
+        /// </value>
+        public ReadOnlyCollection<FileCabinetRecord> Records => Array.AsReadOnly(this.records);
 
         /// <summary>
         /// Saves <see cref="FileCabinetServiceSnapshot"/> to CSV format.
@@ -66,6 +74,26 @@ namespace FileCabinetApp
             {
                 xmlRecordWriter.Write(this.records[i]);
             }
+        }
+
+        /// <summary>
+        /// Loads <see cref="FileCabinetRecord"/> array from csv.
+        /// </summary>
+        /// <param name="reader"><see cref="StreamReader"/> to read from.</param>
+        public void LoadFromCsv(StreamReader reader)
+        {
+            var csvReader = new FileCabinetRecordCsvReader(reader);
+
+            this.records = csvReader.ReadAll().ToArray();
+        }
+
+        /// <summary>
+        /// Loads <see cref="FileCabinetRecord"/> array from xml.
+        /// </summary>
+        /// <param name="reader"><see cref="StreamReader"/> to read from.</param>
+        public void LoadFromXml(StreamReader reader)
+        {
+            throw new NotSupportedException();
         }
     }
 }

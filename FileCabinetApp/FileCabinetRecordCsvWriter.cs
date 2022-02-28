@@ -43,7 +43,7 @@ namespace FileCabinetApp
             $"{record.LastName}," +
             $"{record.DateOfBirth.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}," +
             $"{record.CarAmount}," +
-            $"{record.Money}," +
+            $"{record.Money.ToString(CultureInfo.InvariantCulture)}," +
             $"{record.FavoriteChar}";
     }
 }

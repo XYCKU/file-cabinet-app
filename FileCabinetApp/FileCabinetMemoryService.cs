@@ -196,6 +196,24 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
+        public void Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            this.list.Clear();
+            this.list.AddRange(snapshot.Records.ToList());
+
+            this.firstNameDictionary.Clear();
+            this.lastNameDictionary.Clear();
+            this.dateOfBirthDictionary.Clear();
+
+            for (int i = 0; i < this.list.Count; ++i)
+            {
+                AddToDictionary(this.firstNameDictionary, this.list[i].FirstName, this.list[i]);
+                AddToDictionary(this.lastNameDictionary, this.list[i].LastName, this.list[i]);
+                AddToDictionary(this.dateOfBirthDictionary, this.list[i].DateOfBirth, this.list[i]);
+            }
+        }
+
+        /// <inheritdoc/>
         public override string ToString() => "memory";
 
         private static ReadOnlyCollection<FileCabinetRecord> FindBy<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T parameter)
