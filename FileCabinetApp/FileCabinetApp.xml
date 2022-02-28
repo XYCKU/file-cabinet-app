@@ -369,7 +369,7 @@
             Writes <see cref="T:FileCabinetApp.FileCabinetRecord"/> to CSV file using <see cref="T:System.IO.TextWriter"/>.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.#ctor(System.IO.TextWriter)">
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.#ctor(System.IO.StreamWriter)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvWriter"/> class.
             </summary>
@@ -385,7 +385,7 @@
             Writes <see cref="T:FileCabinetApp.FileCabinetRecord"/> to XML file using <see cref="T:System.Xml.Serialization.XmlSerializer"/>.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.Xml.XmlWriter)">
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.IO.StreamWriter)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
             </summary>

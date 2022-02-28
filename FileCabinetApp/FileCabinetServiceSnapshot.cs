@@ -60,7 +60,7 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(writer));
             }
 
-            IFileCabinetRecordWriter xmlRecordWriter = new FileCabinetRecordXmlWriter(XmlWriter.Create(writer));
+            IFileCabinetRecordWriter xmlRecordWriter = new FileCabinetRecordXmlWriter(writer);
 
             for (int i = 0; i < this.records.Length; ++i)
             {

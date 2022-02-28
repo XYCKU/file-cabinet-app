@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Globalization;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace FileCabinetApp
@@ -9,7 +11,7 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetRecordXmlWriter : IFileCabinetRecordWriter
     {
-        private static readonly XmlSerializer XmlSerializer = new XmlSerializer(typeof(FileCabinetRecord[]));
+        private static readonly XmlSerializer Serializer = new XmlSerializer(typeof(FileCabinetRecord));
         private readonly XmlWriter writer;
 
         /// <summary>
@@ -17,14 +19,16 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="writer"><see cref="XmlWriter"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="writer"/> is <c>null</c>.</exception>
-        public FileCabinetRecordXmlWriter(XmlWriter writer)
+        public FileCabinetRecordXmlWriter(StreamWriter writer)
         {
             if (writer is null)
             {
                 throw new ArgumentNullException(nameof(writer));
             }
 
-            this.writer = writer;
+            this.writer = XmlWriter.Create(writer, new XmlWriterSettings() { Indent = true, NewLineOnAttributes = true });
+            this.writer.WriteStartDocument();
+            this.writer.WriteStartElement("Records");
         }
 
         /// <inheritdoc/>
@@ -34,8 +38,10 @@ namespace FileCabinetApp
             {
                 throw new ArgumentNullException(nameof(record));
             }
-            
-            XmlSerializer.Serialize(this.writer, record);
+
+            Serializer.Serialize(this.writer, record);
+
+            this.writer.Flush();
         }
     }
 }
