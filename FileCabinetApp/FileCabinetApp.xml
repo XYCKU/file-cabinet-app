@@ -399,6 +399,19 @@
             <inheritdoc/>
             <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="record"/> is <c>null</c>.</exception>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlReader">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.#ctor(System.IO.StreamReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlReader"/> class.
+            </summary>
+            <param name="reader"><see cref="T:System.IO.StreamReader"/>.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="reader"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.ReadAll">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
             <summary>
             Writes <see cref="T:FileCabinetApp.FileCabinetRecord"/> to XML file using <see cref="T:System.Xml.Serialization.XmlSerializer"/>.
@@ -411,8 +424,22 @@
             <param name="writer"><see cref="T:System.Xml.XmlWriter"/>.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="writer"/> is <c>null</c>.</exception>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Finalize">
+            <summary>
+            Finalizes an instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Dispose">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord)">
             <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Dispose(System.Boolean)">
+            <summary>
+            Disposing.
+            </summary>
+            <param name="disposing">Flag.</param>
         </member>
         <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
             <summary>

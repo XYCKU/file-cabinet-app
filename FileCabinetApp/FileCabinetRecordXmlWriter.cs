@@ -9,10 +9,11 @@ namespace FileCabinetApp
     /// <summary>
     /// Writes <see cref="FileCabinetRecord"/> to XML file using <see cref="System.Xml.Serialization.XmlSerializer"/>.
     /// </summary>
-    public class FileCabinetRecordXmlWriter : IFileCabinetRecordWriter
+    public class FileCabinetRecordXmlWriter : IFileCabinetRecordWriter, IDisposable
     {
         private static readonly XmlSerializer Serializer = new XmlSerializer(typeof(FileCabinetRecord));
         private readonly XmlWriter writer;
+        private bool disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordXmlWriter"/> class.
@@ -26,9 +27,24 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(writer));
             }
 
-            this.writer = XmlWriter.Create(writer, new XmlWriterSettings() { Indent = true, NewLineOnAttributes = true });
+            this.writer = XmlWriter.Create(writer, new XmlWriterSettings() { Indent = true, NewLineOnAttributes = true, WriteEndDocumentOnClose = true });
             this.writer.WriteStartDocument();
-            this.writer.WriteStartElement("Records");
+            this.writer.WriteStartElement("ArrayOfFileCabinetRecord");
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="FileCabinetRecordXmlWriter"/> class.
+        /// </summary>
+        ~FileCabinetRecordXmlWriter()
+        {
+            this.writer.Close();
+        }
+
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <inheritdoc/>
@@ -42,6 +58,21 @@ namespace FileCabinetApp
             Serializer.Serialize(this.writer, record);
 
             this.writer.Flush();
+        }
+
+        /// <summary>
+        /// Disposing.
+        /// </summary>
+        /// <param name="disposing">Flag.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.disposed)
+            {
+                return;
+            }
+
+            this.writer.Dispose();
+            this.disposed = true;
         }
     }
 }

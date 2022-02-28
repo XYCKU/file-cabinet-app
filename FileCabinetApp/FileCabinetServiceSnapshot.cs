@@ -68,11 +68,12 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(writer));
             }
 
-            IFileCabinetRecordWriter xmlRecordWriter = new FileCabinetRecordXmlWriter(writer);
-
-            for (int i = 0; i < this.records.Length; ++i)
+            using (var xmlRecordWriter = new FileCabinetRecordXmlWriter(writer))
             {
-                xmlRecordWriter.Write(this.records[i]);
+                for (int i = 0; i < this.records.Length; ++i)
+                {
+                    xmlRecordWriter.Write(this.records[i]);
+                }
             }
         }
 
@@ -93,7 +94,9 @@ namespace FileCabinetApp
         /// <param name="reader"><see cref="StreamReader"/> to read from.</param>
         public void LoadFromXml(StreamReader reader)
         {
-            throw new NotSupportedException();
+            var xmlReader = new FileCabinetRecordXmlReader(reader);
+
+            this.records = xmlReader.ReadAll().ToArray();
         }
     }
 }

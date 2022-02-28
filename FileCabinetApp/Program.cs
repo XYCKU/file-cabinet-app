@@ -414,7 +414,7 @@ namespace FileCabinetApp
                     fileCabinetService.Restore(snapshot);
                 }
             }
-            catch
+            catch (Exception e)
             {
                 Console.WriteLine($"Import failed: can't open file {path}.");
                 return;
