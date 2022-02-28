@@ -41,6 +41,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("export", Export),
+            new Tuple<string, Action<string>>("import", Import),
             new Tuple<string, Action<string>>("exit", Exit),
         };
 
@@ -52,6 +53,7 @@ namespace FileCabinetApp
             new string[] { "stat", "shows records statistics", "The 'stat' command shows records statistics." },
             new string[] { "list", "lists all records", "The 'list' command lists all records." },
             new string[] { "export", "exports all records", "The 'export' command exports all records." },
+            new string[] { "import", "imports records from file", "The 'import' command imports records from file." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
@@ -268,7 +270,7 @@ namespace FileCabinetApp
 
             for (int i = 0; i < result.Count; ++i)
             {
-                Console.WriteLine(FormatRecord(result[i]));
+                Console.WriteLine(result[i]);
             }
         }
 
@@ -284,7 +286,7 @@ namespace FileCabinetApp
 
             for (int i = 0; i < record.Count; ++i)
             {
-                Console.WriteLine(FormatRecord(record[i]));
+                Console.WriteLine(record[i]);
             }
         }
 
@@ -339,7 +341,7 @@ namespace FileCabinetApp
             {
                 using (StreamWriter writer = new StreamWriter(path))
                 {
-                    var snapshot = fileCabinet.MakeSnapshot();
+                    FileCabinetServiceSnapshot snapshot = fileCabinet.MakeSnapshot();
 
                     switch (exportType)
                     {
@@ -364,13 +366,62 @@ namespace FileCabinetApp
             Console.WriteLine($"All records are exported to file {Path.GetFileName(path)}.");
         }
 
-        private static string FormatRecord(FileCabinetRecord record) => $"#{record.Id}, " +
-            $"{record.FirstName}, " +
-            $"{record.LastName}, " +
-            $"{record.DateOfBirth.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}, " +
-            $"{record.CarAmount}, " +
-            $"{record.Money}, " +
-            $"{record.FavoriteChar}";
+        private static void Import(string parameters)
+        {
+            if (string.IsNullOrWhiteSpace(parameters))
+            {
+                Console.WriteLine("Invalid arguments");
+                return;
+            }
+
+            const int ArgumentsAmount = 2;
+            string[] args = parameters.Split(' ', ArgumentsAmount, StringSplitOptions.RemoveEmptyEntries);
+
+            if (args is null)
+            {
+                Console.WriteLine("Invalid arguments");
+                return;
+            }
+
+            if (args.Length != ArgumentsAmount)
+            {
+                Console.WriteLine("Invalid amount of arguments");
+                return;
+            }
+
+            string importType = args[0].ToLowerInvariant();
+            string path = args[1];
+
+            try
+            {
+                using (var reader = new StreamReader(path))
+                {
+                    FileCabinetServiceSnapshot snapshot = fileCabinetService.MakeSnapshot();
+
+                    switch (importType)
+                    {
+                        case "csv":
+                            snapshot.LoadFromCsv(reader);
+                            break;
+                        case "xml":
+                            snapshot.LoadFromXml(reader);
+                            break;
+                        default:
+                            Console.WriteLine("Unknown export format");
+                            return;
+                    }
+
+                    fileCabinetService.Restore(snapshot);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Import failed: can't open file {path}.");
+                return;
+            }
+
+            Console.WriteLine($"All records are imported from file {Path.GetFileName(path)}.");
+        }
 
         private static string FormatRecord(FileCabinetData record, int id) => $"#{id}, " +
             $"{record.FirstName}, " +
@@ -379,14 +430,6 @@ namespace FileCabinetApp
             $"{record.CarAmount}, " +
             $"{record.Money}, " +
             $"{record.FavoriteChar}";
-
-        private static string LongFormatRecord(FileCabinetRecord record, string pastAction) => $"First name: {record.FirstName}{Environment.NewLine}" +
-            $"Last name: {record.LastName}{Environment.NewLine}" +
-            $"Date of birth: {record.DateOfBirth.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}{Environment.NewLine}" +
-            $"Car amount: {record.CarAmount}{Environment.NewLine}" +
-            $"Money: {record.Money}{Environment.NewLine}" +
-            $"Favorite char: {record.Money}{Environment.NewLine}" +
-            $"Record #{record.Id} is {pastAction}.";
 
         private static string LongFormatRecord(FileCabinetData record, int id, string pastAction) => $"First name: {record.FirstName}{Environment.NewLine}" +
             $"Last name: {record.LastName}{Environment.NewLine}" +
@@ -551,7 +594,7 @@ namespace FileCabinetApp
 
         private static IFileCabinetService GetCabinetService(string name) => name switch
         {
-            "file" => new FileCabinetFilesystemService(new FileStream(FileSystemPath, FileMode.OpenOrCreate), validator),
+            "file" => new FileCabinetFilesystemService(new FileStream(FileSystemPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite), validator),
             _ => new FileCabinetMemoryService(validator),
         };
 

@@ -16,7 +16,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="writer"><see cref="TextWriter"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="writer"/> is <c>null</c>.</exception>
-        public FileCabinetRecordCsvWriter(TextWriter writer)
+        public FileCabinetRecordCsvWriter(StreamWriter writer)
         {
             if (writer is null)
             {
@@ -43,7 +43,7 @@ namespace FileCabinetApp
             $"{record.LastName}," +
             $"{record.DateOfBirth.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}," +
             $"{record.CarAmount}," +
-            $"{record.Money}," +
+            $"{record.Money.ToString(CultureInfo.InvariantCulture)}," +
             $"{record.FavoriteChar}";
     }
 }

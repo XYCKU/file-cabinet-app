@@ -189,13 +189,28 @@ namespace FileCabinetApp
             return this.list.Count;
         }
 
-        /// <summary>
-        /// Creates an instance of <see cref="FileCabinetServiceSnapshot"/>.
-        /// </summary>
-        /// <returns><see cref="FileCabinetServiceSnapshot"/> of <see cref="FileCabinetMemoryService"/>.</returns>
+        /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.list.ToArray());
+        }
+
+        /// <inheritdoc/>
+        public void Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            this.list.Clear();
+            this.list.AddRange(snapshot.Records.ToList());
+
+            this.firstNameDictionary.Clear();
+            this.lastNameDictionary.Clear();
+            this.dateOfBirthDictionary.Clear();
+
+            for (int i = 0; i < this.list.Count; ++i)
+            {
+                AddToDictionary(this.firstNameDictionary, this.list[i].FirstName, this.list[i]);
+                AddToDictionary(this.lastNameDictionary, this.list[i].LastName, this.list[i]);
+                AddToDictionary(this.dateOfBirthDictionary, this.list[i].DateOfBirth, this.list[i]);
+            }
         }
 
         /// <inheritdoc/>

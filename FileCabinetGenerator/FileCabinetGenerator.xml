@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FileCabinetGenerator</name>
+    </assembly>
+    <members>
+        <member name="T:FileCabinetGenerator.FileCabinetRecordGenerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetGenerator.FileCabinetRecordGenerator.Generate(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetGenerator.IGenerator">
+            <summary>
+            Generator <see cref="T:FileCabinetApp.FileCabinetRecord"/>.
+            </summary>
+        </member>
+        <member name="M:FileCabinetGenerator.IGenerator.Generate(System.Int32,System.Int32)">
+            <summary>
+            Generates random <see cref="T:FileCabinetApp.FileCabinetRecord"/>.
+            </summary>
+            <param name="amount">Amount of records to generate.</param>
+            <param name="startId">Start id of records.</param>
+            <returns>Array of generated <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</returns>
+        </member>
+        <member name="T:FileCabinetGenerator.Program">
+            <summary>
+            Console application class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetGenerator.Program.Main(System.String[])">
+            <summary>
+            Entry point.
+            </summary>
+            <param name="args">Console arguments.</param>
+        </member>
+    </members>
+</doc>
