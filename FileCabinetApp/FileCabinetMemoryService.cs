@@ -189,10 +189,7 @@ namespace FileCabinetApp
             return this.list.Count;
         }
 
-        /// <summary>
-        /// Creates an instance of <see cref="FileCabinetServiceSnapshot"/>.
-        /// </summary>
-        /// <returns><see cref="FileCabinetServiceSnapshot"/> of <see cref="FileCabinetMemoryService"/>.</returns>
+        /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.list.ToArray());
