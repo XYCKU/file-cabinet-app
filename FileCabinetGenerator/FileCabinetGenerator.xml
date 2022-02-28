@@ -5,11 +5,17 @@
     </assembly>
     <members>
         <member name="T:FileCabinetGenerator.FileCabinetRecordGenerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetGenerator.FileCabinetRecordGenerator.Generate(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetGenerator.IGenerator">
             <summary>
             Generator <see cref="T:FileCabinetApp.FileCabinetRecord"/>.
             </summary>
         </member>
-        <member name="M:FileCabinetGenerator.FileCabinetRecordGenerator.Generate(System.Int32,System.Int32)">
+        <member name="M:FileCabinetGenerator.IGenerator.Generate(System.Int32,System.Int32)">
             <summary>
             Generates random <see cref="T:FileCabinetApp.FileCabinetRecord"/>.
             </summary>
