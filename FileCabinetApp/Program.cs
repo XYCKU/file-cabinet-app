@@ -416,7 +416,7 @@ namespace FileCabinetApp
             }
             catch
             {
-                Console.WriteLine($"Export failed: can't open file {path}.");
+                Console.WriteLine($"Import failed: can't open file {path}.");
                 return;
             }
 
@@ -594,7 +594,7 @@ namespace FileCabinetApp
 
         private static IFileCabinetService GetCabinetService(string name) => name switch
         {
-            "file" => new FileCabinetFilesystemService(new FileStream(FileSystemPath, FileMode.OpenOrCreate), validator),
+            "file" => new FileCabinetFilesystemService(new FileStream(FileSystemPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite), validator),
             _ => new FileCabinetMemoryService(validator),
         };
 

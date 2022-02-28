@@ -215,6 +215,9 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.MakeSnapshot">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.ToString">
             <inheritdoc/>
         </member>

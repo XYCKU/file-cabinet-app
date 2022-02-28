@@ -2,6 +2,9 @@
 
 namespace FileCabinetGenerator
 {
+    /// <summary>
+    /// Generator <see cref="FileCabinetRecord"/>.
+    /// </summary>
     public class FileCabinetRecordGenerator : IGenerator
     {
         private const decimal MaxMoney = 99999;
@@ -21,8 +24,24 @@ namespace FileCabinetGenerator
             "Robinson", "Lewis", "King", "Allen", "Hall", "Roberts", "Turner", "Collins", "Cook",
         };
 
+        /// <summary>
+        /// Generates random <see cref="FileCabinetRecord"/>.
+        /// </summary>
+        /// <param name="amount">Amount of records to generate.</param>
+        /// <param name="startId">Start id of records.</param>
+        /// <returns>Array of generated <see cref="FileCabinetRecord"/>.</returns>
         public FileCabinetRecord[] Generate(int amount, int startId = 0)
         {
+            if (amount < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(amount), "amount is less than 0.");
+            }
+
+            if (startId < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(startId), "startId is less than 0.");
+            }
+
             var result = new FileCabinetRecord[amount];
 
             for (int i = 0; i < result.Length; ++i)

@@ -182,15 +182,28 @@ namespace FileCabinetApp
             return (int)(this.fileStream.Length / RecordSize);
         }
 
-        public void Restore(FileCabinetServiceSnapshot snapshot)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.GetRecords().ToArray());
+        }
+
+        /// <inheritdoc/>
+        public void Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            this.fileStream.Position = 0;
+
+            FileCabinetRecord[] records = snapshot.Records.ToArray();
+
+            this.count = records.Length;
+
+            for (int i = 0; i < records.Length; ++i)
+            {
+                byte[] bytes = ToBytes(records[i]);
+
+                this.fileStream.Write(bytes);
+                this.fileStream.Flush();
+            }
         }
 
         /// <inheritdoc/>
