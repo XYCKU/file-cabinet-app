@@ -416,7 +416,7 @@ namespace FileCabinetApp
                     fileCabinetService.Restore(snapshot);
                 }
             }
-            catch (Exception e)
+            catch
             {
                 Console.WriteLine($"Import failed: can't open file {path}.");
                 return;
@@ -435,7 +435,6 @@ namespace FileCabinetApp
 
             int id;
 
-
             if (!int.TryParse(parameter, out id))
             {
                 Console.WriteLine($"Invalid id: {parameter}");
@@ -453,9 +452,9 @@ namespace FileCabinetApp
                 fileCabinetService.RemoveRecord(id);
                 Console.WriteLine($"Record #{id} is removed.");
             }
-            catch (Exception e)
+            catch
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine($"Record #{id} doesn't exist.");
             }
         }
 
