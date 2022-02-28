@@ -52,16 +52,7 @@ namespace FileCabinetApp
 
             this.Validator.ValidateParameters(data);
 
-            var record = new FileCabinetRecord
-            {
-                Id = this.count++,
-                FirstName = data.FirstName,
-                LastName = data.LastName,
-                DateOfBirth = data.DateOfBirth,
-                CarAmount = data.CarAmount,
-                Money = data.Money,
-                FavoriteChar = data.FavoriteChar,
-            };
+            var record = new FileCabinetRecord(this.count++, data);
 
             byte[] bytes = ToBytes(record);
 
@@ -78,45 +69,25 @@ namespace FileCabinetApp
         {
             if (id < 0)
             {
-                throw new ArgumentException("id cannot be less than 0", nameof(id));
+                throw new ArgumentOutOfRangeException(nameof(id), "id cannot be less than 0");
             }
 
             this.Validator.ValidateParameters(data);
 
-            byte[] bytes = new byte[RecordSize];
+            int index = this.FindById(id);
 
-            this.fileStream.Seek(0, SeekOrigin.Begin);
-
-            while (this.fileStream.Read(bytes, 0, RecordSize) > 0)
+            if (index < 0)
             {
-                var spanBytes = bytes.AsSpan();
-
-                int recordId = BitConverter.ToInt32(spanBytes[1..5]);
-
-                if (id == recordId)
-                {
-                    var record = new FileCabinetRecord
-                    {
-                        Id = recordId + 1,
-                        FirstName = data.FirstName,
-                        LastName = data.LastName,
-                        DateOfBirth = data.DateOfBirth,
-                        CarAmount = data.CarAmount,
-                        Money = data.Money,
-                        FavoriteChar = data.FavoriteChar,
-                    };
-
-                    byte[] newByteData = ToBytes(record);
-
-                    this.fileStream.Seek(-RecordSize, SeekOrigin.Current);
-                    this.fileStream.Write(newByteData);
-                    this.fileStream.Seek(0, SeekOrigin.End);
-
-                    return;
-                }
+                throw new ArgumentException($"Record #{id} is not found", nameof(id));
             }
 
-            throw new ArgumentException($"#{id} record is not found.", nameof(id));
+            this.fileStream.Position = index * RecordSize;
+
+            byte[] newByteData = ToBytes(data, id);
+
+            this.fileStream.Seek(-RecordSize, SeekOrigin.Current);
+            this.fileStream.Write(newByteData);
+            this.fileStream.Seek(0, SeekOrigin.End);
         }
 
         /// <inheritdoc/>
@@ -235,16 +206,7 @@ namespace FileCabinetApp
 
             char favoriteChar = BitConverter.ToChar(new byte[] { spanBytes[266], 0 });
 
-            var record = new FileCabinetRecord()
-            {
-                Id = id,
-                FirstName = firstName,
-                LastName = lastName,
-                DateOfBirth = dob,
-                CarAmount = carAmount,
-                Money = money,
-                FavoriteChar = favoriteChar,
-            };
+            var record = new FileCabinetRecord(id, firstName, lastName, dob, carAmount, money, favoriteChar);
 
             return record;
         }
@@ -265,6 +227,34 @@ namespace FileCabinetApp
                 BitConverter.GetBytes(record.CarAmount),
                 BitConverter.GetBytes((double)record.Money),
                 BitConverter.GetBytes(record.FavoriteChar),
+            };
+
+            int offset = 0;
+            for (int i = 0; i < dataInfo.Length; ++i)
+            {
+                Array.Copy(dataInfo[i], 0, bytes, offset, Math.Min(DataSizes[i], dataInfo[i].Length));
+                offset += DataSizes[i];
+            }
+
+            return bytes;
+        }
+
+        private static byte[] ToBytes(FileCabinetData data, int id)
+        {
+            byte[] bytes = new byte[RecordSize];
+
+            var dataInfo = new byte[][]
+            {
+                new byte[] { 0 },
+                BitConverter.GetBytes(id),
+                Encoding.GetBytes(data.FirstName),
+                Encoding.GetBytes(data.LastName),
+                BitConverter.GetBytes(data.DateOfBirth.Year),
+                BitConverter.GetBytes(data.DateOfBirth.Month),
+                BitConverter.GetBytes(data.DateOfBirth.Day),
+                BitConverter.GetBytes(data.CarAmount),
+                BitConverter.GetBytes((double)data.Money),
+                BitConverter.GetBytes(data.FavoriteChar),
             };
 
             int offset = 0;
@@ -310,6 +300,7 @@ namespace FileCabinetApp
             {
                 if (bytes[0] == 1)
                 {
+                    ++index;
                     continue;
                 }
 

@@ -11,6 +11,37 @@ namespace FileCabinetApp
         private const string DateTimeFormat = "MM/dd/yyyy";
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetRecord"/> class.
+        /// </summary>
+        /// <param name="id">Id of a new record.</param>
+        /// <param name="data"><see cref="FileCabinetData"/>.</param>
+        public FileCabinetRecord(int id, FileCabinetData data)
+            : this(id, data.FirstName, data.LastName, data.DateOfBirth, data.CarAmount, data.Money, data.FavoriteChar)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetRecord"/> class.
+        /// </summary>
+        /// <param name="id">Id of a record.</param>
+        /// <param name="firstName">First name of a record.</param>
+        /// <param name="lastName">Last name of a record.</param>
+        /// <param name="dateOfBirth">Date of birth of a record.</param>
+        /// <param name="carAmount">Car amount of a record.</param>
+        /// <param name="money">Money of a record.</param>
+        /// <param name="favoriteChar">Favorite char of a record.</param>
+        public FileCabinetRecord(int id, string firstName, string lastName, DateTime dateOfBirth, short carAmount, decimal money, char favoriteChar)
+        {
+            this.Id = id;
+            this.FirstName = firstName;
+            this.LastName = lastName;
+            this.DateOfBirth = dateOfBirth;
+            this.CarAmount = carAmount;
+            this.Money = money;
+            this.FavoriteChar = favoriteChar;
+        }
+
+        /// <summary>
         /// Gets or sets id of <see cref="FileCabinetRecord"/>.
         /// </summary>
         /// <value>The id of the <see cref="FileCabinetRecord"/>.</value>
@@ -20,13 +51,13 @@ namespace FileCabinetApp
         /// Gets or sets first name of <see cref="FileCabinetRecord"/>.
         /// </summary>
         /// <value>The fisrt name of the <see cref="FileCabinetRecord"/>.</value>
-        public string FirstName { get; set; } = string.Empty;
+        public string FirstName { get; set; }
 
         /// <summary>
         /// Gets or sets last name of <see cref="FileCabinetRecord"/>.
         /// </summary>
         /// <value>The last name of the <see cref="FileCabinetRecord"/>.</value>
-        public string LastName { get; set; } = string.Empty;
+        public string LastName { get; set; }
 
         /// <summary>
         /// Gets or sets date of birth of <see cref="FileCabinetRecord"/>.

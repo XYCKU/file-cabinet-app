@@ -54,16 +54,7 @@ namespace FileCabinetApp
         public int CreateRecord(FileCabinetData data)
         {
             this.Validator.ValidateParameters(data);
-            var record = new FileCabinetRecord
-            {
-                Id = this.lastId++,
-                FirstName = data.FirstName,
-                LastName = data.LastName,
-                DateOfBirth = data.DateOfBirth,
-                CarAmount = data.CarAmount,
-                Money = data.Money,
-                FavoriteChar = data.FavoriteChar,
-            };
+            var record = new FileCabinetRecord(this.lastId++, data);
 
             this.list.Add(record);
 

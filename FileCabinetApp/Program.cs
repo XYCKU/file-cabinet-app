@@ -416,7 +416,7 @@ namespace FileCabinetApp
                     fileCabinetService.Restore(snapshot);
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 Console.WriteLine($"Import failed: can't open file {path}.");
                 return;
@@ -452,10 +452,9 @@ namespace FileCabinetApp
                 fileCabinetService.RemoveRecord(id);
                 Console.WriteLine($"Record #{id} is removed.");
             }
-            catch (Exception e)
+            catch
             {
                 Console.WriteLine($"Record #{id} doesn't exist.");
-                Console.WriteLine(e.Message);
             }
         }
 
