@@ -5,13 +5,22 @@ namespace FileCabinetApp.CommandHandlers
     /// <inheritdoc/>
     public class PurgeCommandHandler : CommandHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PurgeCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Service.</param>
+        public PurgeCommandHandler(IFileCabinetService service)
+            : base(service)
+        {
+        }
+
         /// <inheritdoc/>
         protected override string Command { get; } = "purge";
 
         /// <inheritdoc/>
         protected override void Action(AppCommandRequest commandRequest)
         {
-            var filesystemService = Program.FileCabinetService as FileCabinetFilesystemService;
+            var filesystemService = this.Service as FileCabinetFilesystemService;
 
             if (filesystemService is null)
             {

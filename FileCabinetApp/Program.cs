@@ -60,7 +60,7 @@ namespace FileCabinetApp
             Console.WriteLine($"Using {FileCabinetService} storage method.");
             Console.WriteLine();
 
-            ICommandHandler commandHandler = GetCommandHandlers();
+            ICommandHandler commandHandler = GetCommandHandlers(FileCabinetService);
 
             do
             {
@@ -83,8 +83,6 @@ namespace FileCabinetApp
                     Command = command,
                     Parameters = parameters,
                 });
-
-                // PrintMissedCommandInfo(command);
             }
             while (IsRunning);
         }
@@ -321,22 +319,22 @@ namespace FileCabinetApp
             $"Favorite char: {record.Money}{Environment.NewLine}" +
             $"Record #{id} is {pastAction}.";
 
-        private static ICommandHandler GetCommandHandlers()
+        private static ICommandHandler GetCommandHandlers(IFileCabinetService service)
         {
             var handlers = new ICommandHandler[]
             {
-                new HelpCommandHandler(),
-                new CreateCommandHandler(),
-                new EditCommandHandler(),
-                new FindCommandHandler(),
-                new ListCommandHandler(),
-                new StatCommandHandler(),
-                new ExportCommandHandler(),
-                new ImportCommandHandler(),
-                new PurgeCommandHandler(),
-                new RemoveCommandHandler(),
-                new ExitCommandHandler(),
-                new MissedCommandHandler(),
+                new HelpCommandHandler(service),
+                new CreateCommandHandler(service),
+                new EditCommandHandler(service),
+                new FindCommandHandler(service),
+                new ListCommandHandler(service),
+                new StatCommandHandler(service),
+                new ExportCommandHandler(service),
+                new ImportCommandHandler(service),
+                new PurgeCommandHandler(service),
+                new RemoveCommandHandler(service),
+                new ExitCommandHandler(service),
+                new MissedCommandHandler(service),
             };
 
             for (int i = 0; i < handlers.Length - 1; ++i)

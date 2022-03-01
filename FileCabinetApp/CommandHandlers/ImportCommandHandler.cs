@@ -5,6 +5,15 @@ namespace FileCabinetApp.CommandHandlers
     /// <inheritdoc/>
     public class ImportCommandHandler : CommandHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImportCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Service.</param>
+        public ImportCommandHandler(IFileCabinetService service)
+            : base(service)
+        {
+        }
+
         /// <inheritdoc/>
         protected override string Command { get; } = "import";
 
@@ -39,7 +48,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 using (var reader = new StreamReader(path))
                 {
-                    FileCabinetServiceSnapshot snapshot = Program.FileCabinetService.MakeSnapshot();
+                    FileCabinetServiceSnapshot snapshot = this.Service.MakeSnapshot();
 
                     switch (importType)
                     {
@@ -54,7 +63,7 @@ namespace FileCabinetApp.CommandHandlers
                             return;
                     }
 
-                    Program.FileCabinetService.Restore(snapshot);
+                    this.Service.Restore(snapshot);
                 }
             }
             catch

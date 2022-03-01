@@ -5,6 +5,15 @@ namespace FileCabinetApp.CommandHandlers
     /// <inheritdoc/>
     public class ExportCommandHandler : CommandHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExportCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Service.</param>
+        public ExportCommandHandler(IFileCabinetService service)
+            : base(service)
+        {
+        }
+
         /// <inheritdoc/>
         protected override string Command { get; } = "export";
 
@@ -52,7 +61,7 @@ namespace FileCabinetApp.CommandHandlers
             {
                 using (StreamWriter writer = new StreamWriter(path))
                 {
-                    FileCabinetServiceSnapshot snapshot = Program.FileCabinetService.MakeSnapshot();
+                    FileCabinetServiceSnapshot snapshot = this.Service.MakeSnapshot();
 
                     switch (exportType)
                     {

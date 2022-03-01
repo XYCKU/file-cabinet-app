@@ -7,6 +7,15 @@ namespace FileCabinetApp.CommandHandlers
     /// <inheritdoc/>
     public class FindCommandHandler : CommandHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Service.</param>
+        public FindCommandHandler(IFileCabinetService service)
+            : base(service)
+        {
+        }
+
         /// <inheritdoc/>
         protected override string Command { get; } = "find";
 
@@ -43,16 +52,16 @@ namespace FileCabinetApp.CommandHandlers
             switch (args[0].ToLowerInvariant())
             {
                 case "firstname":
-                    result = Program.FileCabinetService.FindByFirstName(searchText);
+                    result = this.Service.FindByFirstName(searchText);
                     break;
                 case "lastname":
-                    result = Program.FileCabinetService.FindByLastName(searchText);
+                    result = this.Service.FindByLastName(searchText);
                     break;
                 case "dateofbirth":
                     DateTime dt;
                     if (DateTime.TryParseExact(searchText, Program.DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
                     {
-                        result = Program.FileCabinetService.FindByDateOfBirth(dt);
+                        result = this.Service.FindByDateOfBirth(dt);
                     }
                     else
                     {

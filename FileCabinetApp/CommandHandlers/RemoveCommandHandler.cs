@@ -5,6 +5,15 @@ namespace FileCabinetApp.CommandHandlers
     /// <inheritdoc/>
     public class RemoveCommandHandler : CommandHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RemoveCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Service.</param>
+        public RemoveCommandHandler(IFileCabinetService service)
+            : base(service)
+        {
+        }
+
         /// <inheritdoc/>
         protected override string Command { get; } = "remove";
 
@@ -33,7 +42,7 @@ namespace FileCabinetApp.CommandHandlers
 
             try
             {
-                Program.FileCabinetService.RemoveRecord(id);
+                this.Service.RemoveRecord(id);
                 Console.WriteLine($"Record #{id} is removed.");
             }
             catch

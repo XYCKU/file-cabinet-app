@@ -5,6 +5,15 @@ namespace FileCabinetApp.CommandHandlers
     /// <inheritdoc/>
     public class EditCommandHandler : CommandHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EditCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Service.</param>
+        public EditCommandHandler(IFileCabinetService service)
+            : base(service)
+        {
+        }
+
         /// <inheritdoc/>
         protected override string Command { get; } = "edit";
 
@@ -30,7 +39,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (id >= Program.FileCabinetService.GetStat().Item1)
+            if (id >= this.Service.GetStat().Item1)
             {
                 Console.WriteLine($"#{id} record is not found.");
                 return;
@@ -56,7 +65,7 @@ namespace FileCabinetApp.CommandHandlers
 
             var data = new FileCabinetData(firstName, lastName, dt, carAmount, money, favoriteChar);
 
-            Program.FileCabinetService.EditRecord(id, data);
+            this.Service.EditRecord(id, data);
 
             Console.WriteLine(Program.LongFormatRecord(data, id, "updated"));
         }

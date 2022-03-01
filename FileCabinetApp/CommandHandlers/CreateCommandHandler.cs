@@ -5,6 +5,15 @@ namespace FileCabinetApp.CommandHandlers
     /// <inheritdoc/>
     public class CreateCommandHandler : CommandHandlerBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateCommandHandler"/> class.
+        /// </summary>
+        /// <param name="service">Service.</param>
+        public CreateCommandHandler(IFileCabinetService service)
+            : base(service)
+        {
+        }
+
         /// <inheritdoc/>
         protected override string Command { get; } = "create";
 
@@ -33,7 +42,7 @@ namespace FileCabinetApp.CommandHandlers
 
             var data = new FileCabinetData(firstName, lastName, dt, carAmount, money, favoriteChar);
 
-            recordId = Program.FileCabinetService.CreateRecord(data);
+            recordId = this.Service.CreateRecord(data);
 
             Console.WriteLine(Program.LongFormatRecord(data, recordId, "created"));
         }
