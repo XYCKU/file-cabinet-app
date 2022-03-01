@@ -59,16 +59,14 @@ namespace FileCabinetGenerator
 
         private static FileCabinetRecord Generate(int id)
         {
-            return new FileCabinetRecord
-            {
-                Id = id,
-                FirstName = GetRandom(FirstNames),
-                LastName = GetRandom(LastNames),
-                DateOfBirth = GetRandomDate(),
-                CarAmount = (short)Random.Next(MaxCars),
-                Money = Math.Round((decimal)Random.NextDouble() * MaxMoney, 2),
-                FavoriteChar = (char)('A' + (char)Random.Next('Z' - 'A')),
-            };
+            return new FileCabinetRecord(
+                id,
+                GetRandom(FirstNames),
+                GetRandom(LastNames),
+                GetRandomDate(),
+                (short)Random.Next(MaxCars),
+                Math.Round((decimal)Random.NextDouble() * MaxMoney, 2),
+                (char)('A' + (char)Random.Next('Z' - 'A')));
         }
     }
 }

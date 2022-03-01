@@ -92,16 +92,7 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                result.Add(new FileCabinetRecord()
-                {
-                    Id = id,
-                    FirstName = firstName,
-                    LastName = lastName,
-                    DateOfBirth = dob,
-                    CarAmount = carAmount,
-                    Money = money,
-                    FavoriteChar = favoriteChar,
-                });
+                result.Add(new FileCabinetRecord(id, firstName, lastName, dob, carAmount, money, favoriteChar));
             }
 
             return result;

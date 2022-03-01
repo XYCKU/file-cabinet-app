@@ -42,6 +42,8 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
+            new Tuple<string, Action<string>>("remove", Remove),
+            new Tuple<string, Action<string>>("purge", Purge),
             new Tuple<string, Action<string>>("exit", Exit),
         };
 
@@ -54,6 +56,8 @@ namespace FileCabinetApp
             new string[] { "list", "lists all records", "The 'list' command lists all records." },
             new string[] { "export", "exports all records", "The 'export' command exports all records." },
             new string[] { "import", "imports records from file", "The 'import' command imports records from file." },
+            new string[] { "remove", "removes record", "The 'remove' command removes record." },
+            new string[] { "purge", "defragments FileCabinetFilesystemService file", "The 'purge' command defragments FileCabinetFilesystemService file." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
@@ -182,7 +186,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            if (id >= fileCabinetService.GetStat())
+            if (id >= fileCabinetService.GetStat().Item1)
             {
                 Console.WriteLine($"#{id} record is not found.");
                 return;
@@ -276,17 +280,18 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
-            Console.WriteLine($"{recordsCount} record(s).");
+            var stat = Program.fileCabinetService.GetStat();
+            Console.WriteLine($"{stat.Item1} record(s).");
+            Console.WriteLine($"{stat.Item2} record(s) are deleted.");
         }
 
         private static void List(string parameters)
         {
-            var record = fileCabinetService.GetRecords();
+            var records = fileCabinetService.GetRecords();
 
-            for (int i = 0; i < record.Count; ++i)
+            for (int i = 0; i < records.Count; ++i)
             {
-                Console.WriteLine(record[i]);
+                Console.WriteLine(records[i]);
             }
         }
 
@@ -414,13 +419,62 @@ namespace FileCabinetApp
                     fileCabinetService.Restore(snapshot);
                 }
             }
-            catch (Exception e)
+            catch
             {
                 Console.WriteLine($"Import failed: can't open file {path}.");
                 return;
             }
 
             Console.WriteLine($"All records are imported from file {Path.GetFileName(path)}.");
+        }
+
+        private static void Remove(string parameter)
+        {
+            if (string.IsNullOrWhiteSpace(parameter))
+            {
+                Console.WriteLine($"Id is null or whitespace.");
+                return;
+            }
+
+            int id;
+
+            if (!int.TryParse(parameter, out id))
+            {
+                Console.WriteLine($"Invalid id: {parameter}");
+                return;
+            }
+
+            if (id < 0)
+            {
+                Console.WriteLine("Id is less than zero.");
+                return;
+            }
+
+            try
+            {
+                fileCabinetService.RemoveRecord(id);
+                Console.WriteLine($"Record #{id} is removed.");
+            }
+            catch
+            {
+                Console.WriteLine($"Record #{id} doesn't exist.");
+            }
+        }
+
+        private static void Purge(string parameters)
+        {
+            var filesystemService = fileCabinetService as FileCabinetFilesystemService;
+
+            if (filesystemService is null)
+            {
+                return;
+            }
+
+            var stat = filesystemService.GetStat();
+
+            filesystemService.PurgeRecords();
+
+            Console.WriteLine($"Data file processing is completed: {stat.Item2} of {stat.Item1} records were purged.");
         }
 
         private static string FormatRecord(FileCabinetData record, int id) => $"#{id}, " +

@@ -19,6 +19,8 @@ namespace FileCabinetApp
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
+        private int lastId;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class with validator.
         /// </summary>
@@ -52,16 +54,7 @@ namespace FileCabinetApp
         public int CreateRecord(FileCabinetData data)
         {
             this.Validator.ValidateParameters(data);
-            var record = new FileCabinetRecord
-            {
-                Id = this.list.Count + 1,
-                FirstName = data.FirstName,
-                LastName = data.LastName,
-                DateOfBirth = data.DateOfBirth,
-                CarAmount = data.CarAmount,
-                Money = data.Money,
-                FavoriteChar = data.FavoriteChar,
-            };
+            var record = new FileCabinetRecord(this.lastId++, data);
 
             this.list.Add(record);
 
@@ -75,7 +68,7 @@ namespace FileCabinetApp
         /// <summary>
         /// Edits existing <see cref="FileCabinetRecord"/> instance.
         /// </summary>
-        /// <param name="id">Id of an instance in list.</param>
+        /// <param name="id">Id of a record in list.</param>
         /// <param name="data"><see cref="FileCabinetData"/> with new <see cref="FileCabinetRecord"/> information.</param>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="data.FirstName"/> or <paramref name="data.LastName"/> is <c>null</c> or whitespace.</exception>
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="id"/>is less than zero or record doesn't exist.</exception>
@@ -87,40 +80,42 @@ namespace FileCabinetApp
         {
             if (id < 0)
             {
-                throw new ArgumentException("id cannot be less than 0", nameof(id));
+                throw new ArgumentOutOfRangeException(nameof(id), "id cannot be less than 0.");
+            }
+
+            int index = this.FindById(id);
+
+            if (index == -1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "record is not found.");
             }
 
             this.Validator.ValidateParameters(data);
 
-            if (id >= this.list.Count)
+            if (!string.Equals(this.list[index].FirstName, data.FirstName, StringComparison.OrdinalIgnoreCase))
             {
-                throw new ArgumentException($"#{id} record is not found.", nameof(id));
+                RemoveFromDictionary(this.firstNameDictionary, this.list[index].FirstName.ToUpperInvariant(), this.list[index]);
+                this.list[index].FirstName = data.FirstName;
+                AddToDictionary(this.firstNameDictionary, this.list[index].FirstName.ToUpperInvariant(), this.list[index]);
             }
 
-            if (!string.Equals(this.list[id].FirstName, data.FirstName, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(this.list[index].LastName, data.LastName, StringComparison.OrdinalIgnoreCase))
             {
-                RemoveFromDictionary(this.firstNameDictionary, this.list[id].FirstName.ToUpperInvariant(), this.list[id]);
-                this.list[id].FirstName = data.FirstName;
-                AddToDictionary(this.firstNameDictionary, this.list[id].FirstName.ToUpperInvariant(), this.list[id]);
+                RemoveFromDictionary(this.lastNameDictionary, this.list[index].LastName.ToUpperInvariant(), this.list[index]);
+                this.list[index].LastName = data.LastName;
+                AddToDictionary(this.lastNameDictionary, this.list[index].LastName.ToUpperInvariant(), this.list[index]);
             }
 
-            if (!string.Equals(this.list[id].LastName, data.LastName, StringComparison.OrdinalIgnoreCase))
+            if (this.list[index].DateOfBirth != data.DateOfBirth)
             {
-                RemoveFromDictionary(this.lastNameDictionary, this.list[id].LastName.ToUpperInvariant(), this.list[id]);
-                this.list[id].LastName = data.LastName;
-                AddToDictionary(this.lastNameDictionary, this.list[id].LastName.ToUpperInvariant(), this.list[id]);
+                RemoveFromDictionary(this.dateOfBirthDictionary, this.list[index].DateOfBirth, this.list[index]);
+                this.list[index].DateOfBirth = data.DateOfBirth;
+                AddToDictionary(this.dateOfBirthDictionary, this.list[index].DateOfBirth, this.list[index]);
             }
 
-            if (this.list[id].DateOfBirth != data.DateOfBirth)
-            {
-                RemoveFromDictionary(this.dateOfBirthDictionary, this.list[id].DateOfBirth, this.list[id]);
-                this.list[id].DateOfBirth = data.DateOfBirth;
-                AddToDictionary(this.dateOfBirthDictionary, this.list[id].DateOfBirth, this.list[id]);
-            }
-
-            this.list[id].CarAmount = data.CarAmount;
-            this.list[id].Money = data.Money;
-            this.list[id].FavoriteChar = data.FavoriteChar;
+            this.list[index].CarAmount = data.CarAmount;
+            this.list[index].Money = data.Money;
+            this.list[index].FavoriteChar = data.FavoriteChar;
         }
 
         /// <summary>
@@ -184,9 +179,9 @@ namespace FileCabinetApp
         /// Get amount of <see cref="FileCabinetRecord"/>s.
         /// </summary>
         /// <returns>Amount of <see cref="FileCabinetRecord"/> instances in list.</returns>
-        public int GetStat()
+        public Tuple<int, int> GetStat()
         {
-            return this.list.Count;
+            return new Tuple<int, int>(this.list.Count, 0);
         }
 
         /// <inheritdoc/>
@@ -211,6 +206,38 @@ namespace FileCabinetApp
                 AddToDictionary(this.lastNameDictionary, this.list[i].LastName, this.list[i]);
                 AddToDictionary(this.dateOfBirthDictionary, this.list[i].DateOfBirth, this.list[i]);
             }
+
+            if (this.list.Count > 0)
+            {
+                this.lastId = this.list[^1].Id;
+            }
+            else
+            {
+                this.lastId = 0;
+            }
+        }
+
+        /// <inheritdoc/>
+        public void RemoveRecord(int id)
+        {
+            if (id < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "id cannot be less than 0.");
+            }
+
+            int index = this.FindById(id);
+
+            if (index != -1)
+            {
+                RemoveFromDictionary(this.firstNameDictionary, this.list[index].FirstName.ToLowerInvariant(), this.list[index]);
+                RemoveFromDictionary(this.lastNameDictionary, this.list[index].LastName.ToLowerInvariant(), this.list[index]);
+                RemoveFromDictionary(this.dateOfBirthDictionary, this.list[index].DateOfBirth, this.list[index]);
+
+                this.list.RemoveAt(index);
+                return;
+            }
+
+            throw new ArgumentException($"Record #{id} doesn't exist", nameof(id));
         }
 
         /// <inheritdoc/>
@@ -247,6 +274,24 @@ namespace FileCabinetApp
             }
 
             dictionary[value].Remove(record);
+        }
+
+        private int FindById(int id)
+        {
+            if (id < 0 || id > this.lastId)
+            {
+                return -1;
+            }
+
+            for (int i = 0; i < this.list.Count && id <= this.list[i].Id; ++i)
+            {
+                if (id == this.list[i].Id)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
         }
     }
 }

@@ -218,6 +218,14 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.RemoveRecord(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.PurgeRecords">
+            <summary>
+            Purges file records.
+            </summary>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.ToString">
             <inheritdoc/>
         </member>
@@ -259,7 +267,7 @@
             <summary>
             Edits existing <see cref="T:FileCabinetApp.FileCabinetRecord"/> instance.
             </summary>
-            <param name="id">Id of an instance in list.</param>
+            <param name="id">Id of a record in list.</param>
             <param name="data"><see cref="T:FileCabinetApp.FileCabinetData"/> with new <see cref="T:FileCabinetApp.FileCabinetRecord"/> information.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="data.FirstName.FirstName"/> or <paramref name="data.LastName.LastName"/> is <c>null</c> or whitespace.</exception>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="id"/>is less than zero or record doesn't exist.</exception>
@@ -310,6 +318,9 @@
         <member name="M:FileCabinetApp.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.RemoveRecord(System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.ToString">
             <inheritdoc/>
         </member>
@@ -317,6 +328,25 @@
             <summary>
             Data class for storing record information.
             </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecord.#ctor(System.Int32,FileCabinetApp.FileCabinetData)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.
+            </summary>
+            <param name="id">Id of a new record.</param>
+            <param name="data"><see cref="T:FileCabinetApp.FileCabinetData"/>.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecord.#ctor(System.Int32,System.String,System.String,System.DateTime,System.Int16,System.Decimal,System.Char)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.
+            </summary>
+            <param name="id">Id of a record.</param>
+            <param name="firstName">First name of a record.</param>
+            <param name="lastName">Last name of a record.</param>
+            <param name="dateOfBirth">Date of birth of a record.</param>
+            <param name="carAmount">Car amount of a record.</param>
+            <param name="money">Money of a record.</param>
+            <param name="favoriteChar">Favorite char of a record.</param>
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Id">
             <summary>
@@ -573,6 +603,12 @@
             Restores data from <paramref name="snapshot"/>.
             </summary>
             <param name="snapshot"><see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> with data.</param>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.RemoveRecord(System.Int32)">
+            <summary>
+            Removes record from service.
+            </summary>
+            <param name="id">Id of a <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</param>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>
