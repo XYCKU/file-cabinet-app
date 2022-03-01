@@ -4,6 +4,38 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.AppCommandRequest">
+            <summary>
+            Holds command and parameters.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.AppCommandRequest.Command">
+            <summary>
+            Gets or sets a command.
+            </summary>
+            <value>A command.</value>
+        </member>
+        <member name="P:FileCabinetApp.AppCommandRequest.Parameters">
+            <summary>
+            Gets or sets parameters.
+            </summary>
+            <value>Parameters.</value>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandler">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandler.Handle(FileCabinetApp.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlerBase">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlerBase.Handle(FileCabinetApp.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlerBase.SetNext(FileCabinetApp.ICommandHandler)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.CustomValidator">
             <summary>
             Default validator for <see cref="T:FileCabinetApp.FileCabinetData"/>.
@@ -512,6 +544,23 @@
             </summary>
             <param name="reader"><see cref="T:System.IO.StreamReader"/> to read from.</param>
         </member>
+        <member name="T:FileCabinetApp.ICommandHandler">
+            <summary>
+            Handles a command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ICommandHandler.SetNext(FileCabinetApp.ICommandHandler)">
+            <summary>
+            Sets next <see cref="T:FileCabinetApp.ICommandHandler"/> in chain.
+            </summary>
+            <param name="commandHandler">Next <see cref="T:FileCabinetApp.ICommandHandler"/>.</param>
+        </member>
+        <member name="M:FileCabinetApp.ICommandHandler.Handle(FileCabinetApp.AppCommandRequest)">
+            <summary>
+            Handles a <see cref="T:FileCabinetApp.AppCommandRequest"/>.
+            </summary>
+            <param name="commandRequest"><see cref="T:FileCabinetApp.AppCommandRequest"/> data.</param>
+        </member>
         <member name="T:FileCabinetApp.IFileCabinetRecordReader">
             <summary>
             FileCabinetRecordReader.
@@ -661,6 +710,24 @@
             <summary>
             Console application class.
             </summary>
+        </member>
+        <member name="P:FileCabinetApp.Program.IsRunning">
+            <summary>
+            Gets or sets a value indicating whether program is running.
+            </summary>
+            <value>Indicating whether program is running.</value>
+        </member>
+        <member name="P:FileCabinetApp.Program.Validator">
+            <summary>
+            Gets or sets validator.
+            </summary>
+            <value>Validator.</value>
+        </member>
+        <member name="P:FileCabinetApp.Program.FileCabinetService">
+            <summary>
+            Gets or sets fileCabinetService.
+            </summary>
+            <value>fileCabinetService.</value>
         </member>
         <member name="M:FileCabinetApp.Program.Main(System.String[])">
             <summary>
