@@ -8,7 +8,10 @@ namespace FileCabinetApp.CommandHandlers
     public class FindCommandHandler : CommandHandlerBase
     {
         /// <inheritdoc/>
-        public override void Handle(AppCommandRequest commandRequest)
+        protected override string Command { get; } = "find";
+
+        /// <inheritdoc/>
+        protected override void Action(AppCommandRequest commandRequest)
         {
             if (string.IsNullOrWhiteSpace(commandRequest.Parameters))
             {

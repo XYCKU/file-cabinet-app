@@ -6,7 +6,10 @@ namespace FileCabinetApp.CommandHandlers
     public class StatCommandHandler : CommandHandlerBase
     {
         /// <inheritdoc/>
-        public override void Handle(AppCommandRequest commandRequest)
+        protected override string Command { get; } = "stat";
+
+        /// <inheritdoc/>
+        protected override void Action(AppCommandRequest commandRequest)
         {
             var stat = Program.FileCabinetService.GetStat();
             Console.WriteLine($"{stat.Item1} record(s).");

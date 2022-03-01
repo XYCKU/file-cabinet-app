@@ -6,7 +6,10 @@ namespace FileCabinetApp.CommandHandlers
     public class EditCommandHandler : CommandHandlerBase
     {
         /// <inheritdoc/>
-        public override void Handle(AppCommandRequest commandRequest)
+        protected override string Command { get; } = "edit";
+
+        /// <inheritdoc/>
+        protected override void Action(AppCommandRequest commandRequest)
         {
             if (string.IsNullOrWhiteSpace(commandRequest.Parameters))
             {

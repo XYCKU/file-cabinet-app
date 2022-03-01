@@ -6,7 +6,10 @@ namespace FileCabinetApp.CommandHandlers
     public class ExitCommandHandler : CommandHandlerBase
     {
         /// <inheritdoc/>
-        public override void Handle(AppCommandRequest commandRequest)
+        protected override string Command { get; } = "exit";
+
+        /// <inheritdoc/>
+        protected override void Action(AppCommandRequest commandRequest)
         {
             Console.WriteLine("Exiting an application...");
             Program.IsRunning = false;

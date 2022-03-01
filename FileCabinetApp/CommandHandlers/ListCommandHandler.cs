@@ -6,7 +6,10 @@ namespace FileCabinetApp.CommandHandlers
     public class ListCommandHandler : CommandHandlerBase
     {
         /// <inheritdoc/>
-        public override void Handle(AppCommandRequest commandRequest)
+        protected override string Command { get; } = "list";
+
+        /// <inheritdoc/>
+        protected override void Action(AppCommandRequest commandRequest)
         {
             var records = Program.FileCabinetService.GetRecords();
 

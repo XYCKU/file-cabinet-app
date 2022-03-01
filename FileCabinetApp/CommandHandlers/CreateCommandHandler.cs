@@ -6,7 +6,10 @@ namespace FileCabinetApp.CommandHandlers
     public class CreateCommandHandler : CommandHandlerBase
     {
         /// <inheritdoc/>
-        public override void Handle(AppCommandRequest commandRequest)
+        protected override string Command { get; } = "create";
+
+        /// <inheritdoc/>
+        protected override void Action(AppCommandRequest commandRequest)
         {
             int recordId;
 

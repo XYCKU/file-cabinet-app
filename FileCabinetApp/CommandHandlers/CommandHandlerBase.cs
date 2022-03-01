@@ -7,8 +7,27 @@ namespace FileCabinetApp.CommandHandlers
     {
         private ICommandHandler? nextHandler;
 
+        /// <summary>
+        /// Gets command.
+        /// </summary>
+        /// <value>Command.</value>
+        protected virtual string Command { get; } = string.Empty;
+
         /// <inheritdoc/>
-        public abstract void Handle(AppCommandRequest commandRequest);
+        public virtual void Handle(AppCommandRequest commandRequest)
+        {
+            if (string.Equals(commandRequest.Command, this.Command, StringComparison.OrdinalIgnoreCase))
+            {
+                this.Action(commandRequest);
+            }
+            else
+            {
+                if (this.nextHandler != null)
+                {
+                    this.nextHandler.Handle(commandRequest);
+                }
+            }
+        }
 
         /// <inheritdoc/>
         public void SetNext(ICommandHandler commandHandler)
@@ -20,5 +39,11 @@ namespace FileCabinetApp.CommandHandlers
 
             this.nextHandler = commandHandler;
         }
+
+        /// <summary>
+        /// Action to do.
+        /// </summary>
+        /// <param name="commandRequest">Command info.</param>
+        protected abstract void Action(AppCommandRequest commandRequest);
     }
 }

@@ -6,7 +6,10 @@ namespace FileCabinetApp.CommandHandlers
     public class ImportCommandHandler : CommandHandlerBase
     {
         /// <inheritdoc/>
-        public override void Handle(AppCommandRequest commandRequest)
+        protected override string Command { get; } = "import";
+
+        /// <inheritdoc/>
+        protected override void Action(AppCommandRequest commandRequest)
         {
             if (string.IsNullOrWhiteSpace(commandRequest.Parameters))
             {

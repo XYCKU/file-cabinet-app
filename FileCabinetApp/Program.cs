@@ -60,7 +60,7 @@ namespace FileCabinetApp
             Console.WriteLine($"Using {FileCabinetService} storage method.");
             Console.WriteLine();
 
-            ICommandHandler commandHandler = CreateCommandHandler();
+            ICommandHandler commandHandler = GetCommandHandlers();
 
             do
             {
@@ -321,9 +321,30 @@ namespace FileCabinetApp
             $"Favorite char: {record.Money}{Environment.NewLine}" +
             $"Record #{id} is {pastAction}.";
 
-        private static ICommandHandler CreateCommandHandler()
+        private static ICommandHandler GetCommandHandlers()
         {
-            return new CommandHandler();
+            var handlers = new ICommandHandler[]
+            {
+                new HelpCommandHandler(),
+                new CreateCommandHandler(),
+                new EditCommandHandler(),
+                new FindCommandHandler(),
+                new ListCommandHandler(),
+                new StatCommandHandler(),
+                new ExportCommandHandler(),
+                new ImportCommandHandler(),
+                new PurgeCommandHandler(),
+                new RemoveCommandHandler(),
+                new ExitCommandHandler(),
+                new MissedCommandHandler(),
+            };
+
+            for (int i = 0; i < handlers.Length - 1; ++i)
+            {
+                handlers[i].SetNext(handlers[i + 1]);
+            }
+
+            return handlers[0];
         }
 
         private static IRecordValidator GetCabinetServiceValidator(string name) => name switch

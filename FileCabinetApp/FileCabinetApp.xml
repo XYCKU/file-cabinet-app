@@ -21,19 +21,150 @@
             </summary>
             <value>Parameters.</value>
         </member>
-        <member name="T:FileCabinetApp.CommandHandler">
+        <member name="T:FileCabinetApp.CommandHandlers.CommandHandlerBase">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.CommandHandler.Handle(FileCabinetApp.AppCommandRequest)">
+        <member name="P:FileCabinetApp.CommandHandlers.CommandHandlerBase.Command">
+            <summary>
+            Gets command.
+            </summary>
+            <value>Command.</value>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.Handle(FileCabinetApp.AppCommandRequest)">
             <inheritdoc/>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlerBase">
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.SetNext(FileCabinetApp.CommandHandlers.ICommandHandler)">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlerBase.Handle(FileCabinetApp.AppCommandRequest)">
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.Action(FileCabinetApp.AppCommandRequest)">
+            <summary>
+            Action to do.
+            </summary>
+            <param name="commandRequest">Command info.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.CreateCommandHandler">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlerBase.SetNext(FileCabinetApp.ICommandHandler)">
+        <member name="P:FileCabinetApp.CommandHandlers.CreateCommandHandler.Command">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CreateCommandHandler.Action(FileCabinetApp.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.EditCommandHandler">
+            <inheritdoc/>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.EditCommandHandler.Command">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.EditCommandHandler.Action(FileCabinetApp.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ExitCommandHandler">
+            <inheritdoc/>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.ExitCommandHandler.Command">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExitCommandHandler.Action(FileCabinetApp.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ExportCommandHandler">
+            <inheritdoc/>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.ExportCommandHandler.Command">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExportCommandHandler.Action(FileCabinetApp.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.FindCommandHandler">
+            <inheritdoc/>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.FindCommandHandler.Command">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.Action(FileCabinetApp.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.HelpCommandHandler">
+            <inheritdoc/>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.HelpCommandHandler.Command">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.HelpCommandHandler.Action(FileCabinetApp.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ICommandHandler">
+            <summary>
+            Handles a command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ICommandHandler.SetNext(FileCabinetApp.CommandHandlers.ICommandHandler)">
+            <summary>
+            Sets next <see cref="T:FileCabinetApp.CommandHandlers.ICommandHandler"/> in chain.
+            </summary>
+            <param name="commandHandler">Next <see cref="T:FileCabinetApp.CommandHandlers.ICommandHandler"/>.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ICommandHandler.Handle(FileCabinetApp.AppCommandRequest)">
+            <summary>
+            Handles a <see cref="T:FileCabinetApp.AppCommandRequest"/>.
+            </summary>
+            <param name="commandRequest"><see cref="T:FileCabinetApp.AppCommandRequest"/> data.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ImportCommandHandler">
+            <inheritdoc/>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.ImportCommandHandler.Command">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ImportCommandHandler.Action(FileCabinetApp.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ListCommandHandler">
+            <inheritdoc/>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.ListCommandHandler.Command">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.Action(FileCabinetApp.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.MissedCommandHandler">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.MissedCommandHandler.Handle(FileCabinetApp.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.MissedCommandHandler.Action(FileCabinetApp.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.PurgeCommandHandler">
+            <inheritdoc/>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.PurgeCommandHandler.Command">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.PurgeCommandHandler.Action(FileCabinetApp.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.RemoveCommandHandler">
+            <inheritdoc/>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.RemoveCommandHandler.Command">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.RemoveCommandHandler.Action(FileCabinetApp.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.StatCommandHandler">
+            <inheritdoc/>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.StatCommandHandler.Command">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.StatCommandHandler.Action(FileCabinetApp.AppCommandRequest)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.CustomValidator">
@@ -544,23 +675,6 @@
             </summary>
             <param name="reader"><see cref="T:System.IO.StreamReader"/> to read from.</param>
         </member>
-        <member name="T:FileCabinetApp.ICommandHandler">
-            <summary>
-            Handles a command.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.ICommandHandler.SetNext(FileCabinetApp.ICommandHandler)">
-            <summary>
-            Sets next <see cref="T:FileCabinetApp.ICommandHandler"/> in chain.
-            </summary>
-            <param name="commandHandler">Next <see cref="T:FileCabinetApp.ICommandHandler"/>.</param>
-        </member>
-        <member name="M:FileCabinetApp.ICommandHandler.Handle(FileCabinetApp.AppCommandRequest)">
-            <summary>
-            Handles a <see cref="T:FileCabinetApp.AppCommandRequest"/>.
-            </summary>
-            <param name="commandRequest"><see cref="T:FileCabinetApp.AppCommandRequest"/> data.</param>
-        </member>
         <member name="T:FileCabinetApp.IFileCabinetRecordReader">
             <summary>
             FileCabinetRecordReader.
@@ -711,6 +825,11 @@
             Console application class.
             </summary>
         </member>
+        <member name="F:FileCabinetApp.Program.DateTimeFormat">
+            <summary>
+            Dafault date format.
+            </summary>
+        </member>
         <member name="P:FileCabinetApp.Program.IsRunning">
             <summary>
             Gets or sets a value indicating whether program is running.
@@ -734,6 +853,109 @@
             Entry point.
             </summary>
             <param name="args">Console arguments.</param>
+        </member>
+        <member name="M:FileCabinetApp.Program.StringConverter(System.String)">
+            <summary>
+            Converts to string.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple with result.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Program.DateConverter(System.String)">
+            <summary>
+            Converts to string.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple with result.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Program.CharConverter(System.String)">
+            <summary>
+            Converts to string.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple with result.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Program.ShortConverter(System.String)">
+            <summary>
+            Converts to string.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple with result.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Program.DecimalConverter(System.String)">
+            <summary>
+            Converts to string.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple with result.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Program.FirstNameValidator(System.String)">
+            <summary>
+            Validates given parameter.
+            </summary>
+            <param name="firstName">First name.</param>
+            <returns>Returns is input valid.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Program.LastNameValidator(System.String)">
+            <summary>
+            Validates given parameter.
+            </summary>
+            <param name="lastName">Last name.</param>
+            <returns>Returns is input valid.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Program.DateOfBirthValidator(System.DateTime)">
+            <summary>
+            Validates given parameter.
+            </summary>
+            <param name="dateOfBirth">Date of birth.</param>
+            <returns>Returns is input valid.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Program.CarAmountValidator(System.Int16)">
+            <summary>
+            Validates given parameter.
+            </summary>
+            <param name="carAmount">Car amount.</param>
+            <returns>Returns is input valid.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Program.MoneyValidator(System.Decimal)">
+            <summary>
+            Validates given parameter.
+            </summary>
+            <param name="money">Money.</param>
+            <returns>Returns is input valid.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Program.FavoriteCharValidator(System.Char)">
+            <summary>
+            Validates given parameter.
+            </summary>
+            <param name="favoriteChar">Favorite char.</param>
+            <returns>Returns is input valid.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Program.ReadInput``1(System.Func{System.String,System.Tuple{System.Boolean,System.String,``0}},System.Func{``0,System.Tuple{System.Boolean,System.String}})">
+            <summary>
+            Reads input, converts and validates it.
+            </summary>
+            <typeparam name="T">Return type.</typeparam>
+            <param name="converter">Converter.</param>
+            <param name="validator">Validator.</param>
+            <returns>Valid result.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Program.FormatRecord(FileCabinetApp.FileCabinetData,System.Int32)">
+            <summary>
+            Format record to short variant.
+            </summary>
+            <param name="record">Record.</param>
+            <param name="id">Id of a record.</param>
+            <returns>Formatted string.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Program.LongFormatRecord(FileCabinetApp.FileCabinetData,System.Int32,System.String)">
+            <summary>
+            Format record to short variant.
+            </summary>
+            <param name="record">Record.</param>
+            <param name="id">Id of a record.</param>
+            <param name="pastAction">Action done to record.</param>
+            <returns>Formatted string.</returns>
         </member>
     </members>
 </doc>

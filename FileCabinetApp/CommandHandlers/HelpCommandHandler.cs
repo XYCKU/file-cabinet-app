@@ -24,7 +24,10 @@ namespace FileCabinetApp.CommandHandlers
         };
 
         /// <inheritdoc/>
-        public override void Handle(AppCommandRequest commandRequest)
+        protected override string Command { get; } = "help";
+
+        /// <inheritdoc/>
+        protected override void Action(AppCommandRequest commandRequest)
         {
             if (!string.IsNullOrEmpty(commandRequest.Parameters))
             {

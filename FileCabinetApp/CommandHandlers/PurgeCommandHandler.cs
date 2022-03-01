@@ -6,7 +6,10 @@ namespace FileCabinetApp.CommandHandlers
     public class PurgeCommandHandler : CommandHandlerBase
     {
         /// <inheritdoc/>
-        public override void Handle(AppCommandRequest commandRequest)
+        protected override string Command { get; } = "purge";
+
+        /// <inheritdoc/>
+        protected override void Action(AppCommandRequest commandRequest)
         {
             var filesystemService = Program.FileCabinetService as FileCabinetFilesystemService;
 
