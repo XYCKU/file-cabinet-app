@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.CommandHandlers
 {
     /// <inheritdoc/>
     public abstract class CommandHandlerBase : ICommandHandler
