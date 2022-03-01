@@ -43,6 +43,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
             new Tuple<string, Action<string>>("remove", Remove),
+            new Tuple<string, Action<string>>("purge", Purge),
             new Tuple<string, Action<string>>("exit", Exit),
         };
 
@@ -56,6 +57,7 @@ namespace FileCabinetApp
             new string[] { "export", "exports all records", "The 'export' command exports all records." },
             new string[] { "import", "imports records from file", "The 'import' command imports records from file." },
             new string[] { "remove", "removes record", "The 'remove' command removes record." },
+            new string[] { "purge", "defragments FileCabinetFilesystemService file", "The 'purge' command defragments FileCabinetFilesystemService file." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
@@ -184,7 +186,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            if (id >= fileCabinetService.GetStat())
+            if (id >= fileCabinetService.GetStat().Item1)
             {
                 Console.WriteLine($"#{id} record is not found.");
                 return;
@@ -278,17 +280,18 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
-            Console.WriteLine($"{recordsCount} record(s).");
+            var stat = Program.fileCabinetService.GetStat();
+            Console.WriteLine($"{stat.Item1} record(s).");
+            Console.WriteLine($"{stat.Item2} record(s) are deleted.");
         }
 
         private static void List(string parameters)
         {
-            var record = fileCabinetService.GetRecords();
+            var records = fileCabinetService.GetRecords();
 
-            for (int i = 0; i < record.Count; ++i)
+            for (int i = 0; i < records.Count; ++i)
             {
-                Console.WriteLine(record[i]);
+                Console.WriteLine(records[i]);
             }
         }
 
@@ -456,6 +459,22 @@ namespace FileCabinetApp
             {
                 Console.WriteLine($"Record #{id} doesn't exist.");
             }
+        }
+
+        private static void Purge(string parameters)
+        {
+            var filesystemService = fileCabinetService as FileCabinetFilesystemService;
+
+            if (filesystemService is null)
+            {
+                return;
+            }
+
+            var stat = filesystemService.GetStat();
+
+            filesystemService.PurgeRecords();
+
+            Console.WriteLine($"Data file processing is completed: {stat.Item2} of {stat.Item1} records were purged.");
         }
 
         private static string FormatRecord(FileCabinetData record, int id) => $"#{id}, " +

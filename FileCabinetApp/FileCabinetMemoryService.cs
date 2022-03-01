@@ -179,9 +179,9 @@ namespace FileCabinetApp
         /// Get amount of <see cref="FileCabinetRecord"/>s.
         /// </summary>
         /// <returns>Amount of <see cref="FileCabinetRecord"/> instances in list.</returns>
-        public int GetStat()
+        public Tuple<int, int> GetStat()
         {
-            return this.list.Count;
+            return new Tuple<int, int>(this.list.Count, 0);
         }
 
         /// <inheritdoc/>

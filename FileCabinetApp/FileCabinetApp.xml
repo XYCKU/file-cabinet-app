@@ -221,6 +221,11 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.RemoveRecord(System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.PurgeRecords">
+            <summary>
+            Purges file records.
+            </summary>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.ToString">
             <inheritdoc/>
         </member>

@@ -59,7 +59,7 @@ namespace FileCabinetApp
         /// Get amount of <see cref="FileCabinetRecord"/>s.
         /// </summary>
         /// <returns>Amount of <see cref="FileCabinetRecord"/> instances in list.</returns>
-        public int GetStat();
+        public Tuple<int, int> GetStat();
 
         /// <summary>
         /// Creates an instance of <see cref="FileCabinetServiceSnapshot"/>.

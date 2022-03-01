@@ -36,7 +36,7 @@ namespace FileCabinetApp
             this.fileStream = fileStream;
             this.Validator = validator;
 
-            this.count = this.GetStat();
+            this.count = this.GetStat().Item1;
         }
 
         /// <inheritdoc/>
@@ -116,25 +116,31 @@ namespace FileCabinetApp
 
             this.fileStream.Seek(0, SeekOrigin.Begin);
 
-            while (this.fileStream.Read(bytes, 0, RecordSize) > 0)
+            for (int i = 0; i < this.count; ++i)
             {
-                if (bytes[0] == 1)
+                if (this.fileStream.Read(bytes, 0, RecordSize) > 0)
                 {
-                    continue;
+                    if (bytes[0] == 1)
+                    {
+                        continue;
+                    }
+
+                    result.Add(ToRecord(bytes.AsSpan()[1..]));
                 }
-
-                var spanBytes = bytes.AsSpan()[1..];
-
-                result.Add(ToRecord(spanBytes));
+                else
+                {
+                    this.count = i;
+                    break;
+                }
             }
 
             return new ReadOnlyCollection<FileCabinetRecord>(result);
         }
 
         /// <inheritdoc/>
-        public int GetStat()
+        public Tuple<int, int> GetStat()
         {
-            return (int)(this.fileStream.Length / RecordSize) - this.deleted;
+            return new Tuple<int, int>(this.count, this.deleted);
         }
 
         /// <inheritdoc/>
@@ -146,24 +152,21 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public void Restore(FileCabinetServiceSnapshot snapshot)
         {
-            this.fileStream.Position = 0;
-
             FileCabinetRecord[] records = snapshot.Records.ToArray();
 
             this.count = records.Length;
+            this.deleted = 0;
+
+            this.fileStream.Position = 0;
 
             for (int i = 0; i < records.Length; ++i)
             {
                 byte[] bytes = ToBytes(records[i]);
 
-                if (bytes[0] == 1)
-                {
-                    ++this.deleted;
-                }
-
                 this.fileStream.Write(bytes);
-                this.fileStream.Flush();
             }
+
+            this.fileStream.Flush();
         }
 
         /// <inheritdoc/>
@@ -179,6 +182,20 @@ namespace FileCabinetApp
             this.fileStream.Position = index * RecordSize;
             this.fileStream.Write(new byte[] { 1 });
             ++this.deleted;
+        }
+
+        /// <summary>
+        /// Purges file records.
+        /// </summary>
+        public void PurgeRecords()
+        {
+            if (this.deleted == 0)
+            {
+                return;
+            }
+
+            FileCabinetServiceSnapshot snapshot = new FileCabinetServiceSnapshot(this.GetRecords().ToArray());
+            this.Restore(snapshot);
         }
 
         /// <inheritdoc/>
@@ -296,22 +313,22 @@ namespace FileCabinetApp
             int index = 0;
             this.fileStream.Position = 0;
 
-            while (this.fileStream.Read(bytes, 0, RecordSize) > 0)
+            for (int i = 0; i < this.count; ++i, ++index)
             {
-                if (bytes[0] == 1)
+                if (this.fileStream.Read(bytes, 0, RecordSize) > 0)
                 {
-                    ++index;
-                    continue;
+                    if (bytes[0] == 1)
+                    {
+                        continue;
+                    }
+
+                    var record = ToRecord(bytes.AsSpan()[1..]);
+
+                    if (id == record.Id)
+                    {
+                        return index;
+                    }
                 }
-
-                var record = ToRecord(bytes.AsSpan()[1..]);
-
-                if (id == record.Id)
-                {
-                    return index;
-                }
-
-                ++index;
             }
 
             return -1;
