@@ -29,7 +29,7 @@ namespace FileCabinetApp
             { "--storage", (string value) => { FileCabinetService = GetCabinetService(value); } },
         };
 
-        public static bool isRunning = true;
+        private static bool isRunning = true;
 
         /// <summary>
         /// Gets or sets validator.
@@ -329,7 +329,7 @@ namespace FileCabinetApp
                 new ImportCommandHandler(service),
                 new PurgeCommandHandler(service),
                 new RemoveCommandHandler(service),
-                new ExitCommandHandler(),
+                new ExitCommandHandler((bool state) => isRunning = state),
                 new MissedCommandHandler(),
             };
 

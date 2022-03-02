@@ -75,6 +75,12 @@
         <member name="T:FileCabinetApp.CommandHandlers.ExitCommandHandler">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExitCommandHandler.#ctor(System.Action{System.Boolean})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ExitCommandHandler"/> class.
+            </summary>
+            <param name="action">Action for interaction with program state.</param>
+        </member>
         <member name="P:FileCabinetApp.CommandHandlers.ExitCommandHandler.Command">
             <inheritdoc/>
         </member>
@@ -901,12 +907,6 @@
             <summary>
             Dafault date format.
             </summary>
-        </member>
-        <member name="P:FileCabinetApp.Program.IsRunning">
-            <summary>
-            Gets or sets a value indicating whether program is running.
-            </summary>
-            <value>Indicating whether program is running.</value>
         </member>
         <member name="P:FileCabinetApp.Program.Validator">
             <summary>
