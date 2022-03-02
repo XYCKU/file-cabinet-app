@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Globalization;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Validators
 {
     /// <summary>
     /// Default validator for <see cref="FileCabinetData"/>.
     /// </summary>
-    public class DefaultValidator : IRecordValidator
+    public class CustomValidator : IRecordValidator
     {
         /// <summary>
         /// Minimum length for name field.
         /// </summary>
-        public const int MinNameLength = 2;
+        protected const int MinNameLength = 2;
 
         /// <summary>
         /// Maximum length for name field.
         /// </summary>
-        public const int MaxNameLength = 60;
+        protected const int MaxNameLength = 60;
 
         /// <summary>
         /// The earliest date that can DateOfBirth field has.
         /// </summary>
-        public static readonly DateTime EarliestDate = new DateTime(1950, 01, 01);
+        protected static readonly DateTime EarliestDate = new DateTime(1950, 01, 01);
 
         /// <summary>
         /// Validates given data parameters.
@@ -31,7 +31,7 @@ namespace FileCabinetApp
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.FirstName.Length"/> or <paramref name="data.LastName.Length"/> is less than 2 or greater than 60.</exception>
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="DateTime.Now"/>.</exception>
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.CarAmount"/> or <paramref name="data.Money"/> is less than zero.</exception>
-        /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.FavoriteChar"/> is not a letter of english alphabet.</exception>
+        /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.FavoriteChar"/> is not a digit.</exception>
         public void ValidateParameters(FileCabinetData data)
         {
             if (data is null)
@@ -113,13 +113,13 @@ namespace FileCabinetApp
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="favoriteChar"/> is not a letter of english alphabet.</exception>
         public void ValidateFavoriteChar(char favoriteChar)
         {
-            if (!char.IsLetter(favoriteChar))
+            if (!char.IsDigit(favoriteChar))
             {
-                throw new ArgumentException($"favoriteChar {favoriteChar} is not a letter", nameof(favoriteChar));
+                throw new ArgumentException($"favoriteChar {favoriteChar} is not a digit", nameof(favoriteChar));
             }
         }
 
         /// <inheritdoc/>
-        public override string ToString() => $"default";
+        public override string ToString() => $"custom";
     }
 }
