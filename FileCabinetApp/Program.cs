@@ -317,13 +317,15 @@ namespace FileCabinetApp
 
         private static ICommandHandler GetCommandHandlers(IFileCabinetService service)
         {
+            var printer = new DefaultRecordPrinter();
+
             var handlers = new ICommandHandler[]
             {
                 new HelpCommandHandler(),
                 new CreateCommandHandler(service),
                 new EditCommandHandler(service),
-                new FindCommandHandler(service),
-                new ListCommandHandler(service),
+                new FindCommandHandler(service, printer),
+                new ListCommandHandler(service, printer),
                 new StatCommandHandler(service),
                 new ExportCommandHandler(service),
                 new ImportCommandHandler(service),

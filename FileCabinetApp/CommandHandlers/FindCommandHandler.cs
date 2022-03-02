@@ -5,14 +5,15 @@ using System.Globalization;
 namespace FileCabinetApp.CommandHandlers
 {
     /// <inheritdoc/>
-    public class FindCommandHandler : ServiceCommandHandlerBase
+    public class FindCommandHandler : PrintServiceCommandHandlerBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
         /// </summary>
         /// <param name="service">Service.</param>
-        public FindCommandHandler(IFileCabinetService service)
-            : base(service)
+        /// <param name="printer">Printer.</param>
+        public FindCommandHandler(IFileCabinetService service, IRecordPrinter printer)
+            : base(service, printer)
         {
         }
 
@@ -75,10 +76,9 @@ namespace FileCabinetApp.CommandHandlers
                     return;
             }
 
-            for (int i = 0; i < result.Count; ++i)
-            {
-                Console.WriteLine(result[i]);
-            }
+            Console.WriteLine($"Found {result.Count} results.");
+
+            this.Printer.Print(result);
         }
     }
 }

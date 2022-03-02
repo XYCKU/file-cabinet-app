@@ -105,11 +105,12 @@
         <member name="T:FileCabinetApp.CommandHandlers.FindCommandHandler">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.#ctor(FileCabinetApp.IFileCabinetService)">
+        <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.#ctor(FileCabinetApp.IFileCabinetService,FileCabinetApp.IRecordPrinter)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FindCommandHandler"/> class.
             </summary>
             <param name="service">Service.</param>
+            <param name="printer">Printer.</param>
         </member>
         <member name="P:FileCabinetApp.CommandHandlers.FindCommandHandler.Command">
             <inheritdoc/>
@@ -161,11 +162,12 @@
         <member name="T:FileCabinetApp.CommandHandlers.ListCommandHandler">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.#ctor(FileCabinetApp.IFileCabinetService)">
+        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.#ctor(FileCabinetApp.IFileCabinetService,FileCabinetApp.IRecordPrinter)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ListCommandHandler"/> class.
             </summary>
             <param name="service">Service.</param>
+            <param name="printer">Printer.</param>
         </member>
         <member name="P:FileCabinetApp.CommandHandlers.ListCommandHandler.Command">
             <inheritdoc/>
@@ -180,6 +182,25 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.MissedCommandHandler.Action(FileCabinetApp.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.PrintServiceCommandHandlerBase">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.PrintServiceCommandHandlerBase.#ctor(FileCabinetApp.IFileCabinetService,FileCabinetApp.IRecordPrinter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.PrintServiceCommandHandlerBase"/> class.
+            </summary>
+            <param name="service">Service.</param>
+            <param name="printer">Info printer.</param>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.PrintServiceCommandHandlerBase.Printer">
+            <summary>
+            Gets printer.
+            </summary>
+            <value>Printer.</value>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.PrintServiceCommandHandlerBase.Action(FileCabinetApp.AppCommandRequest)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.PurgeCommandHandler">
@@ -303,6 +324,12 @@
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="favoriteChar"/> is not a letter of english alphabet.</exception>
         </member>
         <member name="M:FileCabinetApp.CustomValidator.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.DefaultRecordPrinter">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.DefaultRecordPrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.DefaultValidator">
@@ -631,16 +658,6 @@
             </summary>
             <value>The favorite char of the <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</value>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetRecord.ToString">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetRecord.ToString(System.String)">
-            <summary>
-            Returns a string that represents the current object.
-            </summary>
-            <param name="pastAction">Action.</param>
-            <returns>A string that represents the current object.</returns>
-        </member>
         <member name="T:FileCabinetApp.FileCabinetRecordCsvReader">
             <inheritdoc/>
         </member>
@@ -850,6 +867,17 @@
             Removes record from service.
             </summary>
             <param name="id">Id of a <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</param>
+        </member>
+        <member name="T:FileCabinetApp.IRecordPrinter">
+            <summary>
+            Info printer interface.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IRecordPrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Prints info.
+            </summary>
+            <param name="records">Info to print.</param>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>

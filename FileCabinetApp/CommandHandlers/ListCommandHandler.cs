@@ -3,14 +3,15 @@
 namespace FileCabinetApp.CommandHandlers
 {
     /// <inheritdoc/>
-    public class ListCommandHandler : ServiceCommandHandlerBase
+    public class ListCommandHandler : PrintServiceCommandHandlerBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ListCommandHandler"/> class.
         /// </summary>
         /// <param name="service">Service.</param>
-        public ListCommandHandler(IFileCabinetService service)
-            : base(service)
+        /// <param name="printer">Printer.</param>
+        public ListCommandHandler(IFileCabinetService service, IRecordPrinter printer)
+            : base(service, printer)
         {
         }
 
@@ -22,10 +23,8 @@ namespace FileCabinetApp.CommandHandlers
         {
             var records = this.Service.GetRecords();
 
-            for (int i = 0; i < records.Count; ++i)
-            {
-                Console.WriteLine(records[i]);
-            }
+            Console.WriteLine($"File cabinet has {records.Count} records.");
+            this.Printer.Print(records);
         }
     }
 }

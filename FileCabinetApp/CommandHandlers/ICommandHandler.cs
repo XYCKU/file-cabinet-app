@@ -1,5 +1,7 @@
 ﻿using System;
 
+[assembly: CLSCompliant(true)]
+
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
