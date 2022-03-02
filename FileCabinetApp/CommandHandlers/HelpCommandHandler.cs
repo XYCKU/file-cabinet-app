@@ -23,15 +23,6 @@ namespace FileCabinetApp.CommandHandlers
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
         };
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HelpCommandHandler"/> class.
-        /// </summary>
-        /// <param name="service">Service.</param>
-        public HelpCommandHandler(IFileCabinetService service)
-            : base(service)
-        {
-        }
-
         /// <inheritdoc/>
         protected override string Command { get; } = "help";
 

@@ -3,7 +3,7 @@
 namespace FileCabinetApp.CommandHandlers
 {
     /// <inheritdoc/>
-    public class RemoveCommandHandler : CommandHandlerBase
+    public class RemoveCommandHandler : ServiceCommandHandlerBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoveCommandHandler"/> class.

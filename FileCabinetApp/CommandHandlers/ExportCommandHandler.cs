@@ -3,7 +3,7 @@
 namespace FileCabinetApp.CommandHandlers
 {
     /// <inheritdoc/>
-    public class ExportCommandHandler : CommandHandlerBase
+    public class ExportCommandHandler : ServiceCommandHandlerBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportCommandHandler"/> class.

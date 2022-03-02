@@ -3,7 +3,7 @@
 namespace FileCabinetApp.CommandHandlers
 {
     /// <inheritdoc/>
-    public class PurgeCommandHandler : CommandHandlerBase
+    public class PurgeCommandHandler : ServiceCommandHandlerBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PurgeCommandHandler"/> class.

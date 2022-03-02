@@ -3,7 +3,7 @@
 namespace FileCabinetApp.CommandHandlers
 {
     /// <inheritdoc/>
-    public class EditCommandHandler : CommandHandlerBase
+    public class EditCommandHandler : ServiceCommandHandlerBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EditCommandHandler"/> class.

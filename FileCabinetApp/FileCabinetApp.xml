@@ -24,23 +24,11 @@
         <member name="T:FileCabinetApp.CommandHandlers.CommandHandlerBase">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.#ctor(FileCabinetApp.IFileCabinetService)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.CommandHandlerBase"/> class.
-            </summary>
-            <param name="service">Service.</param>
-        </member>
         <member name="P:FileCabinetApp.CommandHandlers.CommandHandlerBase.Command">
             <summary>
             Gets command.
             </summary>
             <value>Command.</value>
-        </member>
-        <member name="P:FileCabinetApp.CommandHandlers.CommandHandlerBase.Service">
-            <summary>
-            Gets service.
-            </summary>
-            <value>Service.</value>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.Handle(FileCabinetApp.AppCommandRequest)">
             <inheritdoc/>
@@ -87,12 +75,6 @@
         <member name="T:FileCabinetApp.CommandHandlers.ExitCommandHandler">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ExitCommandHandler.#ctor(FileCabinetApp.IFileCabinetService)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ExitCommandHandler"/> class.
-            </summary>
-            <param name="service">Service.</param>
-        </member>
         <member name="P:FileCabinetApp.CommandHandlers.ExitCommandHandler.Command">
             <inheritdoc/>
         </member>
@@ -131,12 +113,6 @@
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.HelpCommandHandler">
             <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.HelpCommandHandler.#ctor(FileCabinetApp.IFileCabinetService)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.HelpCommandHandler"/> class.
-            </summary>
-            <param name="service">Service.</param>
         </member>
         <member name="P:FileCabinetApp.CommandHandlers.HelpCommandHandler.Command">
             <inheritdoc/>
@@ -194,12 +170,6 @@
         <member name="T:FileCabinetApp.CommandHandlers.MissedCommandHandler">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.MissedCommandHandler.#ctor(FileCabinetApp.IFileCabinetService)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.MissedCommandHandler"/> class.
-            </summary>
-            <param name="service">Service.</param>
-        </member>
         <member name="M:FileCabinetApp.CommandHandlers.MissedCommandHandler.Handle(FileCabinetApp.AppCommandRequest)">
             <inheritdoc/>
         </member>
@@ -234,6 +204,24 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.RemoveCommandHandler.Action(FileCabinetApp.AppCommandRequest)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.#ctor(FileCabinetApp.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase"/> class.
+            </summary>
+            <param name="service">Service.</param>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.Service">
+            <summary>
+            Gets service.
+            </summary>
+            <value>Service.</value>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.Action(FileCabinetApp.AppCommandRequest)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.StatCommandHandler">

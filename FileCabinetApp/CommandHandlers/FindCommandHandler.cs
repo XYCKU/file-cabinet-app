@@ -5,7 +5,7 @@ using System.Globalization;
 namespace FileCabinetApp.CommandHandlers
 {
     /// <inheritdoc/>
-    public class FindCommandHandler : CommandHandlerBase
+    public class FindCommandHandler : ServiceCommandHandlerBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.

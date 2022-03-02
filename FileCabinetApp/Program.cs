@@ -29,11 +29,7 @@ namespace FileCabinetApp
             { "--storage", (string value) => { FileCabinetService = GetCabinetService(value); } },
         };
 
-        /// <summary>
-        /// Gets or sets a value indicating whether program is running.
-        /// </summary>
-        /// <value>Indicating whether program is running.</value>
-        public static bool IsRunning { get; set; } = true;
+        public static bool isRunning = true;
 
         /// <summary>
         /// Gets or sets validator.
@@ -84,7 +80,7 @@ namespace FileCabinetApp
                     Parameters = parameters,
                 });
             }
-            while (IsRunning);
+            while (isRunning);
         }
 
         /// <summary>
@@ -323,7 +319,7 @@ namespace FileCabinetApp
         {
             var handlers = new ICommandHandler[]
             {
-                new HelpCommandHandler(service),
+                new HelpCommandHandler(),
                 new CreateCommandHandler(service),
                 new EditCommandHandler(service),
                 new FindCommandHandler(service),
@@ -333,8 +329,8 @@ namespace FileCabinetApp
                 new ImportCommandHandler(service),
                 new PurgeCommandHandler(service),
                 new RemoveCommandHandler(service),
-                new ExitCommandHandler(service),
-                new MissedCommandHandler(service),
+                new ExitCommandHandler(),
+                new MissedCommandHandler(),
             };
 
             for (int i = 0; i < handlers.Length - 1; ++i)
