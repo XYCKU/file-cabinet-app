@@ -46,23 +46,22 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             Console.Write("First name: ");
-            string firstName = Program.ReadInput(InputConverter.StringConverter, Program.InputValidator.FirstNameValidator);
+            string firstName = Program.ReadInput(InputConverter.StringConverter, this.Service.InputValidator.FirstNameValidator);
 
             Console.Write("Last name: ");
-            string lastName = Program.ReadInput(InputConverter.StringConverter, Program.InputValidator.LastNameValidator);
+            string lastName = Program.ReadInput(InputConverter.StringConverter, this.Service.InputValidator.LastNameValidator);
 
             Console.Write("Date of birth: ");
-            DateTime dt = Program.ReadInput(InputConverter.DateConverter, Program.InputValidator.DateOfBirthValidator);
+            DateTime dt = Program.ReadInput(InputConverter.DateConverter, this.Service.InputValidator.DateOfBirthValidator);
 
             Console.Write("Car amount: ");
-            short carAmount = Program.ReadInput(InputConverter.ShortConverter, Program.InputValidator.CarAmountValidator);
+            short carAmount = Program.ReadInput(InputConverter.ShortConverter, this.Service.InputValidator.CarAmountValidator);
 
             Console.Write("Money: ");
-            decimal money = Program.ReadInput(InputConverter.DecimalConverter, Program.InputValidator.MoneyValidator);
+            decimal money = Program.ReadInput(InputConverter.DecimalConverter, this.Service.InputValidator.MoneyValidator);
 
             Console.Write("Favorite char: ");
-            char favoriteChar = Program.ReadInput(InputConverter.CharConverter, Program.InputValidator.FavoriteCharValidator);
-
+            char favoriteChar = Program.ReadInput(InputConverter.CharConverter, this.Service.InputValidator.FavoriteCharValidator);
             var data = new FileCabinetData(firstName, lastName, dt, carAmount, money, favoriteChar);
 
             this.Service.EditRecord(id, data);

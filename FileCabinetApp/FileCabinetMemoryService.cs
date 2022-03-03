@@ -26,21 +26,28 @@ namespace FileCabinetApp
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class with validator.
         /// </summary>
         /// <param name="validator">Validator.</param>
-        public FileCabinetMemoryService(IRecordValidator validator)
+        /// <param name="inputValidator">Input validator.</param>
+        public FileCabinetMemoryService(IRecordValidator validator, IInputValidator inputValidator)
         {
             if (validator is null)
             {
                 throw new ArgumentNullException(nameof(validator));
             }
 
+            if (inputValidator is null)
+            {
+                throw new ArgumentNullException(nameof(inputValidator));
+            }
+
             this.Validator = validator;
+            this.InputValidator = inputValidator;
         }
 
-        /// <summary>
-        /// Gets validator for input data.
-        /// </summary>
-        /// <value>Validator for input data.</value>
+        /// <inheritdoc/>
         public IRecordValidator Validator { get; }
+
+        /// <inheritdoc/>
+        public IInputValidator InputValidator { get; }
 
         /// <summary>
         /// Creates a new <see cref="FileCabinetRecord"/> instance.

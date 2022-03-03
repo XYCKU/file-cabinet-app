@@ -9,8 +9,6 @@ namespace FileCabinetApp
     /// <inheritdoc/>
     public class FileCabinetRecordXmlReader : IFileCabinetRecordReader
     {
-        private const string DateTimeFormat = "MM/dd/yyyy";
-        private static readonly IRecordValidator Validator = new DefaultValidator();
         private static readonly XmlSerializer Serializer = new XmlSerializer(typeof(FileCabinetRecord));
         private readonly XmlReader reader;
 

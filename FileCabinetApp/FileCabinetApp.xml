@@ -328,15 +328,19 @@
         <member name="T:FileCabinetApp.FileCabinetFilesystemService">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream,FileCabinetApp.Validators.IRecordValidator)">
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream,FileCabinetApp.Validators.IRecordValidator,FileCabinetApp.Validators.IInputValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetFilesystemService"/> class.
             </summary>
             <param name="fileStream"><see cref="T:System.IO.FileStream"/>.</param>
             <param name="validator"><see cref="T:FileCabinetApp.Validators.IRecordValidator"/>.</param>
+            <param name="inputValidator"><see cref="T:FileCabinetApp.Validators.IInputValidator"/>.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="fileStream"/> is <c>null</c>.</exception>
         </member>
         <member name="P:FileCabinetApp.FileCabinetFilesystemService.Validator">
+            <inheritdoc/>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetFilesystemService.InputValidator">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord(FileCabinetApp.FileCabinetData)">
@@ -387,17 +391,18 @@
             The earliest date that can DateOfBirth field has.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetMemoryService.#ctor(FileCabinetApp.Validators.IRecordValidator)">
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.#ctor(FileCabinetApp.Validators.IRecordValidator,FileCabinetApp.Validators.IInputValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetMemoryService"/> class with validator.
             </summary>
             <param name="validator">Validator.</param>
+            <param name="inputValidator">Input validator.</param>
         </member>
         <member name="P:FileCabinetApp.FileCabinetMemoryService.Validator">
-            <summary>
-            Gets validator for input data.
-            </summary>
-            <value>Validator for input data.</value>
+            <inheritdoc/>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetMemoryService.InputValidator">
+            <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.CreateRecord(FileCabinetApp.FileCabinetData)">
             <summary>
@@ -679,6 +684,12 @@
         </member>
         <member name="P:FileCabinetApp.IFileCabinetService.Validator">
             <summary>
+            Gets validator for given data.
+            </summary>
+            <value>Validator for given data.</value>
+        </member>
+        <member name="P:FileCabinetApp.IFileCabinetService.InputValidator">
+            <summary>
             Gets validator for input data.
             </summary>
             <value>Validator for input data.</value>
@@ -816,18 +827,6 @@
             Dafault date format.
             </summary>
         </member>
-        <member name="P:FileCabinetApp.Program.Validator">
-            <summary>
-            Gets or sets record validator.
-            </summary>
-            <value>Record validator.</value>
-        </member>
-        <member name="P:FileCabinetApp.Program.InputValidator">
-            <summary>
-            Gets or sets input validator.
-            </summary>
-            <value>Input validator.</value>
-        </member>
         <member name="P:FileCabinetApp.Program.FileCabinetService">
             <summary>
             Gets or sets fileCabinetService.
@@ -902,6 +901,14 @@
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> or <paramref name="data.Money.Money"/> is less than zero.</exception>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a letter of english alphabet.</exception>
         </member>
+        <member name="T:FileCabinetApp.Validators.CustomInputValidator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomInputValidator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.CustomInputValidator"/> class.
+            </summary>
+        </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>
             Default validator for <see cref="T:FileCabinetApp.FileCabinetData"/>.
@@ -932,23 +939,10 @@
         <member name="T:FileCabinetApp.Validators.DefaultInputValidator">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.FirstNameValidator(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.LastNameValidator(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.DateOfBirthValidator(System.DateTime)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.CarAmountValidator(System.Int16)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.MoneyValidator(System.Decimal)">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.FavoriteCharValidator(System.Char)">
-            <inheritdoc/>
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.DefaultInputValidator"/> class.
+            </summary>
         </member>
         <member name="T:FileCabinetApp.Validators.DefaultValidator">
             <summary>
@@ -1038,6 +1032,42 @@
             </summary>
             <param name="favoriteChar">Favorite char.</param>
             <returns>Returns is input valid.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Validators.InputValidatorBase">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.InputValidatorBase.#ctor(System.Int32,System.Int32,System.Char,System.Char,System.Int16,System.Int16,System.Decimal,System.Decimal,System.DateTime,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.InputValidatorBase"/> class.
+            </summary>
+            <param name="minNameLength">.</param>
+            <param name="maxNameLength">..</param>
+            <param name="minChar">...</param>
+            <param name="maxChar">....</param>
+            <param name="minCarAmount">.....</param>
+            <param name="maxCarAmount">......</param>
+            <param name="minMoney">.,..</param>
+            <param name="maxMoney">.,.</param>
+            <param name="minDate">.,,.</param>
+            <param name="maxDate">...,.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.InputValidatorBase.CarAmountValidator(System.Int16)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.InputValidatorBase.DateOfBirthValidator(System.DateTime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.InputValidatorBase.FavoriteCharValidator(System.Char)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.InputValidatorBase.FirstNameValidator(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.InputValidatorBase.LastNameValidator(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.InputValidatorBase.MoneyValidator(System.Decimal)">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Validators.IRecordValidator">
             <summary>

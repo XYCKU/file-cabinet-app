@@ -20,34 +20,30 @@ namespace FileCabinetApp
 
         private static readonly Dictionary<string, Action> ConsoleVoidArguments = new Dictionary<string, Action>()
         {
-            { "--validation-rules=custom", () => { Validator = GetCabinetServiceValidator("custom"); } },
+            { "--validation-rules=custom", () => { validatorType = GetValidatorStringType("custom"); } },
         };
 
         private static readonly Dictionary<string, Action<string>> ConsoleStringArguments = new Dictionary<string, Action<string>>()
         {
-            { "-v", (string value) => { Validator = GetCabinetServiceValidator(value); } },
-            { "--storage", (string value) => { FileCabinetService = GetCabinetService(value); } },
+            { "-v", (string value) => { validatorType = GetValidatorStringType(value); } },
+            { "--storage", (string value) => { cabinetType = GetCabinetStringType(value); } },
         };
 
         private static bool isRunning = true;
 
-        /// <summary>
-        /// Gets or sets record validator.
-        /// </summary>
-        /// <value>Record validator.</value>
-        public static IRecordValidator Validator { get; set; } = new DefaultValidator();
+        private static string cabinetType = "memory";
+        private static string validatorType = "default";
 
-        /// <summary>
-        /// Gets or sets input validator.
-        /// </summary>
-        /// <value>Input validator.</value>
-        public static IInputValidator InputValidator { get; set; } = new DefaultInputValidator();
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        private static IRecordValidator validator;
+        private static IInputValidator inputValidator;
 
         /// <summary>
         /// Gets or sets fileCabinetService.
         /// </summary>
         /// <value>fileCabinetService.</value>
-        public static IFileCabinetService FileCabinetService { get; set; } = new FileCabinetMemoryService(Validator);
+        public static IFileCabinetService FileCabinetService { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         /// <summary>
         /// Entry point.
@@ -56,9 +52,14 @@ namespace FileCabinetApp
         public static void Main(string[] args)
         {
             ProcessArguments(args);
+
+            validator = GetValidatorType(validatorType);
+            inputValidator = GetInputValidatorType(validatorType);
+            FileCabinetService = GetCabinetType(cabinetType);
+
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
-            Console.WriteLine($"Using {Validator} validation rules.");
+            Console.WriteLine($"Using {validator} validation rules.");
             Console.WriteLine($"Using {FileCabinetService} storage method.");
             Console.WriteLine();
 
@@ -182,23 +183,40 @@ namespace FileCabinetApp
             return handlers[0];
         }
 
-        private static IRecordValidator GetCabinetServiceValidator(string name) => name switch
+        private static string GetValidatorStringType(string name) => name.ToLowerInvariant() switch
+        {
+            "custom" => "custom",
+            _ => "default",
+        };
+
+        private static string GetCabinetStringType(string name) => name.ToLowerInvariant() switch
+        {
+            "file" => "file",
+            _ => "memory",
+        };
+
+        private static IRecordValidator GetValidatorType(string name) => name switch
         {
             "custom" => new CustomValidator(),
             _ => new DefaultValidator(),
         };
 
-        private static IFileCabinetService GetCabinetService(string name) => name switch
+        private static IInputValidator GetInputValidatorType(string name) => name switch
         {
-            "file" => new FileCabinetFilesystemService(new FileStream(FileSystemPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite), Validator),
-            _ => new FileCabinetMemoryService(Validator),
+            "custom" => new CustomInputValidator(),
+            _ => new DefaultInputValidator(),
+        };
+
+        private static IFileCabinetService GetCabinetType(string name) => name switch
+        {
+            "file" => new FileCabinetFilesystemService(new FileStream(FileSystemPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite), validator, inputValidator),
+            _ => new FileCabinetMemoryService(validator, inputValidator),
         };
 
         private static void ProcessArguments(string[] args)
         {
             if (args == null)
             {
-                FileCabinetService = GetCabinetService("default");
                 return;
             }
 
@@ -218,11 +236,6 @@ namespace FileCabinetApp
                 {
                     Console.WriteLine($"Invalid argument {args[i]}");
                 }
-            }
-
-            if (FileCabinetService is null)
-            {
-                FileCabinetService = GetCabinetService("default");
             }
         }
     }
