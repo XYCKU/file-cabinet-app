@@ -8,7 +8,6 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetRecordCsvWriter : IFileCabinetRecordWriter
     {
-        private const string DateTimeFormat = "MM/dd/yyyy";
         private readonly TextWriter writer;
 
         /// <summary>
@@ -41,7 +40,7 @@ namespace FileCabinetApp
         private static string FormatRecord(FileCabinetRecord record) => $"{record.Id}," +
             $"{record.FirstName}," +
             $"{record.LastName}," +
-            $"{record.DateOfBirth.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}," +
+            $"{record.DateOfBirth.ToString(Program.DateTimeFormat, CultureInfo.InvariantCulture)}," +
             $"{record.CarAmount}," +
             $"{record.Money.ToString(CultureInfo.InvariantCulture)}," +
             $"{record.FavoriteChar}";

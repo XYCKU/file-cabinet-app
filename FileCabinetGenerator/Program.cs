@@ -1,5 +1,7 @@
 ﻿using FileCabinetApp;
 
+[assembly: CLSCompliant(true)]
+
 namespace FileCabinetGenerator
 {
     /// <summary>

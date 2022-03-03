@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Globalization;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp
 {
     /// <inheritdoc/>
     public class FileCabinetRecordCsvReader : IFileCabinetRecordReader
     {
-        private const string DateTimeFormat = "MM/dd/yyyy";
-        private static readonly IRecordValidator Validator = new DefaultValidator();
+        private static readonly IInputValidator InputValidator = new DefaultInputValidator();
         private readonly StreamReader reader;
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                string[] data = line.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                string[] data = line.Split(',', 7, StringSplitOptions.RemoveEmptyEntries);
 
                 if (data is null)
                 {
@@ -64,15 +64,17 @@ namespace FileCabinetApp
                 decimal money;
                 char favoriteChar;
 
+                data[5] = data[5].Replace('.', ',');
+
                 Tuple<bool, string>[] validationResults =
                 {
-                    CheckInput(data[0], IdConverter, (int id) => new Tuple<bool, string>(id >= 0, $"Validation failed: {id} cannot be less than 0"), out id),
-                    CheckInput(data[1], StringConverter, FirstNameValidator, out firstName),
-                    CheckInput(data[2], StringConverter, FirstNameValidator, out lastName),
-                    CheckInput(data[3], DateConverter, DateOfBirthValidator, out dob),
-                    CheckInput(data[4], ShortConverter, CarAmountValidator, out carAmount),
-                    CheckInput(data[5].Replace('.', ','), DecimalConverter, MoneyValidator, out money),
-                    CheckInput(data[6], CharConverter, FavoriteCharValidator, out favoriteChar),
+                    CheckInput(data[0], InputConverter.IntConverter, (int id) => new Tuple<bool, string>(id >= 0, $"Validation failed: {id} cannot be less than 0"), out id),
+                    CheckInput(data[1], InputConverter.StringConverter, InputValidator.FirstNameValidator, out firstName),
+                    CheckInput(data[2], InputConverter.StringConverter, InputValidator.LastNameValidator, out lastName),
+                    CheckInput(data[3], InputConverter.DateConverter, InputValidator.DateOfBirthValidator, out dob),
+                    CheckInput(data[4], InputConverter.ShortConverter, InputValidator.CarAmountValidator, out carAmount),
+                    CheckInput(data[5], InputConverter.DecimalConverter, InputValidator.MoneyValidator, out money),
+                    CheckInput(data[6], InputConverter.CharConverter, InputValidator.FavoriteCharValidator, out favoriteChar),
                 };
 
                 bool isOk = true;
@@ -112,123 +114,6 @@ namespace FileCabinetApp
             if (!validationResult.Item1)
             {
                 return new Tuple<bool, string>(false, $"Validation failed: {validationResult.Item2}.");
-            }
-
-            return new Tuple<bool, string>(true, string.Empty);
-        }
-
-        private static Tuple<bool, string, string> StringConverter(string input)
-        {
-            return new Tuple<bool, string, string>(true, string.Empty, input);
-        }
-
-        private static Tuple<bool, string, int> IdConverter(string input)
-        {
-            return new Tuple<bool, string, int>(int.TryParse(input, out int result) && result >= 0, "Invalid id.", result);
-        }
-
-        private static Tuple<bool, string, DateTime> DateConverter(string input)
-        {
-            return new Tuple<bool, string, DateTime>(
-                DateTime.TryParseExact(input, DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result),
-                "Invalid date of birth.",
-                result);
-        }
-
-        private static Tuple<bool, string, char> CharConverter(string input)
-        {
-            return new Tuple<bool, string, char>(char.TryParse(input, out char result), "Invalid char.", char.ToUpperInvariant(result));
-        }
-
-        private static Tuple<bool, string, short> ShortConverter(string input)
-        {
-            return new Tuple<bool, string, short>(short.TryParse(input, out short result), input, result);
-        }
-
-        private static Tuple<bool, string, decimal> DecimalConverter(string input)
-        {
-            return new Tuple<bool, string, decimal>(decimal.TryParse(input, out decimal result), input, result);
-        }
-
-        private static Tuple<bool, string> FirstNameValidator(string firstName)
-        {
-            try
-            {
-                Validator.ValidateFirstName(firstName);
-            }
-            catch (Exception e)
-            {
-                return new Tuple<bool, string>(false, e.Message);
-            }
-
-            return new Tuple<bool, string>(true, string.Empty);
-        }
-
-        private static Tuple<bool, string> LastNameValidator(string lastName)
-        {
-            try
-            {
-                Validator.ValidateLastName(lastName);
-            }
-            catch (Exception e)
-            {
-                return new Tuple<bool, string>(false, e.Message);
-            }
-
-            return new Tuple<bool, string>(true, string.Empty);
-        }
-
-        private static Tuple<bool, string> DateOfBirthValidator(DateTime dateOfBirth)
-        {
-            try
-            {
-                Validator.ValidateDateOfBirth(dateOfBirth);
-            }
-            catch (Exception e)
-            {
-                return new Tuple<bool, string>(false, e.Message);
-            }
-
-            return new Tuple<bool, string>(true, string.Empty);
-        }
-
-        private static Tuple<bool, string> CarAmountValidator(short carAmount)
-        {
-            try
-            {
-                Validator.ValidateCarAmount(carAmount);
-            }
-            catch (Exception e)
-            {
-                return new Tuple<bool, string>(false, e.Message);
-            }
-
-            return new Tuple<bool, string>(true, string.Empty);
-        }
-
-        private static Tuple<bool, string> MoneyValidator(decimal money)
-        {
-            try
-            {
-                Validator.ValidateMoney(money);
-            }
-            catch (Exception e)
-            {
-                return new Tuple<bool, string>(false, e.Message);
-            }
-
-            return new Tuple<bool, string>(true, string.Empty);
-        }
-
-        private static Tuple<bool, string> FavoriteCharValidator(char favoriteChar)
-        {
-            try
-            {
-                Validator.ValidateFavoriteChar(favoriteChar);
-            }
-            catch (Exception e)
-            {
-                return new Tuple<bool, string>(false, e.Message);
             }
 
             return new Tuple<bool, string>(true, string.Empty);

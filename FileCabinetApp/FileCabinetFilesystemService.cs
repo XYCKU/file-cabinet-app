@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp
 {
@@ -20,8 +21,9 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="fileStream"><see cref="FileStream"/>.</param>
         /// <param name="validator"><see cref="IRecordValidator"/>.</param>
+        /// <param name="inputValidator"><see cref="IInputValidator"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="fileStream"/> is <c>null</c>.</exception>
-        public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator)
+        public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator, IInputValidator inputValidator)
         {
             if (fileStream is null)
             {
@@ -33,14 +35,23 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(validator));
             }
 
+            if (inputValidator is null)
+            {
+                throw new ArgumentNullException(nameof(inputValidator));
+            }
+
             this.fileStream = fileStream;
             this.Validator = validator;
 
             this.count = this.GetStat().Item1;
+            this.InputValidator = inputValidator;
         }
 
         /// <inheritdoc/>
         public IRecordValidator Validator { get; }
+
+        /// <inheritdoc/>
+        public IInputValidator InputValidator { get; }
 
         /// <inheritdoc/>
         public int CreateRecord(FileCabinetData data)

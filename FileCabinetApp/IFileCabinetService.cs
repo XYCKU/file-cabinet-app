@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp
 {
@@ -9,10 +10,16 @@ namespace FileCabinetApp
     public interface IFileCabinetService
     {
         /// <summary>
+        /// Gets validator for given data.
+        /// </summary>
+        /// <value>Validator for given data.</value>
+        public IRecordValidator Validator { get; }
+
+        /// <summary>
         /// Gets validator for input data.
         /// </summary>
         /// <value>Validator for input data.</value>
-        public IRecordValidator Validator { get; }
+        public IInputValidator InputValidator { get; }
 
         /// <summary>
         /// Creates a new <see cref="FileCabinetRecord"/> instance.

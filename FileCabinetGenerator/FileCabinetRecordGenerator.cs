@@ -1,4 +1,5 @@
 ﻿using FileCabinetApp;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetGenerator
 {
@@ -52,7 +53,7 @@ namespace FileCabinetGenerator
 
         private static DateTime GetRandomDate()
         {
-            DateTime minDate = DefaultValidator.EarliestDate;
+            DateTime minDate = new DateTime(1950, 01, 01);
             int range = (DateTime.Today - minDate).Days;
             return minDate.AddDays(Random.Next(range));
         }

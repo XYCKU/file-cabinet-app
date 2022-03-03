@@ -2,14 +2,13 @@
 using System.Collections;
 using System.Xml;
 using System.Xml.Serialization;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp
 {
     /// <inheritdoc/>
     public class FileCabinetRecordXmlReader : IFileCabinetRecordReader
     {
-        private const string DateTimeFormat = "MM/dd/yyyy";
-        private static readonly IRecordValidator Validator = new DefaultValidator();
         private static readonly XmlSerializer Serializer = new XmlSerializer(typeof(FileCabinetRecord));
         private readonly XmlReader reader;
 
