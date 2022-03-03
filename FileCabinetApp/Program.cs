@@ -197,8 +197,8 @@ namespace FileCabinetApp
 
         private static IRecordValidator GetValidatorType(string name) => name switch
         {
-            "custom" => new CustomValidator(),
-            _ => new DefaultValidator(),
+            "custom" => new ValidatorBuilder().CreateCustom(),
+            _ => new ValidatorBuilder().CreateDefault(),
         };
 
         private static IInputValidator GetInputValidatorType(string name) => name switch
