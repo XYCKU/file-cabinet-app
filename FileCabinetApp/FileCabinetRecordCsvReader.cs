@@ -7,8 +7,6 @@ namespace FileCabinetApp
     /// <inheritdoc/>
     public class FileCabinetRecordCsvReader : IFileCabinetRecordReader
     {
-        private const string DateTimeFormat = "MM/dd/yyyy";
-        private static readonly IRecordValidator Validator = new DefaultValidator();
         private static readonly IInputValidator InputValidator = new DefaultInputValidator();
         private readonly StreamReader reader;
 
