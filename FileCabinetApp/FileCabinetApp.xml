@@ -880,12 +880,18 @@
             <inheritdoc/>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> is less than zero.</exception>
         </member>
-        <member name="T:FileCabinetApp.Validators.CustomValidator">
+        <member name="T:FileCabinetApp.Validators.CompositeValidator">
             <summary>
-            Default validator for <see cref="T:FileCabinetApp.FileCabinetData"/>.
+            Validator for <see cref="T:FileCabinetApp.FileCabinetData"/>.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateParameters(FileCabinetApp.FileCabinetData)">
+        <member name="M:FileCabinetApp.Validators.CompositeValidator.#ctor(System.Collections.Generic.IEnumerable{FileCabinetApp.Validators.IRecordValidator})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.CompositeValidator"/> class.
+            </summary>
+            <param name="validators">Collection of validators.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CompositeValidator.ValidateParameters(FileCabinetApp.FileCabinetData)">
             <summary>
             Validates given data parameters.
             </summary>
@@ -895,6 +901,16 @@
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="P:System.DateTime.Now"/>.</exception>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> or <paramref name="data.Money.Money"/> is less than zero.</exception>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a letter of english alphabet.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.CustomValidator">
+            <summary>
+            Default validator for <see cref="T:FileCabinetApp.FileCabinetData"/>.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomValidator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.CustomValidator"/> class.
+            </summary>
         </member>
         <member name="M:FileCabinetApp.Validators.CustomValidator.ToString">
             <inheritdoc/>
@@ -939,16 +955,10 @@
             Default validator for <see cref="T:FileCabinetApp.FileCabinetData"/>.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateParameters(FileCabinetApp.FileCabinetData)">
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.#ctor">
             <summary>
-            Validates given data parameters.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.DefaultValidator"/> class.
             </summary>
-            <param name="data"><see cref="T:FileCabinetApp.FileCabinetData"/> parameters.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="data.FirstName.FirstName"/> or <paramref name="data.LastName.LastName"/> is <c>null</c> or whitespace.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FirstName.Length.FirstName.Length"/> or <paramref name="data.LastName.Length.LastName.Length"/> is less than 2 or greater than 60.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="P:System.DateTime.Now"/>.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> or <paramref name="data.Money.Money"/> is less than zero.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a letter of english alphabet.</exception>
         </member>
         <member name="M:FileCabinetApp.Validators.DefaultValidator.ToString">
             <inheritdoc/>
@@ -1068,6 +1078,84 @@
         <member name="M:FileCabinetApp.Validators.MoneyValidator.ValidateParameters(FileCabinetApp.FileCabinetData)">
             <inheritdoc/>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> is less than zero.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.ValidatorBuilder">
+            <summary>
+            Validator builder.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateFirstName(System.Int32,System.Int32)">
+            <summary>
+            Creates <see cref="T:FileCabinetApp.Validators.FirstNameValidator"/>.
+            </summary>
+            <param name="min">Min length.</param>
+            <param name="max">Max length.</param>
+            <returns>This <see cref="T:FileCabinetApp.Validators.ValidatorBuilder"/>.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateLastName(System.Int32,System.Int32)">
+            <summary>
+            Creates <see cref="T:FileCabinetApp.Validators.LastNameValidator"/>.
+            </summary>
+            <param name="min">Min length.</param>
+            <param name="max">Max length.</param>
+            <returns>This <see cref="T:FileCabinetApp.Validators.ValidatorBuilder"/>.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateDateOfBirth(System.DateTime,System.DateTime)">
+            <summary>
+            Creates <see cref="T:FileCabinetApp.Validators.DateOfBirthValidator"/>.
+            </summary>
+            <param name="min">Min date.</param>
+            <param name="max">Max date.</param>
+            <returns>This <see cref="T:FileCabinetApp.Validators.ValidatorBuilder"/>.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateCarAmount(System.Int16,System.Int16)">
+            <summary>
+            Creates <see cref="T:FileCabinetApp.Validators.CarAmountValidator"/>.
+            </summary>
+            <param name="min">Min car amount.</param>
+            <param name="max">Max car amount.</param>
+            <returns>This <see cref="T:FileCabinetApp.Validators.ValidatorBuilder"/>.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateMoney(System.Decimal,System.Decimal)">
+            <summary>
+            Creates <see cref="T:FileCabinetApp.Validators.MoneyValidator"/>.
+            </summary>
+            <param name="min">Min money.</param>
+            <param name="max">Max money.</param>
+            <returns>This <see cref="T:FileCabinetApp.Validators.ValidatorBuilder"/>.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateFavoriteChar(System.Char,System.Char)">
+            <summary>
+            Creates <see cref="T:FileCabinetApp.Validators.FavoriteCharValidator"/>.
+            </summary>
+            <param name="min">Min char.</param>
+            <param name="max">Max char.</param>
+            <returns>This <see cref="T:FileCabinetApp.Validators.ValidatorBuilder"/>.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.Create">
+            <summary>
+            Creates composite validator based on validators.
+            </summary>
+            <returns>Composite validator.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Validators.ValidatorBuilderExtension">
+            <summary>
+            Extension for <see cref="T:FileCabinetApp.Validators.ValidatorBuilder"/>.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilderExtension.CreateDefault(FileCabinetApp.Validators.ValidatorBuilder)">
+            <summary>
+            Creates default validator.
+            </summary>
+            <param name="builder">Builder.</param>
+            <returns>Default validator.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilderExtension.CreateCustom(FileCabinetApp.Validators.ValidatorBuilder)">
+            <summary>
+            Creates custom validator.
+            </summary>
+            <param name="builder">Builder.</param>
+            <returns>Custom validator.</returns>
         </member>
     </members>
 </doc>
