@@ -3,7 +3,7 @@
     /// <summary>
     /// Validator for <see cref="FileCabinetData"/>.
     /// </summary>
-    public abstract class CompositeValidator : IRecordValidator
+    public class CompositeValidator : IRecordValidator
     {
         private readonly IEnumerable<IRecordValidator> validators;
 
@@ -11,7 +11,7 @@
         /// Initializes a new instance of the <see cref="CompositeValidator"/> class.
         /// </summary>
         /// <param name="validators">Collection of validators.</param>
-        protected CompositeValidator(IEnumerable<IRecordValidator> validators)
+        public CompositeValidator(IEnumerable<IRecordValidator> validators)
         {
             if (validators is null)
             {
