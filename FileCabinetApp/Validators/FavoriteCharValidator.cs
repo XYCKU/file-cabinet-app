@@ -3,8 +3,8 @@
     /// <inheritdoc/>
     public class FavoriteCharValidator : IRecordValidator
     {
-        private readonly char minCharacter;
-        private readonly char maxCharacter;
+        private readonly char minChar;
+        private readonly char maxChar;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FavoriteCharValidator"/> class.
@@ -18,17 +18,17 @@
                 throw new ArgumentException($"from ({from}) is greater than to({to})", nameof(from));
             }
 
-            this.minCharacter = from;
-            this.maxCharacter = to;
+            this.minChar = from;
+            this.maxChar = to;
         }
 
         /// <inheritdoc/>
         /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.FavoriteChar"/> is not a letter of english alphabet.</exception>
         public void ValidateParameters(FileCabinetData data)
         {
-            if (data.FavoriteChar < this.minCharacter || data.FavoriteChar > this.maxCharacter)
+            if (data.FavoriteChar < this.minChar || data.FavoriteChar > this.maxChar)
             {
-                throw new ArgumentException($"favoriteChar {data.FavoriteChar} is not between {this.minCharacter} and {this.maxCharacter}.", nameof(data));
+                throw new ArgumentException($"favoriteChar {data.FavoriteChar} is not between {this.minChar} and {this.maxChar}", nameof(data));
             }
         }
     }

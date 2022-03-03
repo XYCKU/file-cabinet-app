@@ -23,22 +23,22 @@ namespace FileCabinetApp.CommandHandlers
             int recordId;
 
             Console.Write("First name: ");
-            string firstName = Program.ReadInput(Program.StringConverter, Program.FirstNameValidator);
+            string firstName = Program.ReadInput(InputConverter.StringConverter, Program.InputValidator.FirstNameValidator);
 
             Console.Write("Last name: ");
-            string lastName = Program.ReadInput(Program.StringConverter, Program.LastNameValidator);
+            string lastName = Program.ReadInput(InputConverter.StringConverter, Program.InputValidator.LastNameValidator);
 
             Console.Write("Date of birth: ");
-            DateTime dt = Program.ReadInput(Program.DateConverter, Program.DateOfBirthValidator);
+            DateTime dt = Program.ReadInput(InputConverter.DateConverter, Program.InputValidator.DateOfBirthValidator);
 
             Console.Write("Car amount: ");
-            short carAmount = Program.ReadInput(Program.ShortConverter, Program.CarAmountValidator);
+            short carAmount = Program.ReadInput(InputConverter.ShortConverter, Program.InputValidator.CarAmountValidator);
 
             Console.Write("Money: ");
-            decimal money = Program.ReadInput(Program.DecimalConverter, Program.MoneyValidator);
+            decimal money = Program.ReadInput(InputConverter.DecimalConverter, Program.InputValidator.MoneyValidator);
 
             Console.Write("Favorite char: ");
-            char favoriteChar = Program.ReadInput(Program.CharConverter, Program.FavoriteCharValidator);
+            char favoriteChar = Program.ReadInput(InputConverter.CharConverter, Program.InputValidator.FavoriteCharValidator);
 
             var data = new FileCabinetData(firstName, lastName, dt, carAmount, money, favoriteChar);
 

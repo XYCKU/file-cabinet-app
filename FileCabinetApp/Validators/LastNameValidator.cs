@@ -11,7 +11,7 @@
         /// </summary>
         /// <param name="from">Min length.</param>
         /// <param name="to">Max length.</param>
-        public FirstNameValidator(int from, int to)
+        public LastNameValidator(int from, int to)
         {
             if (from < 0)
             {

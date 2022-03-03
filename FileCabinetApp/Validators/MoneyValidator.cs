@@ -3,8 +3,8 @@
     /// <inheritdoc/>
     public class MoneyValidator : IRecordValidator
     {
-        private readonly int minMoney;
-        private readonly int maxMoney;
+        private readonly decimal minMoney;
+        private readonly decimal maxMoney;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MoneyValidator"/> class.

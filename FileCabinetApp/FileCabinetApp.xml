@@ -748,6 +748,53 @@
             </summary>
             <param name="id">Id of a <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</param>
         </member>
+        <member name="T:FileCabinetApp.InputConverter">
+            <summary>
+            Converts values.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.InputConverter.IntConverter(System.String)">
+            <summary>
+            Converts to int.
+            </summary>
+            <param name="input">Input int.</param>
+            <returns>Tuple with result.</returns>
+        </member>
+        <member name="M:FileCabinetApp.InputConverter.StringConverter(System.String)">
+            <summary>
+            Converts to string.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple with result.</returns>
+        </member>
+        <member name="M:FileCabinetApp.InputConverter.DateConverter(System.String)">
+            <summary>
+            Converts to DateTime.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple with result.</returns>
+        </member>
+        <member name="M:FileCabinetApp.InputConverter.CharConverter(System.String)">
+            <summary>
+            Converts to char.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple with result.</returns>
+        </member>
+        <member name="M:FileCabinetApp.InputConverter.ShortConverter(System.String)">
+            <summary>
+            Converts to short.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple with result.</returns>
+        </member>
+        <member name="M:FileCabinetApp.InputConverter.DecimalConverter(System.String)">
+            <summary>
+            Converts to decimal.
+            </summary>
+            <param name="input">Input string.</param>
+            <returns>Tuple with result.</returns>
+        </member>
         <member name="T:FileCabinetApp.IRecordPrinter">
             <summary>
             Info printer interface.
@@ -771,9 +818,15 @@
         </member>
         <member name="P:FileCabinetApp.Program.Validator">
             <summary>
-            Gets or sets validator.
+            Gets or sets record validator.
             </summary>
-            <value>Validator.</value>
+            <value>Record validator.</value>
+        </member>
+        <member name="P:FileCabinetApp.Program.InputValidator">
+            <summary>
+            Gets or sets input validator.
+            </summary>
+            <value>Input validator.</value>
         </member>
         <member name="P:FileCabinetApp.Program.FileCabinetService">
             <summary>
@@ -786,83 +839,6 @@
             Entry point.
             </summary>
             <param name="args">Console arguments.</param>
-        </member>
-        <member name="M:FileCabinetApp.Program.StringConverter(System.String)">
-            <summary>
-            Converts to string.
-            </summary>
-            <param name="input">Input string.</param>
-            <returns>Tuple with result.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Program.DateConverter(System.String)">
-            <summary>
-            Converts to string.
-            </summary>
-            <param name="input">Input string.</param>
-            <returns>Tuple with result.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Program.CharConverter(System.String)">
-            <summary>
-            Converts to string.
-            </summary>
-            <param name="input">Input string.</param>
-            <returns>Tuple with result.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Program.ShortConverter(System.String)">
-            <summary>
-            Converts to string.
-            </summary>
-            <param name="input">Input string.</param>
-            <returns>Tuple with result.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Program.DecimalConverter(System.String)">
-            <summary>
-            Converts to string.
-            </summary>
-            <param name="input">Input string.</param>
-            <returns>Tuple with result.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Program.FirstNameValidator(System.String)">
-            <summary>
-            Validates given parameter.
-            </summary>
-            <param name="firstName">First name.</param>
-            <returns>Returns is input valid.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Program.LastNameValidator(System.String)">
-            <summary>
-            Validates given parameter.
-            </summary>
-            <param name="lastName">Last name.</param>
-            <returns>Returns is input valid.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Program.DateOfBirthValidator(System.DateTime)">
-            <summary>
-            Validates given parameter.
-            </summary>
-            <param name="dateOfBirth">Date of birth.</param>
-            <returns>Returns is input valid.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Program.CarAmountValidator(System.Int16)">
-            <summary>
-            Validates given parameter.
-            </summary>
-            <param name="carAmount">Car amount.</param>
-            <returns>Returns is input valid.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Program.MoneyValidator(System.Decimal)">
-            <summary>
-            Validates given parameter.
-            </summary>
-            <param name="money">Money.</param>
-            <returns>Returns is input valid.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Program.FavoriteCharValidator(System.Char)">
-            <summary>
-            Validates given parameter.
-            </summary>
-            <param name="favoriteChar">Favorite char.</param>
-            <returns>Returns is input valid.</returns>
         </member>
         <member name="M:FileCabinetApp.Program.ReadInput``1(System.Func{System.String,System.Tuple{System.Boolean,System.String,``0}},System.Func{``0,System.Tuple{System.Boolean,System.String}})">
             <summary>
@@ -890,24 +866,23 @@
             <param name="pastAction">Action done to record.</param>
             <returns>Formatted string.</returns>
         </member>
+        <member name="T:FileCabinetApp.Validators.CarAmountValidator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CarAmountValidator.#ctor(System.Int16,System.Int16)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.CarAmountValidator"/> class.
+            </summary>
+            <param name="from">Min car amount.</param>
+            <param name="to">Max car amount.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CarAmountValidator.ValidateParameters(FileCabinetApp.FileCabinetData)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> is less than zero.</exception>
+        </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>
             Default validator for <see cref="T:FileCabinetApp.FileCabinetData"/>.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidator.MinNameLength">
-            <summary>
-            Minimum length for name field.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidator.MaxNameLength">
-            <summary>
-            Maximum length for name field.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.CustomValidator.EarliestDate">
-            <summary>
-            The earliest date that can DateOfBirth field has.
             </summary>
         </member>
         <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateParameters(FileCabinetApp.FileCabinetData)">
@@ -919,55 +894,49 @@
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FirstName.Length.FirstName.Length"/> or <paramref name="data.LastName.Length.LastName.Length"/> is less than 2 or greater than 60.</exception>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="P:System.DateTime.Now"/>.</exception>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> or <paramref name="data.Money.Money"/> is less than zero.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a digit.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateFirstName(System.String)">
-            <inheritdoc/>
-            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="firstName"/> is <c>null</c> or whitespace.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="firstName.Length.Length"/> is less than 2 or greater than 60.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateLastName(System.String)">
-            <inheritdoc/>
-            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="lastName"/> is <c>null</c> or whitespace.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="lastName.Length.Length"/> is less than 2 or greater than 60.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateDateOfBirth(System.DateTime)">
-            <inheritdoc/>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="dateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="P:System.DateTime.Now"/>.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateCarAmount(System.Decimal)">
-            <inheritdoc/>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="carAmount"/> is less than zero.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateMoney(System.Decimal)">
-            <inheritdoc/>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="money"/> is less than zero.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateFavoriteChar(System.Char)">
-            <inheritdoc/>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="favoriteChar"/> is not a letter of english alphabet.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a letter of english alphabet.</exception>
         </member>
         <member name="M:FileCabinetApp.Validators.CustomValidator.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Validators.DateOfBirthValidator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DateOfBirthValidator.#ctor(System.DateTime,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.DateOfBirthValidator"/> class.
+            </summary>
+            <param name="from">Min date.</param>
+            <param name="to">Max date.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DateOfBirthValidator.ValidateParameters(FileCabinetApp.FileCabinetData)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than EarliestDate or later than LatestDate.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.DefaultInputValidator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.FirstNameValidator(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.LastNameValidator(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.DateOfBirthValidator(System.DateTime)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.CarAmountValidator(System.Int16)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.MoneyValidator(System.Decimal)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.FavoriteCharValidator(System.Char)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Validators.DefaultValidator">
             <summary>
             Default validator for <see cref="T:FileCabinetApp.FileCabinetData"/>.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidator.MinNameLength">
-            <summary>
-            Minimum length for name field.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidator.MaxNameLength">
-            <summary>
-            Maximum length for name field.
-            </summary>
-        </member>
-        <member name="F:FileCabinetApp.Validators.DefaultValidator.EarliestDate">
-            <summary>
-            The earliest date that can DateOfBirth field has.
             </summary>
         </member>
         <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateParameters(FileCabinetApp.FileCabinetData)">
@@ -981,34 +950,84 @@
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> or <paramref name="data.Money.Money"/> is less than zero.</exception>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a letter of english alphabet.</exception>
         </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateFirstName(System.String)">
-            <inheritdoc/>
-            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="firstName"/> is <c>null</c> or whitespace.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="firstName.Length.Length"/> is less than 2 or greater than 60.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateLastName(System.String)">
-            <inheritdoc/>
-            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="lastName"/> is <c>null</c> or whitespace.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="lastName.Length.Length"/> is less than 2 or greater than 60.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateDateOfBirth(System.DateTime)">
-            <inheritdoc/>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="dateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="P:System.DateTime.Now"/>.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateCarAmount(System.Decimal)">
-            <inheritdoc/>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="carAmount"/> is less than zero.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateMoney(System.Decimal)">
-            <inheritdoc/>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="money"/> is less than zero.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateFavoriteChar(System.Char)">
-            <inheritdoc/>
-            <exception cref="T:System.ArgumentException">Thrown when <paramref name="favoriteChar"/> is not a letter of english alphabet.</exception>
-        </member>
         <member name="M:FileCabinetApp.Validators.DefaultValidator.ToString">
             <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Validators.FavoriteCharValidator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.FavoriteCharValidator.#ctor(System.Char,System.Char)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.FavoriteCharValidator"/> class.
+            </summary>
+            <param name="from">Min character.</param>
+            <param name="to">Max character.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.FavoriteCharValidator.ValidateParameters(FileCabinetApp.FileCabinetData)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a letter of english alphabet.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.FirstNameValidator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.FirstNameValidator.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.FirstNameValidator"/> class.
+            </summary>
+            <param name="from">Min length.</param>
+            <param name="to">Max length.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.FirstNameValidator.ValidateParameters(FileCabinetApp.FileCabinetData)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="data.FirstName.FirstName"/> is <c>null</c> or whitespace.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FirstName.Length.FirstName.Length"/> is less than MinNameLength or greater than MaxNameLength.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.IInputValidator">
+            <summary>
+            Input validator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IInputValidator.FirstNameValidator(System.String)">
+            <summary>
+            Validates given parameter.
+            </summary>
+            <param name="firstName">First name.</param>
+            <returns>Returns is input valid.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IInputValidator.LastNameValidator(System.String)">
+            <summary>
+            Validates given parameter.
+            </summary>
+            <param name="lastName">Last name.</param>
+            <returns>Returns is input valid.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IInputValidator.DateOfBirthValidator(System.DateTime)">
+            <summary>
+            Validates given parameter.
+            </summary>
+            <param name="dateOfBirth">Date of birth.</param>
+            <returns>Returns is input valid.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IInputValidator.CarAmountValidator(System.Int16)">
+            <summary>
+            Validates given parameter.
+            </summary>
+            <param name="carAmount">Car amount.</param>
+            <returns>Returns is input valid.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IInputValidator.MoneyValidator(System.Decimal)">
+            <summary>
+            Validates given parameter.
+            </summary>
+            <param name="money">Money.</param>
+            <returns>Returns is input valid.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IInputValidator.FavoriteCharValidator(System.Char)">
+            <summary>
+            Validates given parameter.
+            </summary>
+            <param name="favoriteChar">Favorite char.</param>
+            <returns>Returns is input valid.</returns>
         </member>
         <member name="T:FileCabinetApp.Validators.IRecordValidator">
             <summary>
@@ -1021,41 +1040,34 @@
             </summary>
             <param name="data"><see cref="T:FileCabinetApp.FileCabinetData"/> parameters.</param>
         </member>
-        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateFirstName(System.String)">
-            <summary>
-            Validates given <paramref name="firstName"/> parameter.
-            </summary>
-            <param name="firstName">First name of a person.</param>
+        <member name="T:FileCabinetApp.Validators.LastNameValidator">
+            <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateLastName(System.String)">
+        <member name="M:FileCabinetApp.Validators.LastNameValidator.#ctor(System.Int32,System.Int32)">
             <summary>
-            Validates given <paramref name="lastName"/> parameter.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.LastNameValidator"/> class.
             </summary>
-            <param name="lastName">Last name of a person.</param>
+            <param name="from">Min length.</param>
+            <param name="to">Max length.</param>
         </member>
-        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateDateOfBirth(System.DateTime)">
-            <summary>
-            Validates given <paramref name="dateOfBirth"/> parameter.
-            </summary>
-            <param name="dateOfBirth">Date of birth of a person.</param>
+        <member name="M:FileCabinetApp.Validators.LastNameValidator.ValidateParameters(FileCabinetApp.FileCabinetData)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="data.LastName.LastName"/> is <c>null</c> or whitespace.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.LastName.Length.LastName.Length"/> is less than MinNameLength or greater than MaxNameLength.</exception>
         </member>
-        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateCarAmount(System.Decimal)">
-            <summary>
-            Validates given <paramref name="carAmount"/> parameter.
-            </summary>
-            <param name="carAmount">Car amount of a person.</param>
+        <member name="T:FileCabinetApp.Validators.MoneyValidator">
+            <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateMoney(System.Decimal)">
+        <member name="M:FileCabinetApp.Validators.MoneyValidator.#ctor(System.Decimal,System.Decimal)">
             <summary>
-            Validates given <paramref name="money"/> parameter.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.MoneyValidator"/> class.
             </summary>
-            <param name="money">Money amount of a person.</param>
+            <param name="from">Min car amount.</param>
+            <param name="to">Max car amount.</param>
         </member>
-        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateFavoriteChar(System.Char)">
-            <summary>
-            Validates given <paramref name="favoriteChar"/> parameter.
-            </summary>
-            <param name="favoriteChar">Favorite char of a person.</param>
+        <member name="M:FileCabinetApp.Validators.MoneyValidator.ValidateParameters(FileCabinetApp.FileCabinetData)">
+            <inheritdoc/>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> is less than zero.</exception>
         </member>
     </members>
 </doc>
