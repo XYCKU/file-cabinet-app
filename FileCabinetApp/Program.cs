@@ -59,7 +59,7 @@ namespace FileCabinetApp
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
-            Console.WriteLine($"Using {validator} validation rules.");
+            Console.WriteLine($"Using {validatorType} validation rules.");
             Console.WriteLine($"Using {FileCabinetService} storage method.");
             Console.WriteLine();
 

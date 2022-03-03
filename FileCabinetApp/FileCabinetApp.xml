@@ -901,14 +901,6 @@
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.CarAmount.CarAmount"/> or <paramref name="data.Money.Money"/> is less than zero.</exception>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FavoriteChar.FavoriteChar"/> is not a letter of english alphabet.</exception>
         </member>
-        <member name="T:FileCabinetApp.Validators.CustomInputValidator">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomInputValidator.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.CustomInputValidator"/> class.
-            </summary>
-        </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>
             Default validator for <see cref="T:FileCabinetApp.FileCabinetData"/>.
@@ -935,14 +927,6 @@
         <member name="M:FileCabinetApp.Validators.DateOfBirthValidator.ValidateParameters(FileCabinetApp.FileCabinetData)">
             <inheritdoc/>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.DateOfBirth.DateOfBirth"/> is earlier than EarliestDate or later than LatestDate.</exception>
-        </member>
-        <member name="T:FileCabinetApp.Validators.DefaultInputValidator">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.DefaultInputValidator"/> class.
-            </summary>
         </member>
         <member name="T:FileCabinetApp.Validators.DefaultValidator">
             <summary>
@@ -985,6 +969,22 @@
             <inheritdoc/>
             <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="data.FirstName.FirstName"/> is <c>null</c> or whitespace.</exception>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="data.FirstName.Length.FirstName.Length"/> is less than MinNameLength or greater than MaxNameLength.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.CustomInputValidator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomInputValidator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.CustomInputValidator"/> class.
+            </summary>
+        </member>
+        <member name="T:FileCabinetApp.Validators.DefaultInputValidator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultInputValidator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.DefaultInputValidator"/> class.
+            </summary>
         </member>
         <member name="T:FileCabinetApp.Validators.IInputValidator">
             <summary>
