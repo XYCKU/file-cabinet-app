@@ -6,7 +6,7 @@ namespace FileCabinetApp.Validators
     /// <summary>
     /// Default validator for <see cref="FileCabinetData"/>.
     /// </summary>
-    public class CustomValidator : IRecordValidator
+    public class CustomValidator : CompositeValidator
     {
         private const int MinNameLength = 2;
         private const int MaxNameLength = 60;
@@ -20,27 +20,19 @@ namespace FileCabinetApp.Validators
         private static readonly DateTime MaxDate = new DateTime(2000, 01, 01);
 
         /// <summary>
-        /// Validates given data parameters.
+        /// Initializes a new instance of the <see cref="CustomValidator"/> class.
         /// </summary>
-        /// <param name="data"><see cref="FileCabinetData"/> parameters.</param>
-        /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="data.FirstName"/> or <paramref name="data.LastName"/> is <c>null</c> or whitespace.</exception>
-        /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.FirstName.Length"/> or <paramref name="data.LastName.Length"/> is less than 2 or greater than 60.</exception>
-        /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.DateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="DateTime.Now"/>.</exception>
-        /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.CarAmount"/> or <paramref name="data.Money"/> is less than zero.</exception>
-        /// <exception cref="System.ArgumentException">Thrown when <paramref name="data.FavoriteChar"/> is not a letter of english alphabet.</exception>
-        public void ValidateParameters(FileCabinetData data)
-        {
-            if (data is null)
+        public CustomValidator()
+            : base(new IRecordValidator[]
             {
-                throw new ArgumentNullException(nameof(data));
-            }
-
-            new FirstNameValidator(MinNameLength, MaxNameLength).ValidateParameters(data);
-            new LastNameValidator(MinNameLength, MaxNameLength).ValidateParameters(data);
-            new DateOfBirthValidator(MinDate, MaxDate).ValidateParameters(data);
-            new CarAmountValidator(MinCarAmount, MaxCarAmount).ValidateParameters(data);
-            new MoneyValidator(MinMoney, MaxMoney).ValidateParameters(data);
-            new FavoriteCharValidator(MinChar, MaxChar).ValidateParameters(data);
+                new FirstNameValidator(MinNameLength, MaxNameLength),
+                new LastNameValidator(MinNameLength, MaxNameLength),
+                new DateOfBirthValidator(MinDate, MaxDate),
+                new CarAmountValidator(MinCarAmount, MaxCarAmount),
+                new MoneyValidator(MinMoney, MaxMoney),
+                new FavoriteCharValidator(MinChar, MaxChar),
+            })
+        {
         }
 
         /// <inheritdoc/>
