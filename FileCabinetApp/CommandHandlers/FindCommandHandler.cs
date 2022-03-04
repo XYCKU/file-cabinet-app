@@ -60,7 +60,7 @@ namespace FileCabinetApp.CommandHandlers
                     break;
                 case "dateofbirth":
                     DateTime dt;
-                    if (DateTime.TryParseExact(searchText, Program.DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
+                    if (DateTime.TryParse(searchText, Program.DefaultCulture, DateTimeStyles.None, out dt))
                     {
                         result = this.Service.FindByDateOfBirth(dt);
                     }
