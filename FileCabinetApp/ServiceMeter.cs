@@ -37,7 +37,7 @@ namespace FileCabinetApp
             this.stopwatch.Restart();
             var result = this.fileCabinetService.CreateRecord(data);
             this.stopwatch.Stop();
-            Console.WriteLine($"Create method execution duration is {this.stopwatch.ElapsedTicks} ticks.");
+            Console.WriteLine($"CreateRecord method execution duration is {this.stopwatch.ElapsedTicks} ticks.");
             return result;
         }
 
@@ -47,7 +47,7 @@ namespace FileCabinetApp
             this.stopwatch.Restart();
             this.fileCabinetService.EditRecord(id, data);
             this.stopwatch.Stop();
-            Console.WriteLine($"Edit method execution duration is {this.stopwatch.ElapsedTicks} ticks.");
+            Console.WriteLine($"EditRecord method execution duration is {this.stopwatch.ElapsedTicks} ticks.");
         }
 
         /// <inheritdoc/>
