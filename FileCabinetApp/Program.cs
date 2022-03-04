@@ -20,11 +20,13 @@ namespace FileCabinetApp
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
         private const string FileSystemPath = "cabinet-records.db";
         private const string ConfigFilePath = "validation-rules.json";
+        private const string LogFileNameFormat = @"logs\cabinet-log-{0}.log";
 
         private static readonly Dictionary<string, Action> ConsoleVoidArguments = new Dictionary<string, Action>()
         {
             { "--validation-rules=custom", () => { validatorType = GetValidatorStringType("custom"); } },
             { "use-stopwatch", () => { useStopwatch = true; } },
+            { "use-logger", () => { useLogger = true; } },
         };
 
         private static readonly Dictionary<string, Action<string>> ConsoleStringArguments = new Dictionary<string, Action<string>>()
@@ -38,6 +40,7 @@ namespace FileCabinetApp
         private static string cabinetType = "memory";
         private static string validatorType = "default";
         private static bool useStopwatch;
+        private static bool useLogger;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         private static IRecordValidator validator;
@@ -65,15 +68,44 @@ namespace FileCabinetApp
             inputValidator = new InputValidator(config);
             FileCabinetService = GetCabinetType(cabinetType);
 
+            string logFileName = GetLogFileName(LogFileNameFormat);
+
+            if (!Directory.Exists(logFileName))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(logFileName) ?? @"logs\");
+            }
+
+            using TextWriter logWriter = new StreamWriter(logFileName);
+
             if (useStopwatch)
             {
                 FileCabinetService = new ServiceMeter(FileCabinetService);
+            }
+
+            if (useLogger)
+            {
+                FileCabinetService = new ServiceLogger(FileCabinetService, logWriter);
+            }
+            else
+            {
+                logWriter.Close();
+                File.Delete(logFileName);
             }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine($"Using {validatorType} validation rules.");
             Console.WriteLine($"Using {FileCabinetService} storage method.");
+            if (useStopwatch)
+            {
+                Console.WriteLine($"Using stopwatch.");
+            }
+
+            if (useLogger)
+            {
+                Console.WriteLine($"Using logger.");
+            }
+
             Console.WriteLine();
 
             ICommandHandler commandHandler = GetCommandHandlers(FileCabinetService);
@@ -239,6 +271,11 @@ namespace FileCabinetApp
             "file" => new FileCabinetFilesystemService(new FileStream(FileSystemPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite), validator, inputValidator),
             _ => new FileCabinetMemoryService(validator, inputValidator),
         };
+
+        private static string GetLogFileName(string format)
+        {
+            return string.Format(DefaultCulture, format, DateTime.Now.ToString("MM-dd-yyyy-HH-mm-ss", DefaultCulture));
+        }
 
         private static void ProcessArguments(string[] args)
         {

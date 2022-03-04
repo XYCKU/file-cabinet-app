@@ -60,7 +60,7 @@ namespace FileCabinetApp
         {
             this.Log($"Calling FindByDateOfBirth() with {dateOfBirth}");
             var result = this.fileCabinetService.FindByDateOfBirth(dateOfBirth);
-            this.Log($"FindByDateOfBirth() returned '{result.Count} records'");
+            this.Log($"FindByDateOfBirth() returned '{result.Count}' records");
             return result;
         }
 
@@ -69,7 +69,7 @@ namespace FileCabinetApp
         {
             this.Log($"Calling FindByFirstName() with {firstName}");
             var result = this.fileCabinetService.FindByFirstName(firstName);
-            this.Log($"FindByFirstName() returned '{result.Count} records'");
+            this.Log($"FindByFirstName() returned '{result.Count}' records");
             return result;
         }
 
@@ -78,7 +78,7 @@ namespace FileCabinetApp
         {
             this.Log($"Calling FindByLastName() with {lastName}");
             var result = this.fileCabinetService.FindByLastName(lastName);
-            this.Log($"FindByLastName() returned '{result.Count} records'");
+            this.Log($"FindByLastName() returned '{result.Count}' records");
             return result;
         }
 
@@ -87,7 +87,7 @@ namespace FileCabinetApp
         {
             this.Log($"Calling GetRecords()");
             var result = this.fileCabinetService.GetRecords();
-            this.Log($"GetRecords() returned '{result.Count} records'");
+            this.Log($"GetRecords() returned '{result.Count}' records");
             return result;
         }
 
@@ -127,7 +127,7 @@ namespace FileCabinetApp
 
         private void Log(string line)
         {
-            this.writer.WriteLine($"{DateTime.Now.ToString("MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture)} - {line}");
+            this.writer.WriteLine($"{DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture)} - {line}");
         }
     }
 }
