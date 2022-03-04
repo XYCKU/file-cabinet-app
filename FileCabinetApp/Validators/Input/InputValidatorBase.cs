@@ -1,52 +1,32 @@
-﻿namespace FileCabinetApp.Validators
+﻿using FileCabinetApp.Validators.Config;
+
+namespace FileCabinetApp.Validators.Input
 {
     /// <inheritdoc/>
     public class InputValidatorBase : IInputValidator
     {
-        private readonly int minNameLength;
-        private readonly int maxNameLength;
-        private readonly char minChar;
-        private readonly char maxChar;
-        private readonly short minCarAmount;
-        private readonly short maxCarAmount;
-        private readonly decimal minMoney;
-        private readonly decimal maxMoney;
-        private readonly DateTime minDate;
-        private readonly DateTime maxDate;
+        private readonly ConfigurationData config;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InputValidatorBase"/> class.
         /// </summary>
-        /// <param name="minNameLength">.</param>
-        /// <param name="maxNameLength">..</param>
-        /// <param name="minChar">...</param>
-        /// <param name="maxChar">....</param>
-        /// <param name="minCarAmount">.....</param>
-        /// <param name="maxCarAmount">......</param>
-        /// <param name="minMoney">.,..</param>
-        /// <param name="maxMoney">.,.</param>
-        /// <param name="minDate">.,,.</param>
-        /// <param name="maxDate">...,.</param>
-        protected InputValidatorBase(int minNameLength, int maxNameLength, char minChar, char maxChar, short minCarAmount, short maxCarAmount, decimal minMoney, decimal maxMoney, DateTime minDate, DateTime maxDate)
+        /// <param name="config">Configuration info.</param>
+        protected InputValidatorBase(ConfigurationData config)
         {
-            this.minNameLength = minNameLength;
-            this.maxNameLength = maxNameLength;
-            this.minChar = minChar;
-            this.maxChar = maxChar;
-            this.minCarAmount = minCarAmount;
-            this.maxCarAmount = maxCarAmount;
-            this.minMoney = minMoney;
-            this.maxMoney = maxMoney;
-            this.minDate = minDate;
-            this.maxDate = maxDate;
+            if (config is null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            this.config = config;
         }
 
         /// <inheritdoc/>
         public Tuple<bool, string> CarAmountValidator(short carAmount)
         {
-            if (carAmount < this.minCarAmount || carAmount > this.maxCarAmount)
+            if (carAmount < this.config.MinCarAmount || carAmount > this.config.MaxCarAmount)
             {
-                return new Tuple<bool, string>(false, $"carAmount is less than {this.minCarAmount} or greater than {this.maxCarAmount}");
+                return new Tuple<bool, string>(false, $"carAmount is less than {this.config.MinCarAmount} or greater than {this.config.MaxCarAmount}");
             }
 
             return new Tuple<bool, string>(true, string.Empty);
@@ -55,9 +35,9 @@
         /// <inheritdoc/>
         public Tuple<bool, string> DateOfBirthValidator(DateTime dateOfBirth)
         {
-            if (dateOfBirth < this.minDate || dateOfBirth > this.maxDate)
+            if (dateOfBirth < this.config.MinDate || dateOfBirth > this.config.MaxDate)
             {
-                return new Tuple<bool, string>(false, $"dateOfBirth is earlier than {this.minDate.ToShortDateString()} or later than {this.maxDate.ToShortDateString()}");
+                return new Tuple<bool, string>(false, $"dateOfBirth is earlier than {this.config.MinDate.ToString("MM/dd/yyyy", Program.DefaultCulture)} or later than {this.config.MaxDate.ToString("MM/dd/yyyy", Program.DefaultCulture)}");
             }
 
             return new Tuple<bool, string>(true, string.Empty);
@@ -66,9 +46,9 @@
         /// <inheritdoc/>
         public Tuple<bool, string> FavoriteCharValidator(char favoriteChar)
         {
-            if (favoriteChar < this.minChar || favoriteChar > this.maxChar)
+            if (favoriteChar < this.config.MinChar || favoriteChar > this.config.MaxChar)
             {
-                return new Tuple<bool, string>(false, $"favoriteChar {favoriteChar} is not between {this.minChar} and {this.maxChar}");
+                return new Tuple<bool, string>(false, $"favoriteChar {favoriteChar} is not between {this.config.MinChar} and {this.config.MaxChar}");
             }
 
             return new Tuple<bool, string>(true, string.Empty);
@@ -82,9 +62,9 @@
                 return new Tuple<bool, string>(false, "firstName is null.");
             }
 
-            if (firstName.Length < this.minNameLength || firstName.Length > this.maxNameLength)
+            if (firstName.Length < this.config.MinFirstNameLength || firstName.Length > this.config.MaxFirstNameLength)
             {
-                return new Tuple<bool, string>(false, $"firstName.Length is less than {this.minNameLength} or greater than {this.maxNameLength}");
+                return new Tuple<bool, string>(false, $"firstName.Length is less than {this.config.MinFirstNameLength} or greater than {this.config.MaxFirstNameLength}");
             }
 
             return new Tuple<bool, string>(true, string.Empty);
@@ -98,9 +78,9 @@
                 return new Tuple<bool, string>(false, "lastName is null.");
             }
 
-            if (lastName.Length < this.minNameLength || lastName.Length > this.maxNameLength)
+            if (lastName.Length < this.config.MinLastNameLength || lastName.Length > this.config.MaxLastNameLength)
             {
-                return new Tuple<bool, string>(false, $"lastName.Length is less than {this.minNameLength} or greater than {this.maxNameLength}");
+                return new Tuple<bool, string>(false, $"lastName.Length is less than {this.config.MinLastNameLength} or greater than {this.config.MaxLastNameLength}");
             }
 
             return new Tuple<bool, string>(true, string.Empty);
@@ -109,9 +89,9 @@
         /// <inheritdoc/>
         public Tuple<bool, string> MoneyValidator(decimal money)
         {
-            if (money < this.minMoney || money > this.maxMoney)
+            if (money < this.config.MinMoney || money > this.config.MaxMoney)
             {
-                return new Tuple<bool, string>(false, $"money is less than {this.minMoney} or greater than {this.maxMoney}");
+                return new Tuple<bool, string>(false, $"money is less than {this.config.MinMoney} or greater than {this.config.MaxMoney}");
             }
 
             return new Tuple<bool, string>(true, string.Empty);
