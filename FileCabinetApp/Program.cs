@@ -24,6 +24,7 @@ namespace FileCabinetApp
         private static readonly Dictionary<string, Action> ConsoleVoidArguments = new Dictionary<string, Action>()
         {
             { "--validation-rules=custom", () => { validatorType = GetValidatorStringType("custom"); } },
+            { "use-stopwatch", () => { useStopwatch = true; } },
         };
 
         private static readonly Dictionary<string, Action<string>> ConsoleStringArguments = new Dictionary<string, Action<string>>()
@@ -36,6 +37,7 @@ namespace FileCabinetApp
 
         private static string cabinetType = "memory";
         private static string validatorType = "default";
+        private static bool useStopwatch;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         private static IRecordValidator validator;
@@ -62,6 +64,11 @@ namespace FileCabinetApp
             validator = new ValidatorBuilder().Create(config);
             inputValidator = new InputValidator(config);
             FileCabinetService = GetCabinetType(cabinetType);
+
+            if (useStopwatch)
+            {
+                FileCabinetService = new ServiceMeter(FileCabinetService);
+            }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
