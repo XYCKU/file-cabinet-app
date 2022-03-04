@@ -1,4 +1,4 @@
-﻿using System;
+﻿using FileCabinetApp.Validators.Config;
 
 namespace FileCabinetApp.Validators
 {
@@ -7,6 +7,25 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public static class ValidatorBuilderExtension
     {
+        /// <summary>
+        /// Creates default validator.
+        /// </summary>
+        /// <param name="builder">Builder.</param>
+        /// <param name="config">Config.</param>
+        /// <returns>Default validator.</returns>
+        public static IRecordValidator Create(this ValidatorBuilder builder, ConfigurationData config)
+        {
+            var validator = new ValidatorBuilder().ValidateFirstName(config.MinFirstNameLength, config.MaxFirstNameLength)
+                    .ValidateLastName(config.MinLastNameLength, config.MaxLastNameLength)
+                    .ValidateDateOfBirth(config.MinDate, config.MaxDate)
+                    .ValidateCarAmount(config.MinCarAmount, config.MaxCarAmount)
+                    .ValidateMoney(config.MinMoney, config.MaxMoney)
+                    .ValidateFavoriteChar(config.MinChar, config.MaxChar)
+                    .Create();
+
+            return validator;
+        }
+
         /// <summary>
         /// Creates default validator.
         /// </summary>

@@ -17,7 +17,7 @@ namespace FileCabinetApp.Validators
         {
             if (from > to)
             {
-                throw new ArgumentException($"from ({from.ToShortDateString()}) is greater than to({to.ToShortDateString()})", nameof(from));
+                throw new ArgumentException($"from ({from.ToString("MM/dd/yyyy", Program.DefaultCulture)}) is greater than to({to.ToString("MM/dd/yyyy", Program.DefaultCulture)})", nameof(from));
             }
 
             this.minDate = from;
@@ -30,7 +30,7 @@ namespace FileCabinetApp.Validators
         {
             if (data.DateOfBirth < this.minDate || data.DateOfBirth > this.maxDate)
             {
-                throw new ArgumentException($"dateOfBirth is earlier than {this.minDate.ToShortDateString()} or later than {this.maxDate.ToShortDateString()}", nameof(data));
+                throw new ArgumentException($"dateOfBirth is earlier than {this.minDate.ToString("MM/dd/yyyy", Program.DefaultCulture)} or later than {this.maxDate.ToString("MM/dd/yyyy", Program.DefaultCulture)}", nameof(data));
             }
         }
     }

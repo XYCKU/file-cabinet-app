@@ -1,4 +1,4 @@
-﻿namespace FileCabinetApp.Validators
+﻿namespace FileCabinetApp.Validators.Input
 {
     /// <summary>
     /// Input validator.

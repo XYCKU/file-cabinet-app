@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace FileCabinetApp
 {
@@ -8,6 +7,7 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetRecordCsvWriter : IFileCabinetRecordWriter
     {
+        private static readonly CultureInfo CultureInfo = new CultureInfo("en-US");
         private readonly TextWriter writer;
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace FileCabinetApp
         private static string FormatRecord(FileCabinetRecord record) => $"{record.Id}," +
             $"{record.FirstName}," +
             $"{record.LastName}," +
-            $"{record.DateOfBirth.ToString(Program.DateTimeFormat, CultureInfo.InvariantCulture)}," +
+            $"{record.DateOfBirth.ToString("MM/dd/yyyy", CultureInfo)}," +
             $"{record.CarAmount}," +
             $"{record.Money.ToString(CultureInfo.InvariantCulture)}," +
             $"{record.FavoriteChar}";

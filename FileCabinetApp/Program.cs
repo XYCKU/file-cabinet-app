@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.Validators;
+using FileCabinetApp.Validators.Config;
+using FileCabinetApp.Validators.Input;
 
 namespace FileCabinetApp
 {
@@ -10,17 +12,21 @@ namespace FileCabinetApp
     public static class Program
     {
         /// <summary>
-        /// Dafault date format.
+        /// Dafault culture format.
         /// </summary>
-        public const string DateTimeFormat = "MM/dd/yyyy";
+        public static readonly CultureInfo DefaultCulture = new CultureInfo("en-US");
 
         private const string DeveloperName = "Vladislav Sharaev";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
         private const string FileSystemPath = "cabinet-records.db";
+        private const string ConfigFilePath = "validation-rules.json";
+        private const string LogFileNameFormat = @"logs\cabinet-log-{0}.log";
 
         private static readonly Dictionary<string, Action> ConsoleVoidArguments = new Dictionary<string, Action>()
         {
             { "--validation-rules=custom", () => { validatorType = GetValidatorStringType("custom"); } },
+            { "use-stopwatch", () => { useStopwatch = true; } },
+            { "use-logger", () => { useLogger = true; } },
         };
 
         private static readonly Dictionary<string, Action<string>> ConsoleStringArguments = new Dictionary<string, Action<string>>()
@@ -33,10 +39,13 @@ namespace FileCabinetApp
 
         private static string cabinetType = "memory";
         private static string validatorType = "default";
+        private static bool useStopwatch;
+        private static bool useLogger;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         private static IRecordValidator validator;
         private static IInputValidator inputValidator;
+        private static Dictionary<string, ConfigurationData> configs;
 
         /// <summary>
         /// Gets or sets fileCabinetService.
@@ -51,16 +60,52 @@ namespace FileCabinetApp
         /// <param name="args">Console arguments.</param>
         public static void Main(string[] args)
         {
+            SetupConfigs(ConfigFilePath);
             ProcessArguments(args);
 
-            validator = GetValidatorType(validatorType);
-            inputValidator = GetInputValidatorType(validatorType);
+            ConfigurationData config = GetValidatorConfig(validatorType);
+            validator = new ValidatorBuilder().Create(config);
+            inputValidator = new InputValidator(config);
             FileCabinetService = GetCabinetType(cabinetType);
+
+            string logFileName = GetLogFileName(LogFileNameFormat);
+
+            if (!Directory.Exists(logFileName))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(logFileName) ?? @"logs\");
+            }
+
+            using TextWriter logWriter = new StreamWriter(logFileName);
+
+            if (useStopwatch)
+            {
+                FileCabinetService = new ServiceMeter(FileCabinetService);
+            }
+
+            if (useLogger)
+            {
+                FileCabinetService = new ServiceLogger(FileCabinetService, logWriter);
+            }
+            else
+            {
+                logWriter.Close();
+                File.Delete(logFileName);
+            }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine($"Using {validatorType} validation rules.");
             Console.WriteLine($"Using {FileCabinetService} storage method.");
+            if (useStopwatch)
+            {
+                Console.WriteLine($"Using stopwatch.");
+            }
+
+            if (useLogger)
+            {
+                Console.WriteLine($"Using logger.");
+            }
+
             Console.WriteLine();
 
             ICommandHandler commandHandler = GetCommandHandlers(FileCabinetService);
@@ -135,7 +180,7 @@ namespace FileCabinetApp
         public static string FormatRecord(FileCabinetData record, int id) => $"#{id}, " +
             $"{record.FirstName}, " +
             $"{record.LastName}, " +
-            $"{record.DateOfBirth.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}, " +
+            $"{record.DateOfBirth.ToString("MM/dd/yyyy", DefaultCulture)}, " +
             $"{record.CarAmount}, " +
             $"{record.Money}, " +
             $"{record.FavoriteChar}";
@@ -149,7 +194,7 @@ namespace FileCabinetApp
         /// <returns>Formatted string.</returns>
         public static string LongFormatRecord(FileCabinetData record, int id, string pastAction) => $"First name: {record.FirstName}{Environment.NewLine}" +
             $"Last name: {record.LastName}{Environment.NewLine}" +
-            $"Date of birth: {record.DateOfBirth.ToString(DateTimeFormat, CultureInfo.InvariantCulture)}{Environment.NewLine}" +
+            $"Date of birth: {record.DateOfBirth.ToString("MM/dd/yyyy", DefaultCulture)}{Environment.NewLine}" +
             $"Car amount: {record.CarAmount}{Environment.NewLine}" +
             $"Money: {record.Money}{Environment.NewLine}" +
             $"Favorite char: {record.Money}{Environment.NewLine}" +
@@ -195,23 +240,42 @@ namespace FileCabinetApp
             _ => "memory",
         };
 
-        private static IRecordValidator GetValidatorType(string name) => name switch
+        private static void SetupConfigs(string path)
         {
-            "custom" => new ValidatorBuilder().CreateCustom(),
-            _ => new ValidatorBuilder().CreateDefault(),
-        };
+            try
+            {
+                using (var streamReader = new StreamReader(path))
+                {
+                    IConfigReader configReader = new JsonConfigReader(streamReader);
+                    configs = configReader.ReadAllConfigs();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Config parsing error: {e.Message}");
+            }
+        }
 
-        private static IInputValidator GetInputValidatorType(string name) => name switch
+        private static ConfigurationData GetValidatorConfig(string name)
         {
-            "custom" => new CustomInputValidator(),
-            _ => new DefaultInputValidator(),
-        };
+            if (configs.ContainsKey(name))
+            {
+                return configs[name];
+            }
+
+            return configs.First().Value;
+        }
 
         private static IFileCabinetService GetCabinetType(string name) => name switch
         {
             "file" => new FileCabinetFilesystemService(new FileStream(FileSystemPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite), validator, inputValidator),
             _ => new FileCabinetMemoryService(validator, inputValidator),
         };
+
+        private static string GetLogFileName(string format)
+        {
+            return string.Format(DefaultCulture, format, DateTime.Now.ToString("MM-dd-yyyy-HH-mm-ss", DefaultCulture));
+        }
 
         private static void ProcessArguments(string[] args)
         {
