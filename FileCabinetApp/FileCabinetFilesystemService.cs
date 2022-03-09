@@ -91,7 +91,6 @@ namespace FileCabinetApp
 
             this.RemoveRecordFromDictionaries(record, index);
 
-            // TODO: Add dictionary interaction to this and below methods.
             byte[] newByteData = ToBytes(data, id);
 
             this.fileStream.Position = index * RecordSize;
