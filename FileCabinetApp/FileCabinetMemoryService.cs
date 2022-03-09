@@ -166,11 +166,6 @@ namespace FileCabinetApp
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="dateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="DateTime"/>.Now.</exception>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            if (dateOfBirth < EarliestDate || dateOfBirth > DateTime.Now)
-            {
-                throw new ArgumentException($"dateOfBirth is earlier than {EarliestDate.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)} or greater than DateTime.Now", nameof(dateOfBirth));
-            }
-
             return FindBy(this.dateOfBirthDictionary, dateOfBirth);
         }
 
@@ -195,7 +190,7 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            return new FileCabinetServiceSnapshot(this.list.ToArray());
+            return new FileCabinetServiceSnapshot(this.list.ToArray(), this.InputValidator);
         }
 
         /// <inheritdoc/>

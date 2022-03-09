@@ -11,14 +11,14 @@ namespace FileCabinetApp.Validators.Input
             MaxFirstNameLength = 60,
             MinLastNameLength = 2,
             MaxLastNameLength = 60,
-            MinChar = '0',
-            MaxChar = '9',
+            MinChar = 'A',
+            MaxChar = 'Z',
             MinCarAmount = 0,
             MaxCarAmount = 60,
             MinMoney = 0,
             MaxMoney = 9999999999,
-            MinDate = new DateTime(1920, 01, 01),
-            MaxDate = new DateTime(2000, 01, 01),
+            MinDate = new DateTime(1950, 01, 01),
+            MaxDate = DateTime.Today,
         };
 
         /// <summary>
