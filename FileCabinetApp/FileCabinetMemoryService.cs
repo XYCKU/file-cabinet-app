@@ -175,7 +175,7 @@ namespace FileCabinetApp
         /// <returns>Array of all <see cref="FileCabinetRecord"/> instances.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            return new ReadOnlyCollection<FileCabinetRecord>(this.list);
+            return this.list.AsReadOnly();
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            return new FileCabinetServiceSnapshot(this.list.ToArray(), this.InputValidator);
+            return new FileCabinetServiceSnapshot(this.list.AsReadOnly(), this.InputValidator);
         }
 
         /// <inheritdoc/>

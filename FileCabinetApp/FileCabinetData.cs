@@ -17,18 +17,8 @@
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="firstName"/> or <paramref name="lastName"/> is <c>null</c>.</exception>
         public FileCabinetData(string firstName, string lastName, DateTime dateOfBirth, short carAmount, decimal money, char favoriteChar)
         {
-            if (firstName is null)
-            {
-                throw new ArgumentNullException(nameof(firstName));
-            }
-
-            if (lastName is null)
-            {
-                throw new ArgumentNullException(nameof(lastName));
-            }
-
-            this.FirstName = firstName;
-            this.LastName = lastName;
+            this.FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
+            this.LastName = lastName ?? throw new ArgumentNullException(nameof(lastName));
             this.DateOfBirth = dateOfBirth;
             this.CarAmount = carAmount;
             this.Money = money;

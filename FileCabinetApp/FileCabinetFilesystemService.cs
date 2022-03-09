@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Buffers;
+using System.Collections.ObjectModel;
 using System.Text;
 using FileCabinetApp.Validators;
 using FileCabinetApp.Validators.Input;
@@ -10,6 +11,7 @@ namespace FileCabinetApp
     {
         private const int RecordSize = 4 + 120 + 120 + 4 + 4 + 4 + 2 + 8 + 1 + 1;
 
+        private static readonly ArrayPool<byte> ByteArrayPool = ArrayPool<byte>.Shared;
         private static readonly Encoding Encoding = Encoding.UTF8;
         private static readonly int[] DataSizes = { 1, 4, 120, 120, 4, 4, 4, 2, 8, 1 };
 
@@ -56,11 +58,13 @@ namespace FileCabinetApp
             var record = new FileCabinetRecord(this.count++, data);
             this.AddRecordToDictionaries(record, record.Id);
 
-            byte[] bytes = ToBytes(record);
+            var bytes = ByteArrayPool.Rent(RecordSize);
 
             this.fileStream.Position = RecordSize * record.Id;
             this.fileStream.Write(bytes);
             this.fileStream.Flush();
+
+            ByteArrayPool.Return(bytes);
 
             return record.Id;
         }
@@ -121,7 +125,7 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            var bytes = new byte[RecordSize];
+            var bytes = ByteArrayPool.Rent(RecordSize);
             var result = new List<FileCabinetRecord>();
 
             this.fileStream.Position = 0;
@@ -144,6 +148,7 @@ namespace FileCabinetApp
                 }
             }
 
+            ByteArrayPool.Return(bytes);
             return new ReadOnlyCollection<FileCabinetRecord>(result);
         }
 
@@ -156,7 +161,7 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            return new FileCabinetServiceSnapshot(this.GetRecords().ToArray(), this.InputValidator);
+            return new FileCabinetServiceSnapshot(this.GetRecords(), this.InputValidator);
         }
 
         /// <inheritdoc/>
@@ -213,7 +218,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            FileCabinetServiceSnapshot snapshot = new FileCabinetServiceSnapshot(this.GetRecords().ToArray(), this.InputValidator);
+            FileCabinetServiceSnapshot snapshot = new FileCabinetServiceSnapshot(this.GetRecords(), this.InputValidator);
             this.Restore(snapshot);
         }
 
@@ -388,7 +393,7 @@ namespace FileCabinetApp
             }
 
             const int bytesAmount = 5;
-            byte[] bytes = new byte[bytesAmount];
+            var bytes = ByteArrayPool.Rent(RecordSize);
 
             for (int i = 0; i < this.count; ++i)
             {
@@ -405,23 +410,27 @@ namespace FileCabinetApp
 
                     if (id == recordId)
                     {
+                        ByteArrayPool.Return(bytes);
                         return i;
                     }
                 }
             }
 
+            ByteArrayPool.Return(bytes);
             return -1;
         }
 
         private FileCabinetRecord? ReadRecord(int offset)
         {
-            var bytes = new byte[RecordSize];
+            var bytes = ByteArrayPool.Rent(RecordSize);
 
             this.fileStream.Position = offset * RecordSize;
 
             if (this.fileStream.Read(bytes, 0, RecordSize) > 0 && bytes[0] == 0)
             {
-                return ToRecord(bytes.AsSpan()[1..]);
+                var record = ToRecord(bytes.AsSpan()[1..]);
+                ByteArrayPool.Return(bytes);
+                return record;
             }
 
             return null;

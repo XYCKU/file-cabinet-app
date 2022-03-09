@@ -10,14 +10,14 @@ namespace FileCabinetApp
     public class FileCabinetServiceSnapshot
     {
         private readonly IInputValidator inputValidator = new DefaultInputValidator();
-        private FileCabinetRecord[] records;
+        private ReadOnlyCollection<FileCabinetRecord> records;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
         /// </summary>
         /// <param name="records">Array of <see cref="FileCabinetRecord"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="records"/> is <c>null</c>.</exception>
-        public FileCabinetServiceSnapshot(FileCabinetRecord[] records)
+        public FileCabinetServiceSnapshot(ReadOnlyCollection<FileCabinetRecord> records)
         {
             this.records = records ?? throw new ArgumentNullException(nameof(records));
         }
@@ -28,7 +28,7 @@ namespace FileCabinetApp
         /// <param name="records">Array of <see cref="FileCabinetRecord"/>.</param>
         /// <param name="inputValidator">Array of <see cref="IInputValidator"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="records"/> is <c>null</c>.</exception>
-        public FileCabinetServiceSnapshot(FileCabinetRecord[] records, IInputValidator inputValidator)
+        public FileCabinetServiceSnapshot(ReadOnlyCollection<FileCabinetRecord> records, IInputValidator inputValidator)
             : this(records)
         {
             this.inputValidator = inputValidator ?? throw new ArgumentNullException(nameof(inputValidator));
@@ -40,7 +40,7 @@ namespace FileCabinetApp
         /// <value>
         /// <see cref="ReadOnlyCollection{FileCabinetRecord}"/> of records.
         /// </value>
-        public ReadOnlyCollection<FileCabinetRecord> Records => Array.AsReadOnly(this.records);
+        public ReadOnlyCollection<FileCabinetRecord> Records => this.records;
 
         /// <summary>
         /// Saves <see cref="FileCabinetServiceSnapshot"/> to CSV format.
@@ -59,7 +59,7 @@ namespace FileCabinetApp
             const string formatLine = "Id,First Name,Last Name,Date of Birth,Car Amount,Money,Favorite char";
             writer.WriteLine(formatLine);
 
-            for (int i = 0; i < this.records.Length; ++i)
+            for (int i = 0; i < this.records.Count; ++i)
             {
                 csvRecordWriter.Write(this.records[i]);
             }
@@ -79,7 +79,7 @@ namespace FileCabinetApp
 
             using (var xmlRecordWriter = new FileCabinetRecordXmlWriter(writer))
             {
-                for (int i = 0; i < this.records.Length; ++i)
+                for (int i = 0; i < this.records.Count; ++i)
                 {
                     xmlRecordWriter.Write(this.records[i]);
                 }
@@ -94,7 +94,7 @@ namespace FileCabinetApp
         {
             var csvReader = new FileCabinetRecordCsvReader(reader, this.inputValidator);
 
-            this.records = csvReader.ReadAll().ToArray();
+            this.records = new ReadOnlyCollection<FileCabinetRecord>(csvReader.ReadAll());
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace FileCabinetApp
         {
             var xmlReader = new FileCabinetRecordXmlReader(reader);
 
-            this.records = xmlReader.ReadAll().ToArray();
+            this.records = new ReadOnlyCollection<FileCabinetRecord>(xmlReader.ReadAll());
         }
     }
 }
