@@ -127,5 +127,8 @@ namespace FileCabinetApp
             this.stopwatch.Stop();
             Console.WriteLine($"Restore method execution duration is {this.stopwatch.ElapsedTicks} ticks.");
         }
+
+        /// <inheritdoc/>
+        public override string ToString() => this.fileCabinetService.ToString() ?? string.Empty;
     }
 }

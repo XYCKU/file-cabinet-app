@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using FileCabinetApp.Validators.Input;
 
 namespace FileCabinetApp
 {
@@ -8,6 +9,7 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetServiceSnapshot
     {
+        private readonly IInputValidator inputValidator = new DefaultInputValidator();
         private FileCabinetRecord[] records;
 
         /// <summary>
@@ -17,12 +19,19 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="records"/> is <c>null</c>.</exception>
         public FileCabinetServiceSnapshot(FileCabinetRecord[] records)
         {
-            if (records is null)
-            {
-                throw new ArgumentNullException(nameof(records));
-            }
+            this.records = records ?? throw new ArgumentNullException(nameof(records));
+        }
 
-            this.records = records;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
+        /// </summary>
+        /// <param name="records">Array of <see cref="FileCabinetRecord"/>.</param>
+        /// <param name="inputValidator">Array of <see cref="IInputValidator"/>.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="records"/> is <c>null</c>.</exception>
+        public FileCabinetServiceSnapshot(FileCabinetRecord[] records, IInputValidator inputValidator)
+            : this(records)
+        {
+            this.inputValidator = inputValidator ?? throw new ArgumentNullException(nameof(inputValidator));
         }
 
         /// <summary>
@@ -47,8 +56,8 @@ namespace FileCabinetApp
 
             IFileCabinetRecordWriter csvRecordWriter = new FileCabinetRecordCsvWriter(writer);
 
-            const string FormatLine = "Id,First Name,Last Name,Date of Birth,Car Amount,Money,Favorite char";
-            writer.WriteLine(FormatLine);
+            const string formatLine = "Id,First Name,Last Name,Date of Birth,Car Amount,Money,Favorite char";
+            writer.WriteLine(formatLine);
 
             for (int i = 0; i < this.records.Length; ++i)
             {
@@ -83,7 +92,7 @@ namespace FileCabinetApp
         /// <param name="reader"><see cref="StreamReader"/> to read from.</param>
         public void LoadFromCsv(StreamReader reader)
         {
-            var csvReader = new FileCabinetRecordCsvReader(reader);
+            var csvReader = new FileCabinetRecordCsvReader(reader, this.inputValidator);
 
             this.records = csvReader.ReadAll().ToArray();
         }

@@ -18,18 +18,8 @@ namespace FileCabinetApp
         /// <param name="writer">TextWriter.</param>
         public ServiceLogger(IFileCabinetService fileCabinetService, TextWriter writer)
         {
-            if (fileCabinetService is null)
-            {
-                throw new ArgumentNullException(nameof(fileCabinetService));
-            }
-
-            if (writer is null)
-            {
-                throw new ArgumentNullException(nameof(writer));
-            }
-
-            this.fileCabinetService = fileCabinetService;
-            this.writer = writer;
+            this.fileCabinetService = fileCabinetService ?? throw new ArgumentNullException(nameof(fileCabinetService));
+            this.writer = writer ?? throw new ArgumentNullException(nameof(writer));
         }
 
         /// <inheritdoc/>
@@ -116,6 +106,9 @@ namespace FileCabinetApp
             this.fileCabinetService.RemoveRecord(id);
             this.Log($"RemoveRecord() removed record with #{id} id");
         }
+
+        /// <inheritdoc/>
+        public override string ToString() => this.fileCabinetService.ToString() ?? string.Empty;
 
         /// <inheritdoc/>
         public void Restore(FileCabinetServiceSnapshot snapshot)
