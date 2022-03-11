@@ -105,19 +105,19 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             return this.FindBy(this.dateOfBirthDictionary, dateOfBirth);
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             return this.FindBy(this.firstNameDictionary, firstName.ToUpperInvariant());
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             return this.FindBy(this.lastNameDictionary, lastName.ToUpperInvariant());
         }
@@ -330,7 +330,7 @@ namespace FileCabinetApp
             dictionary[value].Remove(offset);
         }
 
-        private ReadOnlyCollection<FileCabinetRecord> FindBy<T>(Dictionary<T, List<int>> dictionary, T value)
+        private IEnumerable<FileCabinetRecord> FindBy<T>(Dictionary<T, List<int>> dictionary, T value)
             where T : notnull
         {
             if (!dictionary.ContainsKey(value))

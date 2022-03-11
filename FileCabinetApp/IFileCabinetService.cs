@@ -41,21 +41,21 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="firstName">Search parameter.</param>
         /// <returns>Array of <see cref="FileCabinetRecord"/> instances, matching the search parameter.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName);
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName);
 
         /// <summary>
         /// Searching for existing <see cref="FileCabinetRecord"/>s with given <paramref name="lastName"/>.
         /// </summary>
         /// <param name="lastName">Search parameter.</param>
         /// <returns>Array of <see cref="FileCabinetRecord"/> instances, matching the search parameter.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName);
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName);
 
         /// <summary>
         /// Searching for existing <see cref="FileCabinetRecord"/>s with given <paramref name="dateOfBirth"/>.
         /// </summary>
         /// <param name="dateOfBirth">Search parameter.</param>
         /// <returns>Array of <see cref="FileCabinetRecord"/> instances, matching the search parameter.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth);
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth);
 
         /// <summary>
         /// Get all <see cref="FileCabinetRecord"/>s.

@@ -664,6 +664,21 @@
             </summary>
             <param name="reader"><see cref="T:System.IO.StreamReader"/> to read from.</param>
         </member>
+        <member name="T:FileCabinetApp.FilesystemIterator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemIterator.#ctor(System.Collections.ObjectModel.ReadOnlyCollection{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FilesystemIterator"/> class.
+            </summary>
+            <param name="records">Records collection.</param>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemIterator.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemIterator.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.IFileCabinetRecordReader">
             <summary>
             FileCabinetRecordReader.
@@ -815,6 +830,23 @@
             <param name="input">Input string.</param>
             <returns>Tuple with result.</returns>
         </member>
+        <member name="T:FileCabinetApp.IRecordIterator">
+            <summary>
+            Record iterator interface.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IRecordIterator.GetNext">
+            <summary>
+            Gets next item.
+            </summary>
+            <returns>Next item.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IRecordIterator.HasMore">
+            <summary>
+            Checks if collection has more elements.
+            </summary>
+            <returns>Whether collection has more elements.</returns>
+        </member>
         <member name="T:FileCabinetApp.IRecordPrinter">
             <summary>
             Info printer interface.
@@ -825,6 +857,21 @@
             Prints info.
             </summary>
             <param name="records">Info to print.</param>
+        </member>
+        <member name="T:FileCabinetApp.MemoryIterator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIterator.#ctor(System.Collections.ObjectModel.ReadOnlyCollection{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.MemoryIterator"/> class.
+            </summary>
+            <param name="records">Records collection.</param>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIterator.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIterator.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>

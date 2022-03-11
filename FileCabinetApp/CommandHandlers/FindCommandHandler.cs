@@ -31,8 +31,6 @@ namespace FileCabinetApp.CommandHandlers
 
             string[] args = commandRequest.Parameters.Split(' ', 2);
 
-            ReadOnlyCollection<FileCabinetRecord> result;
-
             if (string.IsNullOrWhiteSpace(args[1]))
             {
                 Console.WriteLine("Invalid search argument");
@@ -50,6 +48,8 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
+            IEnumerable<FileCabinetRecord> result;
+
             switch (args[0].ToLowerInvariant())
             {
                 case "firstname":
@@ -59,8 +59,7 @@ namespace FileCabinetApp.CommandHandlers
                     result = this.Service.FindByLastName(searchText);
                     break;
                 case "dateofbirth":
-                    DateTime dt;
-                    if (DateTime.TryParse(searchText, Program.DefaultCulture, DateTimeStyles.None, out dt))
+                    if (DateTime.TryParse(searchText, Program.DefaultCulture, DateTimeStyles.None, out DateTime dt))
                     {
                         result = this.Service.FindByDateOfBirth(dt);
                     }
@@ -76,7 +75,7 @@ namespace FileCabinetApp.CommandHandlers
                     return;
             }
 
-            Console.WriteLine($"Found {result.Count} results.");
+            Console.WriteLine($"Found {result.Count()} results.");
 
             this.Printer.Print(result);
         }

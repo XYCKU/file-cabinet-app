@@ -132,7 +132,7 @@ namespace FileCabinetApp
         /// <param name="firstName">Search parameter.</param>
         /// <returns>Array of <see cref="FileCabinetRecord"/> instances, matching the search parameter.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="firstName"/> is <c>null</c> or whitespace.</exception>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (string.IsNullOrWhiteSpace(firstName))
             {
@@ -148,7 +148,7 @@ namespace FileCabinetApp
         /// <param name="lastName">Search parameter.</param>
         /// <returns>Array of <see cref="FileCabinetRecord"/> instances, matching the search parameter.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="lastName"/> is <c>null</c> or whitespace.</exception>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             if (string.IsNullOrWhiteSpace(lastName))
             {
@@ -164,7 +164,7 @@ namespace FileCabinetApp
         /// <param name="dateOfBirth">Search parameter.</param>
         /// <returns>Array of <see cref="FileCabinetRecord"/> instances, matching the search parameter.</returns>
         /// <exception cref="System.ArgumentNullException">Thrown when <paramref name="dateOfBirth"/> is earlier than 01-01-1950 or later than <see cref="DateTime"/>.Now.</exception>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             return FindBy(this.dateOfBirthDictionary, dateOfBirth);
         }
@@ -246,7 +246,7 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public override string ToString() => "memory";
 
-        private static ReadOnlyCollection<FileCabinetRecord> FindBy<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T parameter)
+        private static IEnumerable<FileCabinetRecord> FindBy<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T parameter)
             where T : notnull
         {
             if (!dictionary.ContainsKey(parameter))
@@ -254,7 +254,7 @@ namespace FileCabinetApp
                 return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(dictionary[parameter]);
+            return dictionary[parameter].AsReadOnly();
         }
 
         private static void AddToDictionary<T>(Dictionary<T, List<FileCabinetRecord>> dictionary, T value, FileCabinetRecord record)
