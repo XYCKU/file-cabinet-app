@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using FileCabinetApp.Validators.Input;
 
 namespace FileCabinetApp
 {
@@ -8,21 +9,29 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetServiceSnapshot
     {
-        private FileCabinetRecord[] records;
+        private readonly IInputValidator inputValidator = new DefaultInputValidator();
+        private ReadOnlyCollection<FileCabinetRecord> records;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
         /// </summary>
         /// <param name="records">Array of <see cref="FileCabinetRecord"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="records"/> is <c>null</c>.</exception>
-        public FileCabinetServiceSnapshot(FileCabinetRecord[] records)
+        public FileCabinetServiceSnapshot(ReadOnlyCollection<FileCabinetRecord> records)
         {
-            if (records is null)
-            {
-                throw new ArgumentNullException(nameof(records));
-            }
+            this.records = records ?? throw new ArgumentNullException(nameof(records));
+        }
 
-            this.records = records;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
+        /// </summary>
+        /// <param name="records">Array of <see cref="FileCabinetRecord"/>.</param>
+        /// <param name="inputValidator">Array of <see cref="IInputValidator"/>.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="records"/> is <c>null</c>.</exception>
+        public FileCabinetServiceSnapshot(ReadOnlyCollection<FileCabinetRecord> records, IInputValidator inputValidator)
+            : this(records)
+        {
+            this.inputValidator = inputValidator ?? throw new ArgumentNullException(nameof(inputValidator));
         }
 
         /// <summary>
@@ -31,7 +40,7 @@ namespace FileCabinetApp
         /// <value>
         /// <see cref="ReadOnlyCollection{FileCabinetRecord}"/> of records.
         /// </value>
-        public ReadOnlyCollection<FileCabinetRecord> Records => Array.AsReadOnly(this.records);
+        public ReadOnlyCollection<FileCabinetRecord> Records => this.records;
 
         /// <summary>
         /// Saves <see cref="FileCabinetServiceSnapshot"/> to CSV format.
@@ -47,10 +56,10 @@ namespace FileCabinetApp
 
             IFileCabinetRecordWriter csvRecordWriter = new FileCabinetRecordCsvWriter(writer);
 
-            const string FormatLine = "Id,First Name,Last Name,Date of Birth,Car Amount,Money,Favorite char";
-            writer.WriteLine(FormatLine);
+            const string formatLine = "Id,First Name,Last Name,Date of Birth,Car Amount,Money,Favorite char";
+            writer.WriteLine(formatLine);
 
-            for (int i = 0; i < this.records.Length; ++i)
+            for (int i = 0; i < this.records.Count; ++i)
             {
                 csvRecordWriter.Write(this.records[i]);
             }
@@ -70,7 +79,7 @@ namespace FileCabinetApp
 
             using (var xmlRecordWriter = new FileCabinetRecordXmlWriter(writer))
             {
-                for (int i = 0; i < this.records.Length; ++i)
+                for (int i = 0; i < this.records.Count; ++i)
                 {
                     xmlRecordWriter.Write(this.records[i]);
                 }
@@ -83,9 +92,9 @@ namespace FileCabinetApp
         /// <param name="reader"><see cref="StreamReader"/> to read from.</param>
         public void LoadFromCsv(StreamReader reader)
         {
-            var csvReader = new FileCabinetRecordCsvReader(reader);
+            var csvReader = new FileCabinetRecordCsvReader(reader, this.inputValidator);
 
-            this.records = csvReader.ReadAll().ToArray();
+            this.records = new ReadOnlyCollection<FileCabinetRecord>(csvReader.ReadAll());
         }
 
         /// <summary>
@@ -96,7 +105,7 @@ namespace FileCabinetApp
         {
             var xmlReader = new FileCabinetRecordXmlReader(reader);
 
-            this.records = xmlReader.ReadAll().ToArray();
+            this.records = new ReadOnlyCollection<FileCabinetRecord>(xmlReader.ReadAll());
         }
     }
 }

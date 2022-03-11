@@ -18,18 +18,8 @@ namespace FileCabinetApp
         /// <param name="writer">TextWriter.</param>
         public ServiceLogger(IFileCabinetService fileCabinetService, TextWriter writer)
         {
-            if (fileCabinetService is null)
-            {
-                throw new ArgumentNullException(nameof(fileCabinetService));
-            }
-
-            if (writer is null)
-            {
-                throw new ArgumentNullException(nameof(writer));
-            }
-
-            this.fileCabinetService = fileCabinetService;
-            this.writer = writer;
+            this.fileCabinetService = fileCabinetService ?? throw new ArgumentNullException(nameof(fileCabinetService));
+            this.writer = writer ?? throw new ArgumentNullException(nameof(writer));
         }
 
         /// <inheritdoc/>
@@ -56,29 +46,29 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             this.Log($"Calling FindByDateOfBirth() with {dateOfBirth}");
             var result = this.fileCabinetService.FindByDateOfBirth(dateOfBirth);
-            this.Log($"FindByDateOfBirth() returned '{result.Count}' records");
+            this.Log($"FindByDateOfBirth() returned '{result.Count()}' records");
             return result;
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             this.Log($"Calling FindByFirstName() with {firstName}");
             var result = this.fileCabinetService.FindByFirstName(firstName);
-            this.Log($"FindByFirstName() returned '{result.Count}' records");
+            this.Log($"FindByFirstName() returned '{result.Count()}' records");
             return result;
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             this.Log($"Calling FindByLastName() with {lastName}");
             var result = this.fileCabinetService.FindByLastName(lastName);
-            this.Log($"FindByLastName() returned '{result.Count}' records");
+            this.Log($"FindByLastName() returned '{result.Count()}' records");
             return result;
         }
 
@@ -116,6 +106,9 @@ namespace FileCabinetApp
             this.fileCabinetService.RemoveRecord(id);
             this.Log($"RemoveRecord() removed record with #{id} id");
         }
+
+        /// <inheritdoc/>
+        public override string ToString() => this.fileCabinetService.ToString() ?? string.Empty;
 
         /// <inheritdoc/>
         public void Restore(FileCabinetServiceSnapshot snapshot)

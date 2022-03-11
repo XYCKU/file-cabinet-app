@@ -1,4 +1,5 @@
-﻿using FileCabinetApp;
+﻿using System.Collections.ObjectModel;
+using FileCabinetApp;
 
 [assembly: CLSCompliant(true)]
 
@@ -41,9 +42,9 @@ namespace FileCabinetGenerator
 
             try
             {
-                using (StreamWriter writer = new StreamWriter(path))
+                using (var writer = new StreamWriter(path))
                 {
-                    var snapshot = new FileCabinetServiceSnapshot(records);
+                    var snapshot = new FileCabinetServiceSnapshot(new ReadOnlyCollection<FileCabinetRecord>(records));
 
                     switch (exportType)
                     {

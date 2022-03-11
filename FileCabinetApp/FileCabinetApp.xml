@@ -546,11 +546,12 @@
         <member name="T:FileCabinetApp.FileCabinetRecordCsvReader">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetRecordCsvReader.#ctor(System.IO.StreamReader)">
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvReader.#ctor(System.IO.StreamReader,FileCabinetApp.Validators.Input.IInputValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvReader"/> class.
             </summary>
             <param name="reader"><see cref="T:System.IO.StreamReader"/>.</param>
+            <param name="inputValidator"><see cref="T:FileCabinetApp.Validators.Input.IInputValidator"/>.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="reader"/> is <c>null</c>.</exception>
         </member>
         <member name="M:FileCabinetApp.FileCabinetRecordCsvReader.ReadAll">
@@ -614,11 +615,19 @@
             Snapshot of <see cref="T:FileCabinetApp.FileCabinetMemoryService"/>.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(FileCabinetApp.FileCabinetRecord[])">
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(System.Collections.ObjectModel.ReadOnlyCollection{FileCabinetApp.FileCabinetRecord})">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
             </summary>
             <param name="records">Array of <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="records"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(System.Collections.ObjectModel.ReadOnlyCollection{FileCabinetApp.FileCabinetRecord},FileCabinetApp.Validators.Input.IInputValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
+            </summary>
+            <param name="records">Array of <see cref="T:FileCabinetApp.FileCabinetRecord"/>.</param>
+            <param name="inputValidator">Array of <see cref="T:FileCabinetApp.Validators.Input.IInputValidator"/>.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="records"/> is <c>null</c>.</exception>
         </member>
         <member name="P:FileCabinetApp.FileCabinetServiceSnapshot.Records">
@@ -654,6 +663,21 @@
             Loads <see cref="T:FileCabinetApp.FileCabinetRecord"/> array from xml.
             </summary>
             <param name="reader"><see cref="T:System.IO.StreamReader"/> to read from.</param>
+        </member>
+        <member name="T:FileCabinetApp.FilesystemIterator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemIterator.#ctor(System.Collections.ObjectModel.ReadOnlyCollection{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FilesystemIterator"/> class.
+            </summary>
+            <param name="records">Records collection.</param>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemIterator.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FilesystemIterator.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.IFileCabinetRecordReader">
             <summary>
@@ -806,6 +830,23 @@
             <param name="input">Input string.</param>
             <returns>Tuple with result.</returns>
         </member>
+        <member name="T:FileCabinetApp.IRecordIterator">
+            <summary>
+            Record iterator interface.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IRecordIterator.GetNext">
+            <summary>
+            Gets next item.
+            </summary>
+            <returns>Next item.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IRecordIterator.HasMore">
+            <summary>
+            Checks if collection has more elements.
+            </summary>
+            <returns>Whether collection has more elements.</returns>
+        </member>
         <member name="T:FileCabinetApp.IRecordPrinter">
             <summary>
             Info printer interface.
@@ -816,6 +857,21 @@
             Prints info.
             </summary>
             <param name="records">Info to print.</param>
+        </member>
+        <member name="T:FileCabinetApp.MemoryIterator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIterator.#ctor(System.Collections.ObjectModel.ReadOnlyCollection{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.MemoryIterator"/> class.
+            </summary>
+            <param name="records">Records collection.</param>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIterator.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.MemoryIterator.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
@@ -908,6 +964,9 @@
         <member name="M:FileCabinetApp.ServiceLogger.RemoveRecord(System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.ServiceLogger.ToString">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.ServiceLogger.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <inheritdoc/>
         </member>
@@ -954,6 +1013,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.ServiceMeter.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.ServiceMeter.ToString">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Validators.CarAmountValidator">

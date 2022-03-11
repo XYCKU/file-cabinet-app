@@ -43,8 +43,8 @@ namespace FileCabinetApp
         private static bool useLogger;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        private static IRecordValidator validator;
-        private static IInputValidator inputValidator;
+        private static IRecordValidator configValidator;
+        private static IInputValidator configInputValidator;
         private static Dictionary<string, ConfigurationData> configs;
 
         /// <summary>
@@ -64,8 +64,8 @@ namespace FileCabinetApp
             ProcessArguments(args);
 
             ConfigurationData config = GetValidatorConfig(validatorType);
-            validator = new ValidatorBuilder().Create(config);
-            inputValidator = new InputValidator(config);
+            configValidator = new ValidatorBuilder().Create(config);
+            configInputValidator = new InputValidator(config);
             FileCabinetService = GetCabinetType(cabinetType);
 
             string logFileName = GetLogFileName(LogFileNameFormat);
@@ -268,8 +268,8 @@ namespace FileCabinetApp
 
         private static IFileCabinetService GetCabinetType(string name) => name switch
         {
-            "file" => new FileCabinetFilesystemService(new FileStream(FileSystemPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite), validator, inputValidator),
-            _ => new FileCabinetMemoryService(validator, inputValidator),
+            "file" => new FileCabinetFilesystemService(new FileStream(FileSystemPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite), configValidator, configInputValidator),
+            _ => new FileCabinetMemoryService(configValidator, configInputValidator),
         };
 
         private static string GetLogFileName(string format)

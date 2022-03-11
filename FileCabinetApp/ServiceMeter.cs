@@ -51,7 +51,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             this.stopwatch.Restart();
             var result = this.fileCabinetService.FindByDateOfBirth(dateOfBirth);
@@ -61,7 +61,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             this.stopwatch.Restart();
             var result = this.fileCabinetService.FindByFirstName(firstName);
@@ -71,7 +71,7 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             this.stopwatch.Restart();
             var result = this.fileCabinetService.FindByLastName(lastName);
@@ -127,5 +127,8 @@ namespace FileCabinetApp
             this.stopwatch.Stop();
             Console.WriteLine($"Restore method execution duration is {this.stopwatch.ElapsedTicks} ticks.");
         }
+
+        /// <inheritdoc/>
+        public override string ToString() => this.fileCabinetService.ToString() ?? string.Empty;
     }
 }

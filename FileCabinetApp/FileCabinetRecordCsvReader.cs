@@ -5,22 +5,19 @@ namespace FileCabinetApp
     /// <inheritdoc/>
     public class FileCabinetRecordCsvReader : IFileCabinetRecordReader
     {
-        private static readonly IInputValidator InputValidator = new DefaultInputValidator();
+        private readonly IInputValidator inputValidator;
         private readonly StreamReader reader;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordCsvReader"/> class.
         /// </summary>
         /// <param name="reader"><see cref="StreamReader"/>.</param>
+        /// <param name="inputValidator"><see cref="IInputValidator"/>.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="reader"/> is <c>null</c>.</exception>
-        public FileCabinetRecordCsvReader(StreamReader reader)
+        public FileCabinetRecordCsvReader(StreamReader reader, IInputValidator inputValidator)
         {
-            if (reader is null)
-            {
-                throw new ArgumentNullException(nameof(reader));
-            }
-
-            this.reader = reader;
+            this.reader = reader ?? throw new ArgumentNullException(nameof(reader));
+            this.inputValidator = inputValidator ?? throw new ArgumentNullException(nameof(inputValidator));
         }
 
         /// <inheritdoc/>
@@ -29,7 +26,7 @@ namespace FileCabinetApp
             List<FileCabinetRecord> result = new List<FileCabinetRecord>();
             int recordNumber = 0;
 
-            string line = this.reader.ReadLine() ?? string.Empty;
+            var line = this.reader.ReadLine() ?? string.Empty;
 
             while (!this.reader.EndOfStream)
             {
@@ -66,13 +63,13 @@ namespace FileCabinetApp
 
                 Tuple<bool, string>[] validationResults =
                 {
-                    CheckInput(data[0], InputConverter.IntConverter, (int id) => new Tuple<bool, string>(id >= 0, $"Validation failed: {id} cannot be less than 0"), out id),
-                    CheckInput(data[1], InputConverter.StringConverter, InputValidator.FirstNameValidator, out firstName),
-                    CheckInput(data[2], InputConverter.StringConverter, InputValidator.LastNameValidator, out lastName),
-                    CheckInput(data[3], InputConverter.DateConverter, InputValidator.DateOfBirthValidator, out dob),
-                    CheckInput(data[4], InputConverter.ShortConverter, InputValidator.CarAmountValidator, out carAmount),
-                    CheckInput(data[5], InputConverter.DecimalConverter, InputValidator.MoneyValidator, out money),
-                    CheckInput(data[6], InputConverter.CharConverter, InputValidator.FavoriteCharValidator, out favoriteChar),
+                    CheckInput(data[0], InputConverter.IntConverter, recordId => new Tuple<bool, string>(recordId >= 0, $"Validation failed: {recordId} cannot be less than 0"), out id),
+                    CheckInput(data[1], InputConverter.StringConverter, this.inputValidator.FirstNameValidator, out firstName),
+                    CheckInput(data[2], InputConverter.StringConverter, this.inputValidator.LastNameValidator, out lastName),
+                    CheckInput(data[3], InputConverter.DateConverter, this.inputValidator.DateOfBirthValidator, out dob),
+                    CheckInput(data[4], InputConverter.ShortConverter, this.inputValidator.CarAmountValidator, out carAmount),
+                    CheckInput(data[5], InputConverter.DecimalConverter, this.inputValidator.MoneyValidator, out money),
+                    CheckInput(data[6], InputConverter.CharConverter, this.inputValidator.FavoriteCharValidator, out favoriteChar),
                 };
 
                 bool isOk = true;

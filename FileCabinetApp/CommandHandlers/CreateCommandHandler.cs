@@ -20,8 +20,6 @@ namespace FileCabinetApp.CommandHandlers
         /// <inheritdoc/>
         protected override void Action(AppCommandRequest commandRequest)
         {
-            int recordId;
-
             Console.Write("First name: ");
             string firstName = Program.ReadInput(InputConverter.StringConverter, this.Service.InputValidator.FirstNameValidator);
 
@@ -42,9 +40,10 @@ namespace FileCabinetApp.CommandHandlers
 
             var data = new FileCabinetData(firstName, lastName, dt, carAmount, money, favoriteChar);
 
-            recordId = this.Service.CreateRecord(data);
+            int recordId = this.Service.CreateRecord(data);
+            const string pastAction = "created";
 
-            Console.WriteLine(Program.LongFormatRecord(data, recordId, "created"));
+            Console.WriteLine(Program.LongFormatRecord(data, recordId, pastAction));
         }
     }
 }

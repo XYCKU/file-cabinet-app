@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Buffers;
+using System.Collections.ObjectModel;
 using System.Text;
 using FileCabinetApp.Validators;
 using FileCabinetApp.Validators.Input;
@@ -9,9 +10,16 @@ namespace FileCabinetApp
     public class FileCabinetFilesystemService : IFileCabinetService
     {
         private const int RecordSize = 4 + 120 + 120 + 4 + 4 + 4 + 2 + 8 + 1 + 1;
+
+        private static readonly ArrayPool<byte> ByteArrayPool = ArrayPool<byte>.Shared;
         private static readonly Encoding Encoding = Encoding.UTF8;
         private static readonly int[] DataSizes = { 1, 4, 120, 120, 4, 4, 4, 2, 8, 1 };
+
         private readonly FileStream fileStream;
+        private readonly Dictionary<string, List<int>> firstNameDictionary = new Dictionary<string, List<int>>();
+        private readonly Dictionary<string, List<int>> lastNameDictionary = new Dictionary<string, List<int>>();
+        private readonly Dictionary<DateTime, List<int>> dateOfBirthDictionary = new Dictionary<DateTime, List<int>>();
+
         private int count;
         private int deleted;
 
@@ -24,26 +32,11 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="fileStream"/> is <c>null</c>.</exception>
         public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator, IInputValidator inputValidator)
         {
-            if (fileStream is null)
-            {
-                throw new ArgumentNullException(nameof(fileStream));
-            }
+            this.fileStream = fileStream ?? throw new ArgumentNullException(nameof(fileStream));
+            this.Validator = validator ?? throw new ArgumentNullException(nameof(validator));
+            this.InputValidator = inputValidator ?? throw new ArgumentNullException(nameof(inputValidator));
 
-            if (validator is null)
-            {
-                throw new ArgumentNullException(nameof(validator));
-            }
-
-            if (inputValidator is null)
-            {
-                throw new ArgumentNullException(nameof(inputValidator));
-            }
-
-            this.fileStream = fileStream;
-            this.Validator = validator;
-
-            this.count = this.GetStat().Item1;
-            this.InputValidator = inputValidator;
+            this.ReadFile();
         }
 
         /// <inheritdoc/>
@@ -63,13 +56,15 @@ namespace FileCabinetApp
             this.Validator.ValidateParameters(data);
 
             var record = new FileCabinetRecord(this.count++, data);
+            this.AddRecordToDictionaries(record, record.Id);
 
-            byte[] bytes = ToBytes(record);
+            var bytes = ByteArrayPool.Rent(RecordSize);
 
-            this.fileStream.Seek(0, SeekOrigin.End);
-
+            this.fileStream.Position = RecordSize * record.Id;
             this.fileStream.Write(bytes);
             this.fileStream.Flush();
+
+            ByteArrayPool.Return(bytes);
 
             return record.Id;
         }
@@ -91,40 +86,49 @@ namespace FileCabinetApp
                 throw new ArgumentException($"Record #{id} is not found", nameof(id));
             }
 
-            this.fileStream.Position = index * RecordSize;
+            var record = this.ReadRecord(index);
+
+            if (record == null)
+            {
+                throw new ArgumentException("Invalid record", nameof(id));
+            }
+
+            this.RemoveRecordFromDictionaries(record, index);
 
             byte[] newByteData = ToBytes(data, id);
 
+            this.fileStream.Position = index * RecordSize;
             this.fileStream.Seek(-RecordSize, SeekOrigin.Current);
             this.fileStream.Write(newByteData);
-            this.fileStream.Seek(0, SeekOrigin.End);
+
+            this.AddRecordToDictionaries(new FileCabinetRecord(id, data), index);
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            return this.FindBy((FileCabinetRecord record) => record.DateOfBirth == dateOfBirth);
+            return this.FindBy(this.dateOfBirthDictionary, dateOfBirth);
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            return this.FindBy((FileCabinetRecord record) => string.Equals(record.FirstName, firstName, StringComparison.OrdinalIgnoreCase));
+            return this.FindBy(this.firstNameDictionary, firstName.ToUpperInvariant());
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            return this.FindBy((FileCabinetRecord record) => string.Equals(record.LastName, lastName, StringComparison.OrdinalIgnoreCase));
+            return this.FindBy(this.lastNameDictionary, lastName.ToUpperInvariant());
         }
 
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            byte[] bytes = new byte[RecordSize];
-            List<FileCabinetRecord> result = new List<FileCabinetRecord>();
+            var bytes = ByteArrayPool.Rent(RecordSize);
+            var result = new List<FileCabinetRecord>();
 
-            this.fileStream.Seek(0, SeekOrigin.Begin);
+            this.fileStream.Position = 0;
 
             for (int i = 0; i < this.count; ++i)
             {
@@ -144,6 +148,7 @@ namespace FileCabinetApp
                 }
             }
 
+            ByteArrayPool.Return(bytes);
             return new ReadOnlyCollection<FileCabinetRecord>(result);
         }
 
@@ -156,7 +161,7 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            return new FileCabinetServiceSnapshot(this.GetRecords().ToArray());
+            return new FileCabinetServiceSnapshot(this.GetRecords(), this.InputValidator);
         }
 
         /// <inheritdoc/>
@@ -166,14 +171,16 @@ namespace FileCabinetApp
 
             this.count = records.Length;
             this.deleted = 0;
+            this.ClearDictionaries();
 
             this.fileStream.Position = 0;
 
             for (int i = 0; i < records.Length; ++i)
             {
                 byte[] bytes = ToBytes(records[i]);
-
                 this.fileStream.Write(bytes);
+
+                this.AddRecordToDictionaries(records[i], i);
             }
 
             this.fileStream.Flush();
@@ -192,6 +199,13 @@ namespace FileCabinetApp
             this.fileStream.Position = index * RecordSize;
             this.fileStream.Write(new byte[] { 1 });
             ++this.deleted;
+
+            var record = this.ReadRecord(index);
+
+            if (record != null)
+            {
+                this.RemoveRecordFromDictionaries(record, index);
+            }
         }
 
         /// <summary>
@@ -204,7 +218,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            FileCabinetServiceSnapshot snapshot = new FileCabinetServiceSnapshot(this.GetRecords().ToArray());
+            FileCabinetServiceSnapshot snapshot = new FileCabinetServiceSnapshot(this.GetRecords(), this.InputValidator);
             this.Restore(snapshot);
         }
 
@@ -213,7 +227,7 @@ namespace FileCabinetApp
 
         private static FileCabinetRecord ToRecord(Span<byte> spanBytes)
         {
-            int id = BitConverter.ToInt32(spanBytes[0..4]);
+            int id = BitConverter.ToInt32(spanBytes[..4]);
 
             string firstName = Encoding.GetString(spanBytes[4..124]);
             firstName = firstName[..firstName.IndexOf('\0', StringComparison.Ordinal)];
@@ -294,21 +308,81 @@ namespace FileCabinetApp
             return bytes;
         }
 
-        private ReadOnlyCollection<FileCabinetRecord> FindBy(Predicate<FileCabinetRecord> predicate)
+        private static void AddToDictionary<T>(Dictionary<T, List<int>> dictionary, T value, int offset)
+            where T : notnull
         {
-            List<FileCabinetRecord> result = new List<FileCabinetRecord>();
-
-            var allRecords = this.GetRecords();
-
-            for (int i = 0; i < allRecords.Count; ++i)
+            if (!dictionary.ContainsKey(value))
             {
-                if (predicate(allRecords[i]))
+                dictionary[value] = new List<int>();
+            }
+
+            dictionary[value].Add(offset);
+        }
+
+        private static void RemoveFromDictionary<T>(Dictionary<T, List<int>> dictionary, T value, int offset)
+            where T : notnull
+        {
+            if (!dictionary.ContainsKey(value))
+            {
+                return;
+            }
+
+            dictionary[value].Remove(offset);
+        }
+
+        private IEnumerable<FileCabinetRecord> FindBy<T>(Dictionary<T, List<int>> dictionary, T value)
+            where T : notnull
+        {
+            if (!dictionary.ContainsKey(value))
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            }
+
+            var records = new List<FileCabinetRecord>();
+
+            for (int i = 0; i < dictionary[value].Count; ++i)
+            {
+                var record = this.ReadRecord(dictionary[value][i]);
+                if (record != null)
                 {
-                    result.Add(allRecords[i]);
+                    records.Add(record);
                 }
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(result);
+            return records.AsReadOnly();
+        }
+
+        private void ReadFile()
+        {
+            var records = this.GetRecords();
+
+            for (int i = 0; i < records.Count; ++i)
+            {
+                this.AddRecordToDictionaries(records[i], i);
+            }
+
+            this.count = records.Count;
+        }
+
+        private void AddRecordToDictionaries(FileCabinetRecord record, int offset)
+        {
+            AddToDictionary(this.firstNameDictionary, record.FirstName.ToUpperInvariant(), offset);
+            AddToDictionary(this.lastNameDictionary, record.LastName.ToUpperInvariant(), offset);
+            AddToDictionary(this.dateOfBirthDictionary, record.DateOfBirth, offset);
+        }
+
+        private void RemoveRecordFromDictionaries(FileCabinetRecord record, int offset)
+        {
+            RemoveFromDictionary(this.firstNameDictionary, record.FirstName, offset);
+            RemoveFromDictionary(this.lastNameDictionary, record.LastName, offset);
+            RemoveFromDictionary(this.dateOfBirthDictionary, record.DateOfBirth, offset);
+        }
+
+        private void ClearDictionaries()
+        {
+            this.dateOfBirthDictionary.Clear();
+            this.firstNameDictionary.Clear();
+            this.lastNameDictionary.Clear();
         }
 
         private int FindById(int id)
@@ -318,30 +392,48 @@ namespace FileCabinetApp
                 throw new ArgumentOutOfRangeException(nameof(id), "id cannot be less than 0");
             }
 
-            byte[] bytes = new byte[RecordSize];
+            const int bytesAmount = 5;
+            var bytes = ByteArrayPool.Rent(RecordSize);
 
-            int index = 0;
-            this.fileStream.Position = 0;
-
-            for (int i = 0; i < this.count; ++i, ++index)
+            for (int i = 0; i < this.count; ++i)
             {
-                if (this.fileStream.Read(bytes, 0, RecordSize) > 0)
+                this.fileStream.Position = RecordSize * i;
+
+                if (this.fileStream.Read(bytes, 0, bytesAmount) > 0)
                 {
                     if (bytes[0] == 1)
                     {
                         continue;
                     }
 
-                    var record = ToRecord(bytes.AsSpan()[1..]);
+                    var recordId = BitConverter.ToInt32(bytes.AsSpan()[1..]);
 
-                    if (id == record.Id)
+                    if (id == recordId)
                     {
-                        return index;
+                        ByteArrayPool.Return(bytes);
+                        return i;
                     }
                 }
             }
 
+            ByteArrayPool.Return(bytes);
             return -1;
+        }
+
+        private FileCabinetRecord? ReadRecord(int offset)
+        {
+            var bytes = ByteArrayPool.Rent(RecordSize);
+
+            this.fileStream.Position = offset * RecordSize;
+
+            if (this.fileStream.Read(bytes, 0, RecordSize) > 0 && bytes[0] == 0)
+            {
+                var record = ToRecord(bytes.AsSpan()[1..]);
+                ByteArrayPool.Return(bytes);
+                return record;
+            }
+
+            return null;
         }
     }
 }
